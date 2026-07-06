@@ -85,7 +85,7 @@ function renderSummary(draft) {
       <span class="pa-summary-value">${draft.displayPeriod || draft.period}</span>
     </div>
     <div class="pa-summary-row">
-      <span class="pa-summary-label">회의 시간</span>
+      <span class="pa-summary-label">회의 길이</span>
       <span class="pa-summary-value">${draft.duration}</span>
     </div>
     <div class="pa-summary-row">

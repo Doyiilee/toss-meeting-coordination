@@ -174,7 +174,7 @@ function renderSummary(draft, roles) {
       <span class="rs-summary-value">${draft.displayPeriod || draft.period}</span>
     </div>
     <div class="rs-summary-row">
-      <span class="rs-summary-label">회의 시간</span>
+      <span class="rs-summary-label">회의 길이</span>
       <span class="rs-summary-value">${draft.duration}</span>
     </div>
     <div class="rs-summary-row">
