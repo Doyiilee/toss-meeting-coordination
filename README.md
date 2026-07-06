@@ -1,2 +1,15 @@
-# toss-meeting-coordination
-Toss Product Designer Challenge 2026 meeting coordination MVP
+# 모두의 시간
+
+회의 확정 가능 시간을 제안하는 일정 조율 서비스 MVP
+
+## 목적
+
+단순한 빈 시간 검색이 아니라, 참석자의 역할과 응답 여부를 분석해 회의가 확정될 수 있는 시간을 먼저 제안합니다.
+
+## 실행 방법
+
+`index.html`을 브라우저에서 열기
+
+## 현재 구현 범위
+
+초기 화면 (홈)
