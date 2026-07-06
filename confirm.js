@@ -90,8 +90,8 @@ function renderConfirmedCard() {
   confirmedCard.innerHTML = `
     <div class="cf-confirmed-name">${meetingDraft?.meetingTitle || '회의'}</div>
     <div class="cf-confirmed-row">
-      <span class="cf-confirmed-label">요일</span>
-      <span class="cf-confirmed-value">${candidate.date}</span>
+      <span class="cf-confirmed-label">날짜</span>
+      <span class="cf-confirmed-value">${candidate.dateLabel || candidate.date}</span>
     </div>
     <div class="cf-confirmed-row">
       <span class="cf-confirmed-label">시간</span>

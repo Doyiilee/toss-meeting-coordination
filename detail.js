@@ -116,7 +116,7 @@ function renderCandidateCard() {
   else if (status === '비추천') badgeClass = 'dt-badge-low';
 
   candidateCard.innerHTML = `
-    <div class="dt-candidate-time">${selectedCandidate.date} ${selectedCandidate.time}</div>
+    <div class="dt-candidate-time">${selectedCandidate.dateLabel || selectedCandidate.date} ${selectedCandidate.time}</div>
     <span class="dt-candidate-badge ${badgeClass}">${status}</span>
     <p class="dt-candidate-summary">${selectedCandidate.requiredSummary}</p>
     <p class="dt-candidate-summary">${selectedCandidate.optionalSummary}</p>
@@ -268,6 +268,8 @@ submitBtn.addEventListener('click', () => {
     const data = {
       selectedCandidateId: selectedCandidate.selectedCandidateId,
       date: selectedCandidate.date,
+      fullDate: selectedCandidate.fullDate,
+      dateLabel: selectedCandidate.dateLabel,
       time: selectedCandidate.time,
       status: selectedCandidate.status,
       requiredAvailable: selectedCandidate.requiredAvailable,

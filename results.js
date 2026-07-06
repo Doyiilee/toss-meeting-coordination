@@ -1,5 +1,62 @@
 let timeCandidates = [];
 
+const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+
+function formatDateLabel(d) {
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}.${m}.${day} (${DAY_NAMES[d.getDay()]})`;
+}
+
+function computeCandidateDates(draft) {
+  const period = draft.period;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dow = today.getDay();
+
+  let monday;
+  if (period === '이번 주') {
+    const off = dow === 0 ? -6 : 1 - dow;
+    monday = new Date(today);
+    monday.setDate(today.getDate() + off);
+  } else if (period === '다음 주') {
+    const off = dow === 0 ? 1 : 8 - dow;
+    monday = new Date(today);
+    monday.setDate(today.getDate() + off);
+  } else if (period === '직접 선택' && draft.customStartDate) {
+    monday = new Date(draft.customStartDate + 'T00:00:00');
+  } else {
+    monday = new Date(today);
+  }
+
+  const offsets = { 'candidate-1': 1, 'candidate-2': 2, 'candidate-3': 2, 'candidate-4': 3, 'candidate-5': 4 };
+  const customEnd = draft.customEndDate ? new Date(draft.customEndDate + 'T00:00:00') : null;
+  const dates = {};
+
+  for (const [id, offset] of Object.entries(offsets)) {
+    let d;
+    if (period === '직접 선택') {
+      const idx = ['candidate-1', 'candidate-2', 'candidate-3', 'candidate-4', 'candidate-5'].indexOf(id);
+      d = new Date(monday);
+      d.setDate(monday.getDate() + idx);
+    } else {
+      d = new Date(monday);
+      d.setDate(monday.getDate() + offset);
+    }
+    if (customEnd && d > customEnd) {
+      d = new Date(customEnd);
+    }
+    const y = d.getFullYear();
+    const mon = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    dates[id] = {
+      fullDate: `${y}-${mon}-${dd}`,
+      dateLabel: `${y}.${mon}.${dd} (${DAY_NAMES[d.getDay()]})`
+    };
+  }
+  return dates;
+}
+
 function optSummary(total, avail) {
   if (total === 0) return '선택 참석자 없음';
   if (avail === 0) return `선택 참석자 ${total}명은 참석이 어려워요`;
@@ -16,7 +73,7 @@ function optReasonPartial(total, avail) {
   return `선택 참석자 ${total}명 중 ${avail}명이 참석 가능해요.`;
 }
 
-function buildTimeCandidates(requiredTotal, optionalTotal) {
+function buildTimeCandidates(requiredTotal, optionalTotal, draft) {
   const ra = Math.max;
   const reqAvail1 = requiredTotal;
   const reqAvail2 = ra(requiredTotal - 1, 0);
@@ -24,12 +81,15 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
   const optAvailHalf = optionalTotal > 0 ? ra(optionalTotal - 1, 0) : 0;
   const hasRequired = requiredTotal > 0;
   const hasOptional = optionalTotal > 0;
+  const cd = computeCandidateDates(draft);
 
   return [
     {
       id: 'candidate-1',
       label: '가장 추천',
       date: '화요일',
+      fullDate: cd['candidate-1'].fullDate,
+      dateLabel: cd['candidate-1'].dateLabel,
       time: '10:00 - 11:00',
       status: '추천',
       requiredSummary: `필수 참석자 ${requiredTotal}명 전원 가능`,
@@ -52,6 +112,8 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
       id: 'candidate-2',
       label: '대안',
       date: '수요일',
+      fullDate: cd['candidate-2'].fullDate,
+      dateLabel: cd['candidate-2'].dateLabel,
       time: '11:00 - 12:00',
       status: '추천',
       requiredSummary: `필수 참석자 ${requiredTotal}명 전원 가능`,
@@ -74,6 +136,8 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
       id: 'candidate-3',
       label: '확인 필요',
       date: '수요일',
+      fullDate: cd['candidate-3'].fullDate,
+      dateLabel: cd['candidate-3'].dateLabel,
       time: '16:00 - 17:00',
       status: '확인 필요',
       requiredSummary: `필수 참석자 ${requiredTotal}명 중 ${reqAvail2}명 가능`,
@@ -96,6 +160,8 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
       id: 'candidate-4',
       label: '대안',
       date: '목요일',
+      fullDate: cd['candidate-4'].fullDate,
+      dateLabel: cd['candidate-4'].dateLabel,
       time: '15:00 - 16:00',
       status: '추천',
       requiredSummary: `필수 참석자 ${requiredTotal}명 전원 가능`,
@@ -120,6 +186,8 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
       id: 'candidate-5',
       label: '비추천',
       date: '금요일',
+      fullDate: cd['candidate-5'].fullDate,
+      dateLabel: cd['candidate-5'].dateLabel,
       time: '14:00 - 15:00',
       status: '비추천',
       requiredSummary: `필수 참석자 ${requiredTotal}명 중 ${reqAvail2}명 가능`,
@@ -252,7 +320,7 @@ function renderCandidates(filter) {
           ${c.label !== c.status ? `<span class="rs-label-badge ${labelClass}">${c.label}</span>` : ''}
           <span class="rs-status-badge ${statusClass}">${c.status}</span>
         </div>
-        <div class="rs-candidate-time">${c.date} ${c.time}</div>
+        <div class="rs-candidate-time">${c.dateLabel} ${c.time}</div>
         <p class="rs-summary-line">${c.requiredSummary} · ${c.optionalSummary}</p>
         <p class="rs-summary-line">${c.unresolvedSummary}</p>
         <div class="rs-reason-list">
@@ -270,6 +338,8 @@ function renderCandidates(filter) {
       const data = {
         selectedCandidateId: candidate.id,
         date: candidate.date,
+        fullDate: candidate.fullDate,
+        dateLabel: candidate.dateLabel,
         time: candidate.time,
         status: candidate.status,
         requiredSummary: candidate.requiredSummary,
@@ -317,6 +387,8 @@ submitBtn.addEventListener('click', () => {
   const data = {
     selectedCandidateId: recommend.id,
     date: recommend.date,
+    fullDate: recommend.fullDate,
+    dateLabel: recommend.dateLabel,
     time: recommend.time,
     status: recommend.status,
     requiredSummary: recommend.requiredSummary,
@@ -361,7 +433,7 @@ function init() {
   renderSummary(draft, roles);
   const requiredTotal = roles.requiredParticipants.length;
   const optionalTotal = roles.optionalParticipants.length;
-  timeCandidates = buildTimeCandidates(requiredTotal, optionalTotal);
+  timeCandidates = buildTimeCandidates(requiredTotal, optionalTotal, draft);
   renderCandidates('전체');
 }
 
