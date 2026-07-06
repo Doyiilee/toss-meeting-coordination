@@ -26,6 +26,29 @@ backBtn.addEventListener('click', () => {
   window.location.href = 'index.html';
 });
 
+function saveDraft() {
+  const data = {
+    meetingTitle: meetingTitleInput.value.trim(),
+    period: selectedPeriod,
+    duration: selectedDuration,
+    participants: participants
+  };
+  sessionStorage.setItem('meetingDraft', JSON.stringify(data));
+}
+
+function loadDraft() {
+  try {
+    const raw = sessionStorage.getItem('meetingDraft');
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function updateActiveChip(group, value) {
+  group.querySelectorAll('.chip').forEach(el => {
+    el.classList.toggle('chip-active', el.dataset.value === value);
+  });
+}
+
 // ─── Period selection ───
 periodGroup.addEventListener('click', (e) => {
   const btn = e.target.closest('.chip');
@@ -33,6 +56,7 @@ periodGroup.addEventListener('click', (e) => {
   periodGroup.querySelectorAll('.chip').forEach(el => el.classList.remove('chip-active'));
   btn.classList.add('chip-active');
   selectedPeriod = btn.dataset.value;
+  saveDraft();
 });
 
 // ─── Duration selection ───
@@ -42,6 +66,7 @@ durationGroup.addEventListener('click', (e) => {
   durationGroup.querySelectorAll('.chip').forEach(el => el.classList.remove('chip-active'));
   btn.classList.add('chip-active');
   selectedDuration = btn.dataset.value;
+  saveDraft();
 });
 
 // ─── Participant render ───
@@ -58,6 +83,7 @@ function renderParticipants() {
       const name = btn.dataset.name;
       participants = participants.filter(p => p !== name);
       renderParticipants();
+      saveDraft();
     });
   });
 }
@@ -87,6 +113,7 @@ function addParticipant(name) {
   participants.push(trimmed);
   renderParticipants();
   participantInput.value = '';
+  saveDraft();
 }
 
 addParticipantBtn.addEventListener('click', () => {
@@ -110,6 +137,12 @@ function showToast(message) {
     toast.classList.remove('toast-visible');
   }, 2000);
 }
+
+// ─── Title input clears validation error ───
+meetingTitleInput.addEventListener('input', () => {
+  const error = document.querySelector('.validation-error');
+  if (error) error.remove();
+});
 
 // ─── Validation & Submit ───
 submitBtn.addEventListener('click', () => {
@@ -150,4 +183,19 @@ submitBtn.addEventListener('click', () => {
 });
 
 // ─── Init ───
-renderParticipants();
+function init() {
+  const draft = loadDraft();
+  if (draft && draft.participants) {
+    meetingTitleInput.value = draft.meetingTitle || '';
+    selectedPeriod = draft.period || '다음 주';
+    selectedDuration = draft.duration || '1시간';
+    participants = draft.participants.length > 0
+      ? [...draft.participants]
+      : [...DEFAULT_PARTICIPANTS];
+    updateActiveChip(periodGroup, selectedPeriod);
+    updateActiveChip(durationGroup, selectedDuration);
+  }
+  renderParticipants();
+}
+
+init();
