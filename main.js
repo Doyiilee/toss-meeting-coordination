@@ -31,16 +31,24 @@ function renderCoordination() {
   });
 }
 
+function clearPreviousSession() {
+  const keys = ['meetingDraft', 'participantsDraft', 'meetingData', 'participantRoles', 'selectedCandidate', 'finalCandidate'];
+  keys.forEach(key => sessionStorage.removeItem(key));
+}
+
 function init() {
   document.getElementById('hero-primary-btn').addEventListener('click', () => {
+    clearPreviousSession();
     window.location.href = 'create.html';
   });
 
   document.getElementById('bottom-cta-btn').addEventListener('click', () => {
+    clearPreviousSession();
     window.location.href = 'create.html';
   });
 
   document.getElementById('empty-state-btn').addEventListener('click', () => {
+    clearPreviousSession();
     window.location.href = 'create.html';
   });
 

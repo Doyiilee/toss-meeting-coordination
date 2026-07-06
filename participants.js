@@ -2,9 +2,9 @@ const DEFAULT_ROLES = {
   '김민지': '필수',
   '박준호': '필수',
   '이서연': '필수',
-  '최현우': '선택',
-  '정다은': '선택',
-  '한지훈': '선택'
+  '최현우': '필수',
+  '정다은': '필수',
+  '한지훈': '필수'
 };
 
 let roles = {};
@@ -42,14 +42,22 @@ function loadMeetingDraft() {
   }
 }
 
+const DRAFT_VERSION = 2;
+
 function saveRolesDraft() {
-  sessionStorage.setItem('participantsDraft', JSON.stringify(roles));
+  const data = { version: DRAFT_VERSION, roles: roles };
+  sessionStorage.setItem('participantsDraft', JSON.stringify(data));
 }
 
 function loadRolesDraft() {
   try {
     const raw = sessionStorage.getItem('participantsDraft');
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.version === DRAFT_VERSION && parsed.roles) {
+      return parsed.roles;
+    }
+    return null;
   } catch { return null; }
 }
 
@@ -60,7 +68,7 @@ function initRoles(participants) {
     if (saved && saved[name] !== undefined) {
       roles[name] = saved[name];
     } else {
-      roles[name] = DEFAULT_ROLES[name] || '선택';
+      roles[name] = DEFAULT_ROLES[name] || '필수';
     }
   });
 }
@@ -132,7 +140,11 @@ function updateCondition() {
   optionalCount.textContent = `선택 ${optional.length}명`;
 
   conditionRule1.textContent = `필수 참석자 ${required.length}명이 모두 가능한 시간을 우선 추천해요.`;
-  conditionRule2.textContent = `선택 참석자 ${optional.length}명은 가능 인원 수를 기준으로 함께 고려해요.`;
+  if (optional.length === 0) {
+    conditionRule2.textContent = '선택 참석자는 아직 없어요. 필요하면 일부 참석자를 선택으로 바꿀 수 있어요.';
+  } else {
+    conditionRule2.textContent = `선택 참석자 ${optional.length}명은 가능 인원 수를 기준으로 함께 고려해요.`;
+  }
   conditionRule3.textContent = '확인 필요자가 있으면 확정 전 별도로 표시돼요.';
 }
 
