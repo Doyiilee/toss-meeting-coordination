@@ -101,10 +101,6 @@ function init() {
     window.location.href = 'create.html';
   });
 
-  document.getElementById('hero-secondary-btn').addEventListener('click', () => {
-    scrollToSection('response-section');
-  });
-
   // Header schedule button
   document.getElementById('header-schedule-btn').addEventListener('click', () => {
     scrollToSection('schedule-section');
