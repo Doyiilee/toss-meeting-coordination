@@ -249,7 +249,7 @@ function renderCandidates(filter) {
     return `
       <div class="rs-candidate-card ${borderClass}">
         <div class="rs-badge-row">
-          <span class="rs-label-badge ${labelClass}">${c.label}</span>
+          ${c.label !== c.status ? `<span class="rs-label-badge ${labelClass}">${c.label}</span>` : ''}
           <span class="rs-status-badge ${statusClass}">${c.status}</span>
         </div>
         <div class="rs-candidate-time">${c.date} ${c.time}</div>
