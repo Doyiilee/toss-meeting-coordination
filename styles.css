@@ -416,6 +416,70 @@ button {
   padding: 0;
 }
 
+/* ─── Confirmed Section ─── */
+
+.confirmed-section {
+  padding: 0 20px;
+  margin-bottom: 28px;
+}
+
+.confirmed-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.confirmed-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #EBF7EE;
+  color: #1B9D4A;
+  margin-bottom: 10px;
+}
+
+.confirmed-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #191F28;
+  line-height: 1.5;
+  margin-bottom: 8px;
+  word-break: keep-all;
+}
+
+.confirmed-time {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #191F28;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.confirmed-meta {
+  font-size: 0.8125rem;
+  color: #6B7684;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.confirmed-calendar-status {
+  font-size: 0.75rem;
+  color: #1B9D4A;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.confirmed-action {
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #3182F6;
+  padding: 0;
+}
+
 /* ─── Info Section ─── */
 
 .info-section {

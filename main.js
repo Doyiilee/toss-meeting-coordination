@@ -135,6 +135,12 @@ function init() {
     showToast('내 일정 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
+  // Confirmed meeting view
+  document.getElementById('confirmed-view-btn').addEventListener('click', () => {
+    console.log('회의 일정 보기 클릭');
+    showToast('회의 일정 상세 화면은 다음 단계에서 연결할 예정이에요.');
+  });
+
   // Quick menu
   document.querySelectorAll('.quick-menu-item').forEach(btn => {
     btn.addEventListener('click', () => {
