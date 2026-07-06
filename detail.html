@@ -48,9 +48,7 @@
     </section>
 
     <section id="unresolved-section" class="dt-section" style="display:none">
-      <h3 class="dt-section-title" id="unresolved-section-title">확인이 필요한 참석자</h3>
-      <p class="dt-section-desc" id="unresolved-section-desc">회의 확정을 막고 있는 참석자만 따로 확인할 수 있어요.</p>
-      <div id="unresolved-list" class="dt-participant-list"></div>
+      <div class="dt-unresolved-info" id="unresolved-info"></div>
     </section>
 
     <section id="no-data-section" class="dt-no-data" style="display:none">
@@ -61,7 +59,8 @@
 
   </main>
 
-  <div class="dt-bottom-cta">
+  <div class="dt-bottom-cta" id="bottom-cta">
+    <p class="dt-cta-hint" id="cta-hint" style="display:none"></p>
     <button class="dt-btn-primary" id="submit-btn" type="button"></button>
   </div>
 

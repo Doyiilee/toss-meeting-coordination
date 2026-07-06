@@ -13,9 +13,10 @@ const reasonList = document.getElementById('reason-list');
 const requiredList = document.getElementById('required-list');
 const optionalList = document.getElementById('optional-list');
 const unresolvedSection = document.getElementById('unresolved-section');
-const unresolvedList = document.getElementById('unresolved-list');
+const unresolvedInfo = document.getElementById('unresolved-info');
 const noDataSection = document.getElementById('no-data-section');
 const submitBtn = document.getElementById('submit-btn');
+const ctaHint = document.getElementById('cta-hint');
 const toast = document.getElementById('toast');
 
 // ─── Navigation ───
@@ -77,7 +78,7 @@ function normalizeCandidate(candidate, reqCount, optCount) {
 
 // ─── Participant status helpers ───
 function getParticipantStatus(name, index, isRequired) {
-  const { requiredAvailable, requiredUnresolvedCount, optionalAvailable, optionalUnresolvedCount, status } = selectedCandidate;
+  const { requiredAvailable, requiredUnresolvedCount, optionalAvailable, optionalUnresolvedCount } = selectedCandidate;
 
   if (isRequired) {
     if (index < requiredAvailable) return { status: '가능', desc: '이 시간에 참석 가능해요.' };
@@ -130,7 +131,7 @@ function renderReasons() {
   ).join('');
 }
 
-// ─── Render participant list ───
+// ─── Render participant list (with inline request button) ───
 function renderParticipantSection(container, names, isRequired) {
   if (names.length === 0) {
     container.innerHTML = '';
@@ -141,12 +142,12 @@ function renderParticipantSection(container, names, isRequired) {
     const isRequested = requestedNames.has(name);
     const ps = getParticipantStatus(name, index, isRequired);
     const finalStatus = (ps.status === '확인 필요' && isRequested) ? '응답 대기' : ps.status;
-    const finalDesc = finalStatus === '응답 대기'
-      ? '확인 요청을 보냈고 응답을 기다리고 있어요.'
-      : ps.desc;
+    const finalDesc = getDesc(finalStatus, ps, isRequired, isRequested);
     const statusClass = getStatusBadgeClass(finalStatus);
     const roleClass = isRequired ? 'dt-role-required' : 'dt-role-optional';
     const roleText = isRequired ? '필수' : '선택';
+
+    const showRequestBtn = ps.status === '확인 필요' && !isRequested;
 
     return `
       <div class="dt-participant-card">
@@ -154,19 +155,44 @@ function renderParticipantSection(container, names, isRequired) {
         <div class="dt-participant-info">
           <div class="dt-participant-name">${name}</div>
           <p class="dt-participant-desc">${finalDesc}</p>
+          ${showRequestBtn ? `<button class="dt-inline-request-btn" data-name="${name}" type="button">${isRequired ? '확인 요청' : '선택 확인 요청'}</button>` : ''}
+          ${finalStatus === '응답 대기' ? `<p class="dt-requested-msg">${isRequired ? '확인 요청을 보냈어요' : '선택 확인 요청을 보냈어요'}</p>` : ''}
         </div>
         <span class="dt-status-badge ${statusClass}">${finalStatus}</span>
       </div>
     `;
   }).join('');
+
+  container.querySelectorAll('.dt-inline-request-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const name = btn.dataset.name;
+      requestedNames.add(name);
+      renderParticipantSection(requiredList, requiredParticipants, true);
+      renderParticipantSection(optionalList, optionalParticipants, false);
+      renderUnresolvedInfo();
+      updateBottomCTA();
+      showToast('확인 요청을 보냈어요');
+      console.log('확인 요청 보냄:', name);
+    });
+  });
 }
 
-// ─── Render unresolved section ───
-function renderUnresolvedSection() {
+function getDesc(finalStatus, ps, isRequired, isRequested) {
+  if (finalStatus === '응답 대기') {
+    return isRequired
+      ? '확인 요청을 보냈고 응답을 기다리고 있어요.'
+      : '선택 참석자에게 확인 요청을 보냈어요. 회의 확정은 계속 진행할 수 있어요.';
+  }
+  return ps.desc;
+}
+
+// ─── Render unresolved info box (no participant cards) ───
+function renderUnresolvedInfo() {
   const allNames = [...requiredParticipants, ...optionalParticipants];
   const unresolved = [];
 
   allNames.forEach((name, index) => {
+    if (requestedNames.has(name)) return;
     const isRequired = index < requiredParticipants.length;
     const ps = getParticipantStatus(name, isRequired ? index : index - requiredParticipants.length, isRequired);
     if (ps.status === '확인 필요') {
@@ -177,62 +203,24 @@ function renderUnresolvedSection() {
   const hasRequiredUnresolved = unresolved.some(u => u.isRequired);
   const onlyOptionalUnresolved = unresolved.length > 0 && !hasRequiredUnresolved;
 
-  if (unresolved.length === 0 && requestedNames.size === 0) {
+  if (unresolved.length === 0) {
     unresolvedSection.style.display = 'none';
     return;
   }
 
   unresolvedSection.style.display = 'block';
 
-  const sectionTitle = document.getElementById('unresolved-section-title');
-  const sectionDesc = document.getElementById('unresolved-section-desc');
-  if (onlyOptionalUnresolved) {
-    sectionTitle.textContent = '참고 확인이 필요한 선택 참석자';
-    sectionDesc.textContent = '회의 확정은 가능하지만, 필요하면 선택 참석자에게만 확인 요청할 수 있어요.';
-  } else {
-    sectionTitle.textContent = '확인이 필요한 참석자';
-    sectionDesc.textContent = '회의 확정을 막고 있는 참석자만 따로 확인할 수 있어요.';
-  }
-
-  const stillUnresolved = unresolved.filter(u => !requestedNames.has(u.name));
-
-  unresolvedList.innerHTML = unresolved.map(u => {
-    const isRequested = requestedNames.has(u.name);
-    const status = isRequested ? '응답 대기' : '확인 필요';
-    const statusClass = isRequested ? 'dt-status-waiting' : 'dt-status-unresolved';
-    const desc = isRequested
-      ? '확인 요청을 보냈고 응답을 기다리고 있어요.'
-      : (u.isRequired
-        ? '캘린더만으로 참석 가능 여부를 알 수 없어요.'
-        : '선택 참석자이므로 회의 확정 조건에는 영향이 없어요.');
-    const disabled = isRequested ? 'disabled' : '';
-    const btnText = isRequested ? '응답 대기 중' : (onlyOptionalUnresolved ? '선택 참석자에게 확인 요청' : '확인 요청 보내기');
-
-    return `
-      <div class="dt-participant-card">
-        <div class="dt-participant-info">
-          <div class="dt-participant-name">${u.name}</div>
-          <p class="dt-participant-desc">${desc}</p>
-        </div>
-        <span class="dt-status-badge ${statusClass}">${status}</span>
-      </div>
-      <button class="dt-request-btn" data-name="${u.name}" ${disabled} type="button">${btnText}</button>
+  if (hasRequiredUnresolved) {
+    const count = unresolved.filter(u => u.isRequired).length;
+    unresolvedInfo.innerHTML = `
+      <p class="dt-unresolved-info-text">필수 참석자 ${count}명의 참석 여부 확인이 필요해요. 해당 참석자 카드에서 확인 요청을 보낼 수 있어요.</p>
     `;
-  }).join('');
-
-  unresolvedList.querySelectorAll('.dt-request-btn').forEach(btn => {
-    if (btn.disabled) return;
-    btn.addEventListener('click', () => {
-      const name = btn.dataset.name;
-      requestedNames.add(name);
-      renderUnresolvedSection();
-      renderParticipantSection(requiredList, requiredParticipants, true);
-      renderParticipantSection(optionalList, optionalParticipants, false);
-      updateBottomCTA();
-      showToast('확인 요청을 보냈어요');
-      console.log('확인 요청 보냄:', name);
-    });
-  });
+  } else {
+    const count = unresolved.length;
+    unresolvedInfo.innerHTML = `
+      <p class="dt-unresolved-info-text">선택 참석자 ${count}명은 확인이 필요하지만, 회의 확정 조건에는 영향이 없어요.</p>
+    `;
+  }
 }
 
 // ─── Bottom CTA ───
@@ -243,25 +231,31 @@ function updateBottomCTA() {
     submitBtn.textContent = '이 시간으로 확정하기';
     submitBtn.className = 'dt-btn-primary';
     submitBtn.disabled = false;
+    ctaHint.style.display = 'none';
   } else if (status === '확인 필요') {
-    const stillUnresolved = requiredParticipants.some((name, index) => {
+    const hasUnrequested = requiredParticipants.some((name, index) => {
       const ps = getParticipantStatus(name, index, true);
       return ps.status === '확인 필요' && !requestedNames.has(name);
     });
 
-    if (stillUnresolved) {
-      submitBtn.textContent = '확인 요청 후 확정하기';
-      submitBtn.className = 'dt-btn-primary';
-      submitBtn.disabled = false;
+    if (hasUnrequested) {
+      submitBtn.textContent = '필수 참석자 확인이 필요해요';
+      submitBtn.className = 'dt-btn-primary dt-btn-disabled';
+      submitBtn.disabled = true;
+      ctaHint.textContent = '필수 참석자에게 확인 요청을 보낸 뒤 응답을 기다려주세요.';
+      ctaHint.style.display = 'block';
     } else {
       submitBtn.textContent = '응답 대기 중';
       submitBtn.className = 'dt-btn-primary dt-btn-disabled';
       submitBtn.disabled = true;
+      ctaHint.textContent = '필수 참석자에게 확인 요청을 보낸 뒤 응답을 기다려주세요.';
+      ctaHint.style.display = 'block';
     }
   } else {
     submitBtn.textContent = '다른 시간 선택하기';
     submitBtn.className = 'dt-btn-primary dt-btn-secondary';
     submitBtn.disabled = false;
+    ctaHint.style.display = 'none';
   }
 }
 
@@ -290,14 +284,6 @@ submitBtn.addEventListener('click', () => {
     setTimeout(() => {
       window.location.href = 'confirm.html';
     }, 400);
-  } else if (status === '확인 필요') {
-    const stillUnresolved = requiredParticipants.some((name, index) => {
-      const ps = getParticipantStatus(name, index, true);
-      return ps.status === '확인 필요' && !requestedNames.has(name);
-    });
-    if (stillUnresolved) {
-      showToast('확인 필요자에게 먼저 요청해주세요');
-    }
   } else if (status === '비추천') {
     window.location.href = 'results.html';
   }
@@ -334,7 +320,7 @@ function init() {
     optionalEmptyMsg.style.display = 'none';
     optionalDesc.style.display = 'block';
   }
-  renderUnresolvedSection();
+  renderUnresolvedInfo();
   updateBottomCTA();
 }
 

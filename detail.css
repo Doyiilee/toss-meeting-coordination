@@ -280,28 +280,57 @@ button {
   color: #3182F6;
 }
 
-/* ─── Unresolved request button ─── */
+/* ─── Inline request button ─── */
 
-.dt-request-btn {
-  display: block;
-  width: 100%;
-  margin-top: 12px;
-  min-height: 44px;
-  background: #3182F6;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.875rem;
+.dt-inline-request-btn {
+  margin-top: 8px;
+  height: 36px;
+  padding: 0 16px;
+  background: #FFFFFF;
+  border: 1px solid #F7B955;
+  border-radius: 999px;
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: #FFFFFF;
+  color: #B76E00;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-.dt-request-btn:hover {
-  background: #2771d6;
+.dt-inline-request-btn:hover {
+  background: #FFF7E6;
 }
 
-.dt-request-btn:disabled {
-  background: #B0B8C4;
-  cursor: default;
+.dt-requested-msg {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: #3182F6;
+  font-weight: 500;
+}
+
+/* ─── Unresolved info box ─── */
+
+.dt-unresolved-info {
+  background: #FFF7E6;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.dt-unresolved-info-text {
+  font-size: 0.875rem;
+  color: #6B7684;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+/* ─── CTA hint ─── */
+
+.dt-cta-hint {
+  font-size: 0.8125rem;
+  color: #8B95A4;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 8px;
+  word-break: keep-all;
 }
 
 /* ─── No Data ─── */
@@ -365,7 +394,8 @@ button {
 }
 
 .dt-btn-disabled {
-  background: #B0B8C4;
+  background: #E5E8EB;
+  color: #8B95A1;
   cursor: default;
 }
 
