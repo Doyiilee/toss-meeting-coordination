@@ -108,8 +108,8 @@ const quickActions = {
 
 // ─── Init ───
 function init() {
-  // Hero CTA
-  document.getElementById('hero-primary-btn').addEventListener('click', () => {
+  // Home create button
+  document.getElementById('home-create-btn').addEventListener('click', () => {
     clearPreviousSession();
     window.location.href = 'create.html';
   });

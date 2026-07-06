@@ -24,28 +24,19 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px 12px;
+  padding: 18px 20px 8px;
   background: #F7F8FA;
 }
 
-.app-header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.app-title {
-  font-size: 1.125rem;
-  font-weight: 700;
+.brand-name {
+  font-size: 1.25rem;
+  font-weight: 800;
   color: #191F28;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
 }
 
-.app-subtitle {
-  font-size: 0.8125rem;
-  color: #6B7684;
-}
-
-.header-link {
+.schedule-shortcut {
   background: none;
   border: none;
   font-size: 0.9375rem;
@@ -106,33 +97,46 @@ button {
   display: block;
 }
 
-/* ─── Hero ─── */
+/* ─── Today Alert ─── */
 
-.hero-section {
-  padding: 8px 20px 28px;
+.today-alert {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 22px 20px;
+  margin: 24px 20px 0;
 }
 
-.hero-title {
-  font-size: 1.5rem;
+.today-alert-title {
+  font-size: 1rem;
   font-weight: 700;
-  line-height: 1.4;
   color: #191F28;
+  margin-bottom: 10px;
+}
+
+.today-alert-main {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #191F28;
+  line-height: 1.4;
+  margin-bottom: 6px;
   word-break: keep-all;
 }
 
-.hero-description {
-  margin-top: 10px;
-  font-size: 0.9375rem;
-  line-height: 1.6;
+.today-alert-sub {
+  font-size: 0.875rem;
   color: #6B7684;
+  line-height: 1.5;
   word-break: keep-all;
 }
 
-.hero-actions {
-  margin-top: 20px;
+/* ─── Primary Action Area ─── */
+
+.primary-action-area {
+  padding: 0 20px;
+  margin: 18px 0 28px;
 }
 
-.hero-actions .btn {
+.primary-action-area .btn {
   width: 100%;
 }
 
