@@ -1,15 +1,26 @@
 let timeCandidates = [];
 
-function buildTimeCandidates(requiredTotal, optionalTotal) {
-  const optSummary = (total, avail) => {
-    if (total === 0) return '선택 참석자 없음';
-    return `선택 참석자 ${total}명 중 ${avail}명 가능`;
-  };
+function optSummary(total, avail) {
+  if (total === 0) return '선택 참석자 없음';
+  return `선택 참석자 ${total}명 중 ${avail}명 가능`;
+}
 
-  const optReason2 = (total) => {
-    if (total === 0) return '선택 참석자 없이 필수 참석자 기준으로 판단했어요.';
-    return `선택 참석자 ${total}명도 참석 가능해요.`;
-  };
+function optReasonAll(total) {
+  if (total === 0) return '선택 참석자 없이 필수 참석자 기준으로 판단했어요.';
+  return `선택 참석자 ${total}명도 참석 가능해요.`;
+}
+
+function optReasonPartial(total, avail) {
+  if (total === 0) return '선택 참석자가 없어요.';
+  return `선택 참석자 ${total}명 중 ${avail}명이 참석 가능해요.`;
+}
+
+function buildTimeCandidates(requiredTotal, optionalTotal) {
+  const ra = Math.max;
+  const reqAvail1 = requiredTotal;
+  const reqAvail2 = ra(requiredTotal - 1, 0);
+  const optAvailFull = optionalTotal;
+  const optAvailHalf = optionalTotal > 0 ? ra(optionalTotal - 1, 0) : 0;
 
   return [
     {
@@ -19,56 +30,98 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
       time: '10:00 - 11:00',
       status: '추천',
       requiredSummary: `필수 참석자 ${requiredTotal}명 전원 가능`,
-      optionalSummary: optSummary(optionalTotal, optionalTotal),
+      optionalSummary: optSummary(optionalTotal, optAvailFull),
       unresolvedSummary: '확인 필요 없음',
       reason: [
         `필수 참석자 ${requiredTotal}명이 모두 가능해요.`,
-        optReason2(optionalTotal),
+        optReasonAll(optionalTotal),
         '확인 필요자가 없어 바로 확정할 수 있어요.'
       ],
-      requiredAvailable: requiredTotal,
-      requiredTotal: requiredTotal,
-      optionalAvailable: optionalTotal,
-      optionalTotal: optionalTotal,
+      requiredAvailable: reqAvail1,
+      requiredTotal,
+      optionalAvailable: optAvailFull,
+      optionalTotal,
       unresolvedCount: 0
     },
     {
       id: 'candidate-2',
       label: '대안',
       date: '수요일',
-      time: '16:00 - 17:00',
-      status: '확인 필요',
-      requiredSummary: `필수 참석자 ${requiredTotal}명 중 ${Math.max(requiredTotal - 1, 0)}명 가능`,
-      optionalSummary: optSummary(optionalTotal, optionalTotal),
-      unresolvedSummary: `확인 필요 ${requiredTotal > 0 ? 1 : 0}명`,
+      time: '11:00 - 12:00',
+      status: '추천',
+      requiredSummary: `필수 참석자 ${requiredTotal}명 전원 가능`,
+      optionalSummary: optSummary(optionalTotal, optAvailHalf),
+      unresolvedSummary: '확인 필요 없음',
       reason: [
-        optionalTotal > 0 ? '선택 참석자는 모두 가능해요.' : '선택 참석자는 없어요.',
-        '필수 참석자 1명의 비공개 일정 확인이 필요해요.',
-        '확인 후 확정 가능성이 있어요.'
+        `필수 참석자 ${requiredTotal}명이 모두 가능해요.`,
+        optReasonPartial(optionalTotal, optAvailHalf),
+        '확인 필요자가 없어 바로 확정할 수 있어요.'
       ],
-      requiredAvailable: Math.max(requiredTotal - 1, 0),
-      requiredTotal: requiredTotal,
-      optionalAvailable: optionalTotal,
-      optionalTotal: optionalTotal,
-      unresolvedCount: requiredTotal > 0 ? 1 : 0
+      requiredAvailable: reqAvail1,
+      requiredTotal,
+      optionalAvailable: optAvailHalf,
+      optionalTotal,
+      unresolvedCount: 0
     },
     {
       id: 'candidate-3',
-      label: '비추천',
+      label: '대안',
+      date: '수요일',
+      time: '16:00 - 17:00',
+      status: '확인 필요',
+      requiredSummary: `필수 참석자 ${requiredTotal}명 중 ${reqAvail2}명 가능`,
+      optionalSummary: optSummary(optionalTotal, optAvailFull),
+      unresolvedSummary: `확인 필요 ${requiredTotal > 0 ? 1 : 0}명`,
+      reason: [
+        `필수 참석자 ${reqAvail2}명이 가능하지만, 1명의 확인이 필요해요.`,
+        optReasonAll(optionalTotal),
+        '확인 후 확정 가능성이 있어요.'
+      ],
+      requiredAvailable: reqAvail2,
+      requiredTotal,
+      optionalAvailable: optAvailFull,
+      optionalTotal,
+      unresolvedCount: requiredTotal > 0 ? 1 : 0
+    },
+    {
+      id: 'candidate-4',
+      label: '대안',
       date: '목요일',
+      time: '15:00 - 16:00',
+      status: '확인 필요',
+      requiredSummary: `필수 참석자 ${requiredTotal}명 전원 가능`,
+      optionalSummary: optSummary(optionalTotal, optAvailHalf),
+      unresolvedSummary: `확인 필요 ${optionalTotal > 0 ? 1 : 1}명`,
+      reason: [
+        `필수 참석자 ${requiredTotal}명이 모두 가능해요.`,
+        optionalTotal > 0
+          ? `선택 참석자 ${optionalTotal}명 중 1명의 일정 확인이 필요해요.`
+          : '선택 참석자가 없어요.',
+        '확인 후 확정 가능성이 있어요.'
+      ],
+      requiredAvailable: reqAvail1,
+      requiredTotal,
+      optionalAvailable: optAvailHalf,
+      optionalTotal,
+      unresolvedCount: optionalTotal > 0 ? 1 : 1
+    },
+    {
+      id: 'candidate-5',
+      label: '비추천',
+      date: '금요일',
       time: '14:00 - 15:00',
       status: '비추천',
-      requiredSummary: `필수 참석자 ${requiredTotal}명 중 ${Math.max(requiredTotal - 1, 0)}명 가능`,
-      optionalSummary: optSummary(optionalTotal, Math.max(optionalTotal - 1, 0)),
+      requiredSummary: `필수 참석자 ${requiredTotal}명 중 ${reqAvail2}명 가능`,
+      optionalSummary: optSummary(optionalTotal, optAvailHalf),
       unresolvedSummary: '확인 필요 없음',
       reason: [
         '필수 참석자 중 참석이 어려운 사람이 있어요.',
         '회의 성립 조건을 만족하지 못해 우선순위가 낮아요.'
       ],
-      requiredAvailable: Math.max(requiredTotal - 1, 0),
-      requiredTotal: requiredTotal,
-      optionalAvailable: Math.max(optionalTotal - 1, 0),
-      optionalTotal: optionalTotal,
+      requiredAvailable: reqAvail2,
+      requiredTotal,
+      optionalAvailable: optAvailHalf,
+      optionalTotal,
       unresolvedCount: 0
     }
   ];

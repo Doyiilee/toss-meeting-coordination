@@ -61,6 +61,7 @@ function getParticipantStatus(name, index, isRequired) {
   }
 
   if (index < optionalAvailable) return { status: '가능', desc: '이 시간에 참석 가능해요.' };
+  if (status === '확인 필요') return { status: '확인 필요', desc: '비공개 일정이 있어 참석 여부 확인이 필요해요.' };
   return { status: '불가능', desc: '이 시간에는 참석이 어려워요.' };
 }
 
