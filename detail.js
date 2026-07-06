@@ -68,23 +68,25 @@ function normalizeCandidate(candidate, reqCount, optCount) {
   } else {
     oa = status === '추천' ? ot : Math.max(ot - 1, 0);
   }
-  const uc = typeof candidate.unresolvedCount === 'number' ? candidate.unresolvedCount : 0;
+  const ruc = typeof candidate.requiredUnresolvedCount === 'number' ? candidate.requiredUnresolvedCount : 0;
+  const ouc = typeof candidate.optionalUnresolvedCount === 'number' ? candidate.optionalUnresolvedCount : 0;
+  const uc = typeof candidate.unresolvedCount === 'number' ? candidate.unresolvedCount : (ruc + ouc);
 
-  return { ...candidate, requiredAvailable: ra, requiredTotal: rt, optionalAvailable: oa, optionalTotal: ot, unresolvedCount: uc };
+  return { ...candidate, requiredAvailable: ra, requiredTotal: rt, optionalAvailable: oa, optionalTotal: ot, requiredUnresolvedCount: ruc, optionalUnresolvedCount: ouc, unresolvedCount: uc };
 }
 
 // ─── Participant status helpers ───
 function getParticipantStatus(name, index, isRequired) {
-  const { requiredAvailable, optionalAvailable, status } = selectedCandidate;
+  const { requiredAvailable, requiredUnresolvedCount, optionalAvailable, optionalUnresolvedCount, status } = selectedCandidate;
 
   if (isRequired) {
     if (index < requiredAvailable) return { status: '가능', desc: '이 시간에 참석 가능해요.' };
-    if (status === '확인 필요') return { status: '확인 필요', desc: '비공개 일정이 있어 참석 여부 확인이 필요해요.' };
+    if (requiredUnresolvedCount > 0 && index === requiredAvailable) return { status: '확인 필요', desc: '비공개 일정이 있어 참석 여부 확인이 필요해요.' };
     return { status: '불가능', desc: '이 시간에는 참석이 어려워요.' };
   }
 
   if (index < optionalAvailable) return { status: '가능', desc: '이 시간에 참석 가능해요.' };
-  if (status === '확인 필요') return { status: '확인 필요', desc: '비공개 일정이 있어 참석 여부 확인이 필요해요.' };
+  if (optionalUnresolvedCount > 0 && index === optionalAvailable) return { status: '확인 필요', desc: '선택 참석자의 일정 확인이 필요하지만, 회의 확정 조건에는 영향이 없어요.' };
   return { status: '불가능', desc: '참석은 어렵지만 회의 확정 조건에는 영향이 없어요.' };
 }
 
@@ -172,12 +174,25 @@ function renderUnresolvedSection() {
     }
   });
 
+  const hasRequiredUnresolved = unresolved.some(u => u.isRequired);
+  const onlyOptionalUnresolved = unresolved.length > 0 && !hasRequiredUnresolved;
+
   if (unresolved.length === 0 && requestedNames.size === 0) {
     unresolvedSection.style.display = 'none';
     return;
   }
 
   unresolvedSection.style.display = 'block';
+
+  const sectionTitle = document.getElementById('unresolved-section-title');
+  const sectionDesc = document.getElementById('unresolved-section-desc');
+  if (onlyOptionalUnresolved) {
+    sectionTitle.textContent = '참고 확인이 필요한 선택 참석자';
+    sectionDesc.textContent = '회의 확정은 가능하지만, 필요하면 선택 참석자에게만 확인 요청할 수 있어요.';
+  } else {
+    sectionTitle.textContent = '확인이 필요한 참석자';
+    sectionDesc.textContent = '회의 확정을 막고 있는 참석자만 따로 확인할 수 있어요.';
+  }
 
   const stillUnresolved = unresolved.filter(u => !requestedNames.has(u.name));
 
@@ -187,9 +202,11 @@ function renderUnresolvedSection() {
     const statusClass = isRequested ? 'dt-status-waiting' : 'dt-status-unresolved';
     const desc = isRequested
       ? '확인 요청을 보냈고 응답을 기다리고 있어요.'
-      : '캘린더만으로 참석 가능 여부를 알 수 없어요.';
+      : (u.isRequired
+        ? '캘린더만으로 참석 가능 여부를 알 수 없어요.'
+        : '선택 참석자이므로 회의 확정 조건에는 영향이 없어요.');
     const disabled = isRequested ? 'disabled' : '';
-    const btnText = isRequested ? '응답 대기 중' : '확인 요청 보내기';
+    const btnText = isRequested ? '응답 대기 중' : (onlyOptionalUnresolved ? '선택 참석자에게 확인 요청' : '확인 요청 보내기');
 
     return `
       <div class="dt-participant-card">
@@ -227,9 +244,8 @@ function updateBottomCTA() {
     submitBtn.className = 'dt-btn-primary';
     submitBtn.disabled = false;
   } else if (status === '확인 필요') {
-    const stillUnresolved = [...requiredParticipants, ...optionalParticipants].some((name, index) => {
-      const isRequired = index < requiredParticipants.length;
-      const ps = getParticipantStatus(name, isRequired ? index : index - requiredParticipants.length, isRequired);
+    const stillUnresolved = requiredParticipants.some((name, index) => {
+      const ps = getParticipantStatus(name, index, true);
       return ps.status === '확인 필요' && !requestedNames.has(name);
     });
 
@@ -264,6 +280,8 @@ submitBtn.addEventListener('click', () => {
       optionalAvailable: selectedCandidate.optionalAvailable,
       requiredTotal: selectedCandidate.requiredTotal,
       optionalTotal: selectedCandidate.optionalTotal,
+      requiredUnresolvedCount: selectedCandidate.requiredUnresolvedCount,
+      optionalUnresolvedCount: selectedCandidate.optionalUnresolvedCount,
       confirmedAt: new Date().toISOString()
     };
     sessionStorage.setItem('finalCandidate', JSON.stringify(data));
@@ -273,9 +291,8 @@ submitBtn.addEventListener('click', () => {
       window.location.href = 'confirm.html';
     }, 400);
   } else if (status === '확인 필요') {
-    const stillUnresolved = [...requiredParticipants, ...optionalParticipants].some((name, index) => {
-      const isRequired = index < requiredParticipants.length;
-      const ps = getParticipantStatus(name, isRequired ? index : index - requiredParticipants.length, isRequired);
+    const stillUnresolved = requiredParticipants.some((name, index) => {
+      const ps = getParticipantStatus(name, index, true);
       return ps.status === '확인 필요' && !requestedNames.has(name);
     });
     if (stillUnresolved) {

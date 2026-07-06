@@ -22,6 +22,8 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
   const reqAvail2 = ra(requiredTotal - 1, 0);
   const optAvailFull = optionalTotal;
   const optAvailHalf = optionalTotal > 0 ? ra(optionalTotal - 1, 0) : 0;
+  const hasRequired = requiredTotal > 0;
+  const hasOptional = optionalTotal > 0;
 
   return [
     {
@@ -42,6 +44,8 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
       requiredTotal,
       optionalAvailable: optAvailFull,
       optionalTotal,
+      requiredUnresolvedCount: 0,
+      optionalUnresolvedCount: 0,
       unresolvedCount: 0
     },
     {
@@ -56,23 +60,25 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
       reason: [
         `필수 참석자 ${requiredTotal}명이 모두 가능해요.`,
         optReasonPartial(optionalTotal, optAvailHalf),
-        '확인 필요자가 없어 바로 확정할 수 있어요.'
+        '선택 참석자 일부가 참석하기 어려워도 회의 확정 조건에는 영향이 없어요.'
       ],
       requiredAvailable: reqAvail1,
       requiredTotal,
       optionalAvailable: optAvailHalf,
       optionalTotal,
+      requiredUnresolvedCount: 0,
+      optionalUnresolvedCount: 0,
       unresolvedCount: 0
     },
     {
       id: 'candidate-3',
-      label: '대안',
+      label: '확인 필요',
       date: '수요일',
       time: '16:00 - 17:00',
       status: '확인 필요',
       requiredSummary: `필수 참석자 ${requiredTotal}명 중 ${reqAvail2}명 가능`,
       optionalSummary: optSummary(optionalTotal, optAvailFull),
-      unresolvedSummary: `확인 필요 ${requiredTotal > 0 ? 1 : 0}명`,
+      unresolvedSummary: `필수 참석자 확인 필요 ${hasRequired ? 1 : 0}명`,
       reason: [
         `필수 참석자 ${reqAvail2}명이 가능하지만, 1명의 확인이 필요해요.`,
         optReasonAll(optionalTotal),
@@ -82,29 +88,33 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
       requiredTotal,
       optionalAvailable: optAvailFull,
       optionalTotal,
-      unresolvedCount: requiredTotal > 0 ? 1 : 0
+      requiredUnresolvedCount: hasRequired ? 1 : 0,
+      optionalUnresolvedCount: 0,
+      unresolvedCount: hasRequired ? 1 : 0
     },
     {
       id: 'candidate-4',
       label: '대안',
       date: '목요일',
       time: '15:00 - 16:00',
-      status: '확인 필요',
+      status: '추천',
       requiredSummary: `필수 참석자 ${requiredTotal}명 전원 가능`,
       optionalSummary: optSummary(optionalTotal, optAvailHalf),
-      unresolvedSummary: `확인 필요 ${optionalTotal > 0 ? 1 : 1}명`,
+      unresolvedSummary: hasOptional ? '선택 참석자 확인 필요 1명' : '확인 필요 없음',
       reason: [
         `필수 참석자 ${requiredTotal}명이 모두 가능해요.`,
-        optionalTotal > 0
-          ? `선택 참석자 ${optionalTotal}명 중 1명의 일정 확인이 필요해요.`
+        hasOptional
+          ? '선택 참석자 1명은 일정 확인이 필요하지만, 회의 확정 조건에는 영향이 없어요.'
           : '선택 참석자가 없어요.',
-        '확인 후 확정 가능성이 있어요.'
+        '필요하면 선택 참석자에게만 확인 요청할 수 있어요.'
       ],
       requiredAvailable: reqAvail1,
       requiredTotal,
       optionalAvailable: optAvailHalf,
       optionalTotal,
-      unresolvedCount: optionalTotal > 0 ? 1 : 1
+      requiredUnresolvedCount: 0,
+      optionalUnresolvedCount: hasOptional ? 1 : 0,
+      unresolvedCount: hasOptional ? 1 : 0
     },
     {
       id: 'candidate-5',
@@ -123,6 +133,8 @@ function buildTimeCandidates(requiredTotal, optionalTotal) {
       requiredTotal,
       optionalAvailable: optAvailHalf,
       optionalTotal,
+      requiredUnresolvedCount: 0,
+      optionalUnresolvedCount: 0,
       unresolvedCount: 0
     }
   ];
@@ -268,6 +280,8 @@ function renderCandidates(filter) {
         requiredTotal: candidate.requiredTotal,
         optionalAvailable: candidate.optionalAvailable,
         optionalTotal: candidate.optionalTotal,
+        requiredUnresolvedCount: candidate.requiredUnresolvedCount,
+        optionalUnresolvedCount: candidate.optionalUnresolvedCount,
         unresolvedCount: candidate.unresolvedCount
       };
       sessionStorage.setItem('selectedTime', JSON.stringify(data));
@@ -313,6 +327,8 @@ submitBtn.addEventListener('click', () => {
     requiredTotal: recommend.requiredTotal,
     optionalAvailable: recommend.optionalAvailable,
     optionalTotal: recommend.optionalTotal,
+    requiredUnresolvedCount: recommend.requiredUnresolvedCount,
+    optionalUnresolvedCount: recommend.optionalUnresolvedCount,
     unresolvedCount: recommend.unresolvedCount
   };
 

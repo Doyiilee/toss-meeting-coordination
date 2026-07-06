@@ -219,6 +219,11 @@ button {
   color: #3182F6;
 }
 
+.cf-chip-unresolved {
+  background: #FFF3E0;
+  color: #E65100;
+}
+
 /* ─── Actions Card ─── */
 
 .cf-actions-card {

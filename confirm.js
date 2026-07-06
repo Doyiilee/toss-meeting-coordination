@@ -53,26 +53,29 @@ function getOptionalParticipants() {
 function getStatus(name, index, isRequired) {
   const ca = candidate.requiredAvailable;
   const co = candidate.optionalAvailable;
+  const ruc = candidate.requiredUnresolvedCount || 0;
+  const ouc = candidate.optionalUnresolvedCount || 0;
 
   if (isRequired) {
     if (ca !== undefined) {
-      return index < ca
-        ? { status: '가능', label: '가능' }
-        : { status: '불가능', label: '불가능' };
+      if (index < ca) return { status: '가능', label: '가능' };
+      if (ruc > 0 && index === ca) return { status: '확인 필요', label: '확인 필요' };
+      return { status: '불가능', label: '불가능' };
     }
     return { status: '가능', label: '가능' };
   }
 
   if (co !== undefined) {
-    return index < co
-      ? { status: '가능', label: '가능' }
-      : { status: '불가능', label: '불가능' };
+    if (index < co) return { status: '가능', label: '가능' };
+    if (ouc > 0 && index === co) return { status: '확인 필요', label: '확인 필요' };
+    return { status: '불가능', label: '불가능' };
   }
   return { status: '가능', label: '가능' };
 }
 
 function getChipClass(status) {
   if (status === '가능') return 'cf-chip-available';
+  if (status === '확인 필요') return 'cf-chip-unresolved';
   if (status === '확인 완료') return 'cf-chip-resolved';
   return 'cf-chip-impossible';
 }
@@ -110,15 +113,23 @@ function renderConfirmedCard() {
 function renderConditionCard() {
   const required = getRequiredParticipants();
   const optional = getOptionalParticipants();
+  const ouc = candidate.optionalUnresolvedCount || 0;
 
   const optionalText = optional.length === 0
     ? '선택 참석자가 없어요. 모든 참석자를 필수 기준으로 확정했어요.'
     : `선택 참석자 ${optional.length}명 중 일부 참석 가능성을 함께 고려했어요.`;
 
+  const noUnresolvedText = '확인 필요자가 없어 추가 확인 없이 확정할 수 있어요.';
+
+  let optionalUnresolvedText = '';
+  if (ouc > 0) {
+    optionalUnresolvedText = `선택 참석자 ${ouc}명은 확인이 필요하지만, 회의 확정 조건에는 영향이 없어요.`;
+  }
+
   conditionCard.innerHTML = `
     <p class="cf-condition-line">필수 참석자 ${required.length}명이 모두 가능한 시간으로 확정했어요.</p>
     <p class="cf-condition-line">${optionalText}</p>
-    <p class="cf-condition-line">확인 필요자가 없어 추가 확인 없이 확정할 수 있어요.</p>
+    <p class="cf-condition-line">${ouc > 0 ? optionalUnresolvedText : noUnresolvedText}</p>
   `;
 }
 
