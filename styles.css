@@ -97,47 +97,77 @@ button {
   display: block;
 }
 
-/* ─── Today Alert ─── */
+/* ─── Home Status ─── */
 
-.today-alert {
+.home-status {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #8B95A4;
+  margin: 12px 20px 0;
+  line-height: 1.5;
+}
+
+/* ─── Create Action Card ─── */
+
+.create-action-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: calc(100% - 40px);
+  margin: 20px auto 28px;
   background: #FFFFFF;
+  border: none;
   border-radius: 20px;
-  padding: 22px 20px;
-  margin: 24px 20px 0;
+  padding: 18px 20px;
+  cursor: pointer;
+  text-align: left;
 }
 
-.today-alert-title {
-  font-size: 1rem;
+.create-action-card:active {
+  background: #F2F4F6;
+}
+
+.create-action-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: #E8F2FF;
+  color: #3182F6;
+  font-size: 1.125rem;
   font-weight: 700;
-  color: #191F28;
-  margin-bottom: 10px;
 }
 
-.today-alert-main {
-  font-size: 1.375rem;
+.create-action-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.create-action-title {
+  font-size: 1.0625rem;
   font-weight: 700;
   color: #191F28;
   line-height: 1.4;
-  margin-bottom: 6px;
-  word-break: keep-all;
 }
 
-.today-alert-sub {
-  font-size: 0.875rem;
+.create-action-desc {
+  font-size: 0.8125rem;
   color: #6B7684;
   line-height: 1.5;
   word-break: keep-all;
 }
 
-/* ─── Primary Action Area ─── */
-
-.primary-action-area {
-  padding: 0 20px;
-  margin: 18px 0 28px;
-}
-
-.primary-action-area .btn {
-  width: 100%;
+.create-action-chevron {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  color: #8B95A1;
+  line-height: 1;
 }
 
 /* ─── Section Common ─── */
