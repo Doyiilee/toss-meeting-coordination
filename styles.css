@@ -519,26 +519,6 @@ button {
   padding: 0;
 }
 
-/* ─── Info Section ─── */
-
-.info-section {
-  padding: 0 20px;
-  margin-bottom: 28px;
-}
-
-.info-card {
-  background: #FFFFFF;
-  border-radius: 16px;
-  padding: 16px 20px;
-}
-
-.info-card-text {
-  font-size: 0.8125rem;
-  color: #8B95A4;
-  line-height: 1.6;
-  word-break: keep-all;
-}
-
 /* ─── Quick Menu ─── */
 
 .quick-menu-section {

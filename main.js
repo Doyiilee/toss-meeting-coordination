@@ -93,7 +93,7 @@ const quickActions = {
     scrollToSection('schedule-section');
   },
   'team-compare': () => {
-    showToast('팀 일정 비교 화면은 다음 단계에서 연결할 예정이에요.');
+    showToast('팀 시간 비교 화면은 다음 단계에서 연결할 예정이에요.');
   },
   'received-requests': () => {
     scrollToSection('response-section');
