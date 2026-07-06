@@ -211,7 +211,64 @@ button {
 .response-card-requester {
   font-size: 0.8125rem;
   color: #6B7684;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+.request-role {
+  background: #F7F8FA;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.request-role-title {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #191F28;
+  margin-bottom: 2px;
+}
+
+.request-role-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: #6B7684;
+  line-height: 1.4;
+}
+
+.request-schedule {
+  margin-bottom: 14px;
+}
+
+.request-schedule-summary {
+  font-size: 0.8125rem;
+  color: #191F28;
+  margin-bottom: 2px;
+  line-height: 1.5;
+}
+
+.request-calendar-status {
+  font-size: 0.75rem;
+  color: #8B95A4;
+  line-height: 1.4;
+}
+
+.response-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 20px;
+  background: #3182F6;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.response-action-btn:active {
+  background: #2771d6;
 }
 
 .response-card-info {

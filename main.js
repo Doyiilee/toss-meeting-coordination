@@ -121,11 +121,13 @@ function init() {
 
   // Response buttons
   document.getElementById('response-btn-1').addEventListener('click', () => {
-    showToast('응답 화면은 다음 단계에서 연결할 예정이에요.');
+    console.log('가능 시간 선택하기 클릭');
+    showToast('가능 시간 선택 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   document.getElementById('response-btn-2').addEventListener('click', () => {
-    showToast('응답 화면은 다음 단계에서 연결할 예정이에요.');
+    console.log('일정 비교하고 응답하기 클릭');
+    showToast('일정 비교 응답 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   // View all schedule
