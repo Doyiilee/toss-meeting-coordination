@@ -125,6 +125,7 @@ function saveDraft() {
     customEndDate: customEndDate
   };
   sessionStorage.setItem('meetingDraft', JSON.stringify(data));
+  updateCTAState();
 }
 
 function loadDraft() {
@@ -324,8 +325,50 @@ function showToast(message) {
   }, 2000);
 }
 
-// ─── Title input clears validation error ───
+// ─── CTA state management ───
+function updateCTAState() {
+  const title = meetingTitleInput.value.trim();
+  const hasTitle = title.length > 0;
+  const hasEnoughParticipants = participants.length >= 2;
+  const isCustom = selectedPeriod === '직접 선택';
+  let datesValid = true;
+  if (isCustom) {
+    datesValid = customStartDate.length > 0 && customEndDate.length > 0 && customEndDate >= customStartDate;
+  }
+
+  const allMet = hasTitle && hasEnoughParticipants && (!isCustom || datesValid);
+
+  submitBtn.disabled = !allMet;
+  submitBtn.setAttribute('aria-disabled', String(!allMet));
+
+  const helper = document.getElementById('cta-helper');
+  if (allMet) {
+    helper.textContent = '';
+    helper.style.display = 'none';
+    return;
+  }
+
+  helper.style.display = 'block';
+  if (!hasTitle && !hasEnoughParticipants) {
+    helper.textContent = '회의명과 참석자 2명 이상을 입력해주세요.';
+  } else if (!hasTitle) {
+    helper.textContent = '회의명을 입력해주세요.';
+  } else if (!hasEnoughParticipants) {
+    helper.textContent = '참석자를 2명 이상 추가해주세요.';
+  } else if (isCustom) {
+    if (!customStartDate) {
+      helper.textContent = '시작일을 선택해주세요.';
+    } else if (!customEndDate) {
+      helper.textContent = '종료일을 선택해주세요.';
+    } else if (customEndDate < customStartDate) {
+      helper.textContent = '종료일은 시작일 이후로 선택해주세요.';
+    }
+  }
+}
+
+// ─── Title input ───
 meetingTitleInput.addEventListener('input', () => {
+  updateCTAState();
   const error = document.querySelector('.validation-error');
   if (error) error.remove();
 });
@@ -412,6 +455,7 @@ function init() {
   }
   renderSelectedSection();
   renderRecommended();
+  updateCTAState();
 }
 
 init();

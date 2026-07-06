@@ -458,10 +458,26 @@ button {
   font-size: 1rem;
   font-weight: 600;
   color: #FFFFFF;
+  transition: background 0.15s ease;
 }
 
-.btn-primary-cta:hover {
+.btn-primary-cta:disabled {
+  background: #E5E8EB;
+  color: #8B95A1;
+  cursor: default;
+}
+
+.btn-primary-cta:not(:disabled):hover {
   background: #2771d6;
+}
+
+.cta-helper {
+  font-size: 0.8125rem;
+  color: #8B95A1;
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1.5;
+  word-break: keep-all;
 }
 
 /* ─── Toast ─── */
