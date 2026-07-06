@@ -96,22 +96,32 @@
 
     <section class="schedule-section" id="schedule-section">
       <div class="section-header">
-        <h3 class="section-title">오늘 내 일정</h3>
-        <p class="section-desc">회의 후보와 비교할 내 주요 일정을 확인해보세요.</p>
+        <h3 class="section-title">내 일정</h3>
+        <p class="section-desc">회의 요청과 겹치는 일정을 함께 확인해보세요.</p>
       </div>
-      <div class="schedule-list">
-        <div class="schedule-item">
-          <span class="schedule-time">10:00 - 11:00</span>
-          <span class="schedule-name">주간 마케팅 회의</span>
+      <div class="schedule-card">
+        <p class="schedule-card-date">2026.07.14 (화) 10:00 - 11:00</p>
+        <div class="schedule-card-top">
+          <h4 class="schedule-card-title">외부 미팅</h4>
+          <span class="schedule-badge schedule-badge-clear">충돌 없음</span>
         </div>
-        <div class="schedule-item">
-          <span class="schedule-time">13:00 - 14:00</span>
-          <span class="schedule-name">캠페인 리뷰</span>
+        <p class="schedule-card-desc">2분기 캠페인 의사결정 회의 요청 시간과 겹치지 않아요.</p>
+      </div>
+      <div class="schedule-card schedule-card-conflict">
+        <p class="schedule-card-date">2026.07.16 (목) 13:00 - 14:00</p>
+        <div class="schedule-card-top">
+          <h4 class="schedule-card-title">캠페인 리뷰</h4>
+          <span class="schedule-badge schedule-badge-conflict">요청 시간과 겹침</span>
         </div>
-        <div class="schedule-item">
-          <span class="schedule-time">16:00 - 17:00</span>
-          <span class="schedule-name">외부 미팅</span>
+        <p class="schedule-card-desc">신규 브랜드 영상 킥오프 요청 시간과 겹쳐요.</p>
+      </div>
+      <div class="schedule-card">
+        <p class="schedule-card-date">2026.07.17 (금) 16:00 - 17:00</p>
+        <div class="schedule-card-top">
+          <h4 class="schedule-card-title">성과 리포트 정리</h4>
+          <span class="schedule-badge schedule-badge-planned">예정</span>
         </div>
+        <p class="schedule-card-desc">다음 회의 조율 시 참고할 수 있어요.</p>
       </div>
       <button class="text-btn" id="view-all-schedule-btn" type="button">내 일정 전체 보기</button>
     </section>

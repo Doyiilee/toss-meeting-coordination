@@ -132,7 +132,8 @@ function init() {
 
   // View all schedule
   document.getElementById('view-all-schedule-btn').addEventListener('click', () => {
-    showToast('내 일정 화면은 다음 단계에서 연결할 예정이에요.');
+    console.log('내 일정 전체 보기 클릭');
+    showToast('전체 일정 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   // Confirmed meeting view

@@ -316,35 +316,74 @@ button {
   margin-bottom: 28px;
 }
 
-.schedule-list {
+.schedule-card {
   background: #FFFFFF;
-  border-radius: 16px;
-  padding: 4px 0;
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
 }
 
-.schedule-item {
+.schedule-card:last-of-type {
+  margin-bottom: 14px;
+}
+
+.schedule-card-date {
+  font-size: 0.8125rem;
+  color: #6B7684;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.schedule-card-top {
   display: flex;
   align-items: center;
-  padding: 14px 20px;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
-.schedule-item + .schedule-item {
-  border-top: 1px solid #F2F4F6;
-}
-
-.schedule-time {
-  font-size: 0.875rem;
-  font-weight: 600;
+.schedule-card-title {
+  font-size: 1rem;
+  font-weight: 700;
   color: #191F28;
-  flex-shrink: 0;
-  min-width: 100px;
+  line-height: 1.4;
+  word-break: keep-all;
 }
 
-.schedule-name {
-  font-size: 0.875rem;
-  color: #6B7684;
+.schedule-badge {
+  flex-shrink: 0;
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.schedule-badge-clear {
+  background: #EEF4FF;
+  color: #3182F6;
+}
+
+.schedule-badge-conflict {
+  background: #FFF1F0;
+  color: #F04452;
+}
+
+.schedule-badge-planned {
+  background: #F2F4F6;
+  color: #8B95A4;
+}
+
+.schedule-card-desc {
+  font-size: 0.8125rem;
+  color: #8B95A4;
+  line-height: 1.5;
   word-break: keep-all;
+}
+
+.schedule-card-conflict {
+  border-left: 3px solid #F04452;
 }
 
 /* ─── Coordination Section ─── */
