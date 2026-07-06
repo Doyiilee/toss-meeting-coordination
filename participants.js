@@ -166,6 +166,9 @@ submitBtn.addEventListener('click', () => {
   sessionStorage.setItem('participantRoles', JSON.stringify(data));
   console.log('참석자 조건 저장:', data);
   showToast('참석자 조건을 저장했어요');
+  setTimeout(() => {
+    window.location.href = 'results.html';
+  }, 400);
 });
 
 // ─── Init ───

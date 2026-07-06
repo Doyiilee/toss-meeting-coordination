@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>확정 가능 시간 - 모두의 시간</title>
+  <link rel="stylesheet" href="results.css" />
+</head>
+<body>
+
+  <header class="rs-header">
+    <button class="rs-back-btn" id="back-btn" type="button" aria-label="뒤로가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#191F28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="rs-header-text">
+      <h1 class="rs-header-title">확정 가능 시간</h1>
+      <span class="rs-header-step">3/3 시간 추천</span>
+    </div>
+  </header>
+
+  <main class="rs-main">
+
+    <section class="rs-hero">
+      <h2 class="rs-hero-title">확정하기 좋은 시간을 찾았어요</h2>
+      <p class="rs-hero-desc">필수 참석자 가능 여부와 확인 필요 상태를 기준으로 추천 순서를 정했어요.</p>
+    </section>
+
+    <section class="rs-summary-card" id="summary-card"></section>
+
+    <section id="no-data-section" class="rs-no-data" style="display:none">
+      <strong class="rs-no-data-title">회의 조건 정보가 없어요.</strong>
+      <p class="rs-no-data-desc">먼저 회의 조건을 입력해주세요.</p>
+      <button class="rs-btn-primary" id="go-back-btn" type="button">회의 조건 입력으로 돌아가기</button>
+    </section>
+
+    <section id="content-section">
+      <div class="rs-filter-group" id="filter-group">
+        <button class="rs-filter-chip rs-filter-active" data-filter="전체" type="button">전체</button>
+        <button class="rs-filter-chip" data-filter="추천" type="button">추천</button>
+        <button class="rs-filter-chip" data-filter="확인 필요" type="button">확인 필요</button>
+        <button class="rs-filter-chip" data-filter="비추천" type="button">비추천</button>
+      </div>
+
+      <div id="candidate-list" class="rs-candidate-list"></div>
+
+      <div id="empty-filter" class="rs-empty-filter" style="display:none">
+        <strong class="rs-empty-title">해당하는 후보 시간이 없어요</strong>
+        <p class="rs-empty-desc">다른 필터를 선택해 후보 시간을 확인해보세요.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="rs-bottom-cta">
+    <button class="rs-btn-primary" id="submit-btn" type="button">가장 추천 시간으로 선택하기</button>
+  </div>
+
+  <div id="toast" class="rs-toast"></div>
+
+  <script src="results.js"></script>
+</body>
+</html>
