@@ -69,8 +69,27 @@
         <input class="form-input" id="participant-input" type="text" placeholder="이름을 입력하세요" />
         <button class="btn-add" id="add-participant-btn" type="button">추가</button>
       </div>
-      <div id="participant-chips" class="participant-chips"></div>
       <p class="form-error" id="participant-error"></p>
+
+      <div class="selected-section" id="selected-section">
+        <div class="selected-header">
+          <span class="selected-title">선택된 참석자</span>
+          <span class="selected-count" id="selected-count">0</span>
+        </div>
+        <div id="selected-empty" class="selected-empty">
+          <strong class="selected-empty-title">선택된 참석자가 없어요.</strong>
+          <p class="selected-empty-desc">추천 참석자를 추가하거나 이름을 직접 입력해 주세요.</p>
+        </div>
+        <div id="selected-chips" class="selected-chips"></div>
+      </div>
+
+      <div class="recommended-section" id="recommended-section">
+        <div class="recommended-header">
+          <span class="recommended-title">추천 참석자</span>
+          <button class="recommended-add-all-btn" id="add-all-btn" type="button">추천 참석자 전체 추가</button>
+        </div>
+        <div id="recommended-list" class="recommended-list"></div>
+      </div>
     </section>
 
   </main>

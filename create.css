@@ -224,23 +224,86 @@ button {
 
 /* ─── Participant Chips ─── */
 
-.participant-chips {
+.selected-section {
+  margin-top: 16px;
+}
+
+.selected-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.selected-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #191F28;
+}
+
+.selected-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #3182F6;
+  background: #EEF4FF;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+
+.selected-empty {
+  background: #FFFFFF;
+  border: 1px dashed #E5E8EB;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+
+.selected-empty-title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #8B95A4;
+  margin-bottom: 4px;
+}
+
+.selected-empty-desc {
+  font-size: 0.8125rem;
+  color: #B0B8C4;
+  line-height: 1.5;
+}
+
+.selected-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 12px;
 }
 
 .participant-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: #F0F2F5;
   padding: 8px 12px;
   border-radius: 20px;
+}
+
+.participant-chip-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.participant-chip-name {
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   color: #191F28;
+  line-height: 1.3;
+}
+
+.participant-chip-meta {
+  font-size: 0.6875rem;
+  color: #8B95A4;
+  line-height: 1.2;
 }
 
 .participant-chip-remove {
@@ -255,6 +318,7 @@ button {
   line-height: 1;
   color: #8B95A4;
   padding: 0;
+  flex-shrink: 0;
 }
 
 .form-error {
@@ -262,6 +326,102 @@ button {
   color: #F04452;
   margin-top: 8px;
   min-height: 0;
+}
+
+/* ─── Recommended Section ─── */
+
+.recommended-section {
+  margin-top: 20px;
+}
+
+.recommended-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.recommended-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #191F28;
+}
+
+.recommended-add-all-btn {
+  height: 32px;
+  padding: 0 14px;
+  background: #FFFFFF;
+  border: 1px solid #E5E8EB;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #3182F6;
+  white-space: nowrap;
+}
+
+.recommended-add-all-btn:hover {
+  background: #EEF4FF;
+}
+
+.recommended-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recommended-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FFFFFF;
+  border: 1px solid #E5E8EB;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.recommended-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.recommended-card-name {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #191F28;
+  line-height: 1.4;
+}
+
+.recommended-card-detail {
+  font-size: 0.75rem;
+  color: #8B95A4;
+  margin-top: 2px;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.recommended-add-btn {
+  flex-shrink: 0;
+  height: 36px;
+  padding: 0 16px;
+  background: #3182F6;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  white-space: nowrap;
+  margin-left: 12px;
+}
+
+.recommended-add-btn:hover {
+  background: #2771d6;
+}
+
+.recommended-add-btn:disabled {
+  background: #E5E8EB;
+  color: #8B95A4;
+  cursor: default;
 }
 
 /* ─── Validation ─── */

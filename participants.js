@@ -42,6 +42,11 @@ function loadMeetingDraft() {
   }
 }
 
+function meetingMeta() {
+  const draft = loadMeetingDraft();
+  return (draft && draft.participantMeta) ? draft.participantMeta : {};
+}
+
 const DRAFT_VERSION = 2;
 
 function saveRolesDraft() {
@@ -97,6 +102,8 @@ function renderSummary(draft) {
 
 // ─── Render participant list ───
 function renderParticipantList(participants) {
+  const meta = meetingMeta();
+
   participantList.innerHTML = participants.map(name => {
     const role = roles[name];
     const requiredActive = role === '필수' ? 'pa-seg-btn-active' : '';
@@ -104,9 +111,12 @@ function renderParticipantList(participants) {
     const desc = role === '필수'
       ? '이 사람이 가능해야 회의 후보로 추천돼요.'
       : '가능하면 포함하지만, 회의 확정 조건에는 포함하지 않아요.';
+    const m = meta[name] || {};
+    const detail = m.team && m.role ? `${m.team} · ${m.role}` : '';
     return `
       <div class="pa-participant-card" data-name="${name}">
         <div class="pa-participant-name">${name}</div>
+        ${detail ? `<p class="pa-participant-detail">${detail}</p>` : ''}
         <div class="pa-segmented">
           <button class="pa-seg-btn ${requiredActive}" data-role="필수" type="button">필수</button>
           <button class="pa-seg-btn ${optionalActive}" data-role="선택" type="button">선택</button>

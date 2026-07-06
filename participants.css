@@ -171,7 +171,15 @@ button {
   font-size: 1rem;
   font-weight: 600;
   color: #191F28;
+}
+
+.pa-participant-detail {
+  font-size: 0.75rem;
+  color: #8B95A4;
+  margin-top: 2px;
   margin-bottom: 12px;
+  line-height: 1.4;
+  word-break: keep-all;
 }
 
 .pa-segmented {
