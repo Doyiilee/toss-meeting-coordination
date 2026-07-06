@@ -261,6 +261,9 @@ submitBtn.addEventListener('click', () => {
     sessionStorage.setItem('finalCandidate', JSON.stringify(data));
     console.log('확정할 시간 저장:', data);
     showToast('확정할 시간을 저장했어요');
+    setTimeout(() => {
+      window.location.href = 'confirm.html';
+    }, 400);
   } else if (status === '확인 필요') {
     const stillUnresolved = [...requiredParticipants, ...optionalParticipants].some((name, index) => {
       const isRequired = index < requiredParticipants.length;

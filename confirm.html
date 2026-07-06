@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>회의 확정 - 모두의 시간</title>
+  <link rel="stylesheet" href="confirm.css" />
+</head>
+<body>
+
+  <header class="cf-header">
+    <h1 class="cf-header-title">회의 확정</h1>
+    <span class="cf-header-step">확정 완료</span>
+    <button class="cf-home-btn" id="home-btn-header" type="button">처음으로</button>
+  </header>
+
+  <main class="cf-main">
+
+    <section class="cf-hero">
+      <div class="cf-hero-icon">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect width="48" height="48" rx="24" fill="#EEF4FF"/>
+          <path d="M20 24L23 27L28 21" stroke="#3182F6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="cf-hero-title">회의 시간이 확정됐어요</h2>
+      <p class="cf-hero-desc">필수 참석자 조건과 확인 필요 상태를 기준으로 확정 가능한 시간을 선택했어요.</p>
+    </section>
+
+    <section class="cf-confirmed-card" id="confirmed-card"></section>
+
+    <section class="cf-section" id="condition-section">
+      <h3 class="cf-section-title">회의 성립 조건</h3>
+      <div class="cf-condition-card" id="condition-card"></div>
+    </section>
+
+    <section class="cf-section" id="participants-section">
+      <h3 class="cf-section-title">참석자 현황</h3>
+      <div id="cf-required-list" class="cf-participant-section">
+        <h4 class="cf-sub-title">필수 참석자</h4>
+        <div id="required-list" class="cf-participant-list"></div>
+      </div>
+      <div id="cf-optional-list" class="cf-participant-section">
+        <h4 class="cf-sub-title">선택 참석자</h4>
+        <div id="optional-list" class="cf-participant-list"></div>
+      </div>
+    </section>
+
+    <section class="cf-section" id="actions-section">
+      <h3 class="cf-section-title">다음에 할 일</h3>
+      <div class="cf-actions-card">
+        <div class="cf-action-item">
+          <div class="cf-action-info">
+            <strong class="cf-action-title">캘린더 초대 발송</strong>
+            <p class="cf-action-desc">확정된 시간으로 참석자에게 초대를 보내보세요.</p>
+          </div>
+          <button class="cf-action-btn" id="invite-btn" type="button">초대 발송하기</button>
+        </div>
+        <div class="cf-action-item">
+          <div class="cf-action-info">
+            <strong class="cf-action-title">회의 자료 준비</strong>
+            <p class="cf-action-desc">회의 안건과 자료를 준비해보세요.</p>
+          </div>
+          <button class="cf-action-btn" id="prepare-btn" type="button">준비하기</button>
+        </div>
+        <div class="cf-action-item">
+          <div class="cf-action-info">
+            <strong class="cf-action-title">참석자에게 확정 시간 공유</strong>
+            <p class="cf-action-desc">확정된 회의 시간을 참석자들에게 알려주세요.</p>
+          </div>
+          <button class="cf-action-btn" id="share-btn" type="button">공유하기</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="no-data-section" class="cf-no-data" style="display:none">
+      <strong class="cf-no-data-title">확정된 회의 정보가 없어요.</strong>
+      <p class="cf-no-data-desc">먼저 후보 시간을 선택하고 확정해주세요.</p>
+      <button class="cf-btn-primary" id="go-back-btn" type="button">확정 가능 시간으로 돌아가기</button>
+    </section>
+
+  </main>
+
+  <div class="cf-bottom-cta">
+    <button class="cf-btn-primary" id="home-btn" type="button">처음으로 돌아가기</button>
+    <button class="cf-btn-secondary" id="back-to-results-btn" type="button">확정 가능 시간 다시 보기</button>
+  </div>
+
+  <div id="toast" class="cf-toast"></div>
+
+  <script src="confirm.js"></script>
+</body>
+</html>
