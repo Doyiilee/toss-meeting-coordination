@@ -62,6 +62,17 @@ function renderParticipants() {
   });
 }
 
+// ─── IME composition tracking ───
+let isComposing = false;
+
+participantInput.addEventListener('compositionstart', () => {
+  isComposing = true;
+});
+
+participantInput.addEventListener('compositionend', () => {
+  isComposing = false;
+});
+
 // ─── Add participant ───
 function addParticipant(name) {
   const trimmed = name.trim();
@@ -85,7 +96,9 @@ addParticipantBtn.addEventListener('click', () => {
 participantInput.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
-    addParticipant(participantInput.value);
+    if (!isComposing && !e.isComposing) {
+      addParticipant(participantInput.value);
+    }
   }
 });
 
