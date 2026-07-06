@@ -42,10 +42,26 @@ function loadMeetingDraft() {
   }
 }
 
+function saveRolesDraft() {
+  sessionStorage.setItem('participantsDraft', JSON.stringify(roles));
+}
+
+function loadRolesDraft() {
+  try {
+    const raw = sessionStorage.getItem('participantsDraft');
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
 function initRoles(participants) {
   roles = {};
+  const saved = loadRolesDraft();
   participants.forEach(name => {
-    roles[name] = DEFAULT_ROLES[name] || '선택';
+    if (saved && saved[name] !== undefined) {
+      roles[name] = saved[name];
+    } else {
+      roles[name] = DEFAULT_ROLES[name] || '선택';
+    }
   });
 }
 
@@ -99,6 +115,7 @@ function renderParticipantList(participants) {
       const newRole = btn.dataset.role;
       if (roles[name] === newRole) return;
       roles[name] = newRole;
+      saveRolesDraft();
       renderParticipantList(Object.keys(roles));
       updateCondition();
     });
@@ -164,6 +181,7 @@ submitBtn.addEventListener('click', () => {
   };
 
   sessionStorage.setItem('participantRoles', JSON.stringify(data));
+  saveRolesDraft();
   console.log('참석자 조건 저장:', data);
   showToast('참석자 조건을 저장했어요');
   setTimeout(() => {
