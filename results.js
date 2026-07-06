@@ -1,64 +1,78 @@
-const timeCandidates = [
-  {
-    id: 'candidate-1',
-    label: '가장 추천',
-    date: '화요일',
-    time: '10:00 - 11:00',
-    status: '추천',
-    requiredSummary: '필수 참석자 전원 가능',
-    optionalSummary: '선택 참석자 3명 중 2명 가능',
-    unresolvedSummary: '확인 필요 없음',
-    reason: [
-      '필수 참석자 3명이 모두 가능해요.',
-      '확인 필요자가 없어 바로 확정할 수 있어요.',
-      '선택 참석자도 과반 이상 참석 가능해요.'
-    ],
-    requiredAvailable: 3,
-    requiredTotal: 3,
-    optionalAvailable: 2,
-    optionalTotal: 3,
-    unresolvedCount: 0
-  },
-  {
-    id: 'candidate-2',
-    label: '대안',
-    date: '수요일',
-    time: '16:00 - 17:00',
-    status: '확인 필요',
-    requiredSummary: '필수 참석자 3명 중 2명 가능',
-    optionalSummary: '선택 참석자 3명 중 3명 가능',
-    unresolvedSummary: '확인 필요 1명',
-    reason: [
-      '선택 참석자는 모두 가능해요.',
-      '필수 참석자 1명의 비공개 일정 확인이 필요해요.',
-      '확인 후 확정 가능성이 있어요.'
-    ],
-    requiredAvailable: 2,
-    requiredTotal: 3,
-    optionalAvailable: 3,
-    optionalTotal: 3,
-    unresolvedCount: 1
-  },
-  {
-    id: 'candidate-3',
-    label: '비추천',
-    date: '목요일',
-    time: '14:00 - 15:00',
-    status: '비추천',
-    requiredSummary: '필수 참석자 3명 중 1명 불가능',
-    optionalSummary: '선택 참석자 3명 중 2명 가능',
-    unresolvedSummary: '확인 필요 없음',
-    reason: [
-      '필수 참석자 중 참석이 어려운 사람이 있어요.',
-      '회의 성립 조건을 만족하지 못해 우선순위가 낮아요.'
-    ],
-    requiredAvailable: 2,
-    requiredTotal: 3,
-    optionalAvailable: 2,
-    optionalTotal: 3,
-    unresolvedCount: 0
-  }
-];
+let timeCandidates = [];
+
+function buildTimeCandidates(requiredTotal, optionalTotal) {
+  const optSummary = (total, avail) => {
+    if (total === 0) return '선택 참석자 없음';
+    return `선택 참석자 ${total}명 중 ${avail}명 가능`;
+  };
+
+  const optReason2 = (total) => {
+    if (total === 0) return '선택 참석자 없이 필수 참석자 기준으로 판단했어요.';
+    return `선택 참석자 ${total}명도 참석 가능해요.`;
+  };
+
+  return [
+    {
+      id: 'candidate-1',
+      label: '가장 추천',
+      date: '화요일',
+      time: '10:00 - 11:00',
+      status: '추천',
+      requiredSummary: `필수 참석자 ${requiredTotal}명 전원 가능`,
+      optionalSummary: optSummary(optionalTotal, optionalTotal),
+      unresolvedSummary: '확인 필요 없음',
+      reason: [
+        `필수 참석자 ${requiredTotal}명이 모두 가능해요.`,
+        optReason2(optionalTotal),
+        '확인 필요자가 없어 바로 확정할 수 있어요.'
+      ],
+      requiredAvailable: requiredTotal,
+      requiredTotal: requiredTotal,
+      optionalAvailable: optionalTotal,
+      optionalTotal: optionalTotal,
+      unresolvedCount: 0
+    },
+    {
+      id: 'candidate-2',
+      label: '대안',
+      date: '수요일',
+      time: '16:00 - 17:00',
+      status: '확인 필요',
+      requiredSummary: `필수 참석자 ${requiredTotal}명 중 ${Math.max(requiredTotal - 1, 0)}명 가능`,
+      optionalSummary: optSummary(optionalTotal, optionalTotal),
+      unresolvedSummary: `확인 필요 ${requiredTotal > 0 ? 1 : 0}명`,
+      reason: [
+        optionalTotal > 0 ? '선택 참석자는 모두 가능해요.' : '선택 참석자는 없어요.',
+        '필수 참석자 1명의 비공개 일정 확인이 필요해요.',
+        '확인 후 확정 가능성이 있어요.'
+      ],
+      requiredAvailable: Math.max(requiredTotal - 1, 0),
+      requiredTotal: requiredTotal,
+      optionalAvailable: optionalTotal,
+      optionalTotal: optionalTotal,
+      unresolvedCount: requiredTotal > 0 ? 1 : 0
+    },
+    {
+      id: 'candidate-3',
+      label: '비추천',
+      date: '목요일',
+      time: '14:00 - 15:00',
+      status: '비추천',
+      requiredSummary: `필수 참석자 ${requiredTotal}명 중 ${Math.max(requiredTotal - 1, 0)}명 가능`,
+      optionalSummary: optSummary(optionalTotal, Math.max(optionalTotal - 1, 0)),
+      unresolvedSummary: '확인 필요 없음',
+      reason: [
+        '필수 참석자 중 참석이 어려운 사람이 있어요.',
+        '회의 성립 조건을 만족하지 못해 우선순위가 낮아요.'
+      ],
+      requiredAvailable: Math.max(requiredTotal - 1, 0),
+      requiredTotal: requiredTotal,
+      optionalAvailable: Math.max(optionalTotal - 1, 0),
+      optionalTotal: optionalTotal,
+      unresolvedCount: 0
+    }
+  ];
+}
 
 let currentFilter = '전체';
 
@@ -265,6 +279,9 @@ function init() {
   submitBtn.style.display = 'flex';
 
   renderSummary(draft, roles);
+  const requiredTotal = roles.requiredParticipants.length;
+  const optionalTotal = roles.optionalParticipants.length;
+  timeCandidates = buildTimeCandidates(requiredTotal, optionalTotal);
   renderCandidates('전체');
 }
 

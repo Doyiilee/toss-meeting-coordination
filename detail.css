@@ -181,6 +181,19 @@ button {
   margin-bottom: 0;
 }
 
+/* ─── Empty message ─── */
+
+.dt-empty-msg {
+  font-size: 0.875rem;
+  color: #6B7684;
+  line-height: 1.5;
+  background: #F7F8FA;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  word-break: keep-all;
+}
+
 /* ─── Participant List ─── */
 
 .dt-participant-list {

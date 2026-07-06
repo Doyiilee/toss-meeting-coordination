@@ -82,6 +82,22 @@ button {
   word-break: keep-all;
 }
 
+/* ─── Info text ─── */
+
+.pa-info-text {
+  padding: 0 20px;
+  margin-bottom: 8px;
+  font-size: 0.8125rem;
+  color: #6B7684;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.pa-info-text-sub {
+  margin-bottom: 18px;
+  color: #8B95A4;
+}
+
 /* ─── Summary Card ─── */
 
 .pa-summary-card {

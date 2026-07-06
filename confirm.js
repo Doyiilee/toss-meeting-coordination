@@ -49,12 +49,26 @@ function getOptionalParticipants() {
   return DEFAULT_OPTIONAL;
 }
 
-// ─── Participant status (candidate-1 logic) ───
+// ─── Participant status ───
 function getStatus(name, index, isRequired) {
-  if (isRequired) return { status: '가능', label: '가능' };
-  return index === 0
-    ? { status: '불가능', label: '불가능' }
-    : { status: '가능', label: '가능' };
+  const ca = candidate.requiredAvailable;
+  const co = candidate.optionalAvailable;
+
+  if (isRequired) {
+    if (ca !== undefined) {
+      return index < ca
+        ? { status: '가능', label: '가능' }
+        : { status: '불가능', label: '불가능' };
+    }
+    return { status: '가능', label: '가능' };
+  }
+
+  if (co !== undefined) {
+    return index < co
+      ? { status: '가능', label: '가능' }
+      : { status: '불가능', label: '불가능' };
+  }
+  return { status: '가능', label: '가능' };
 }
 
 function getChipClass(status) {
@@ -97,9 +111,13 @@ function renderConditionCard() {
   const required = getRequiredParticipants();
   const optional = getOptionalParticipants();
 
+  const optionalText = optional.length === 0
+    ? '선택 참석자가 없어요. 모든 참석자를 필수 기준으로 확정했어요.'
+    : `선택 참석자 ${optional.length}명 중 일부 참석 가능성을 함께 고려했어요.`;
+
   conditionCard.innerHTML = `
     <p class="cf-condition-line">필수 참석자 ${required.length}명이 모두 가능한 시간으로 확정했어요.</p>
-    <p class="cf-condition-line">선택 참석자 ${optional.length}명 중 일부 참석 가능성을 함께 고려했어요.</p>
+    <p class="cf-condition-line">${optionalText}</p>
     <p class="cf-condition-line">확인 필요자가 없어 추가 확인 없이 확정할 수 있어요.</p>
   `;
 }

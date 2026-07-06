@@ -52,36 +52,16 @@ function loadData() {
 
 // ─── Participant status helpers ───
 function getParticipantStatus(name, index, isRequired) {
-  const id = selectedCandidate.selectedCandidateId;
+  const { requiredAvailable, optionalAvailable, status } = selectedCandidate;
 
-  if (id === 'candidate-1') {
-    if (isRequired) return { status: '가능', desc: '이 시간에 참석 가능해요.' };
-    return index === 0
-      ? { status: '불가능', desc: '이 시간에는 참석이 어려워요.' }
-      : { status: '가능', desc: '이 시간에 참석 가능해요.' };
+  if (isRequired) {
+    if (index < requiredAvailable) return { status: '가능', desc: '이 시간에 참석 가능해요.' };
+    if (status === '확인 필요') return { status: '확인 필요', desc: '비공개 일정이 있어 참석 여부 확인이 필요해요.' };
+    return { status: '불가능', desc: '이 시간에는 참석이 어려워요.' };
   }
 
-  if (id === 'candidate-2') {
-    if (isRequired) {
-      return index === 0
-        ? { status: '확인 필요', desc: '비공개 일정이 있어 참석 여부 확인이 필요해요.' }
-        : { status: '가능', desc: '이 시간에 참석 가능해요.' };
-    }
-    return { status: '가능', desc: '이 시간에 참석 가능해요.' };
-  }
-
-  if (id === 'candidate-3') {
-    if (isRequired) {
-      return index === 0
-        ? { status: '불가능', desc: '이 시간에는 참석이 어려워요.' }
-        : { status: '가능', desc: '이 시간에 참석 가능해요.' };
-    }
-    return index < 2
-      ? { status: '가능', desc: '이 시간에 참석 가능해요.' }
-      : { status: '불가능', desc: '이 시간에는 참석이 어려워요.' };
-  }
-
-  return { status: '가능', desc: '이 시간에 참석 가능해요.' };
+  if (index < optionalAvailable) return { status: '가능', desc: '이 시간에 참석 가능해요.' };
+  return { status: '불가능', desc: '이 시간에는 참석이 어려워요.' };
 }
 
 function getStatusBadgeClass(status) {
@@ -256,6 +236,10 @@ submitBtn.addEventListener('click', () => {
       date: selectedCandidate.date,
       time: selectedCandidate.time,
       status: selectedCandidate.status,
+      requiredAvailable: selectedCandidate.requiredAvailable,
+      optionalAvailable: selectedCandidate.optionalAvailable,
+      requiredTotal: selectedCandidate.requiredTotal,
+      optionalTotal: selectedCandidate.optionalTotal,
       confirmedAt: new Date().toISOString()
     };
     sessionStorage.setItem('finalCandidate', JSON.stringify(data));
@@ -296,6 +280,15 @@ function init() {
   renderReasons();
   renderParticipantSection(requiredList, requiredParticipants, true);
   renderParticipantSection(optionalList, optionalParticipants, false);
+  const optionalEmptyMsg = document.getElementById('optional-empty-msg');
+  const optionalDesc = document.getElementById('optional-desc');
+  if (optionalParticipants.length === 0) {
+    optionalEmptyMsg.style.display = 'block';
+    optionalDesc.style.display = 'none';
+  } else {
+    optionalEmptyMsg.style.display = 'none';
+    optionalDesc.style.display = 'block';
+  }
   renderUnresolvedSection();
   updateBottomCTA();
 }
