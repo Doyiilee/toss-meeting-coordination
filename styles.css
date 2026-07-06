@@ -296,6 +296,13 @@ button {
   margin-bottom: 12px;
 }
 
+.coordination-card-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #3182F6;
+  margin-bottom: 6px;
+}
+
 .coordination-time {
   font-size: 0.9375rem;
   font-weight: 600;

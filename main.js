@@ -19,14 +19,26 @@ const coordinationData = [
   {
     title: '2분기 캠페인 의사결정 회의',
     status: '확인 필요 1명',
+    label: '추천 후보',
     time: '2026.07.14 (화) 10:00 - 11:00',
-    summary: '필수 참석자 4명 전원 가능 · 선택 참석자 2명 중 1명 가능'
+    descriptions: [
+      '필수 참석자는 모두 가능해요.',
+      '선택 참석자 1명은 확인이 필요해요.'
+    ],
+    ctaText: '확인하러 가기',
+    toastMsg: '확인 필요자 상세 화면은 다음 단계에서 연결할 예정이에요.'
   },
   {
     title: '제품 런칭 리뷰 회의',
-    status: '추천 시간 3개',
-    time: '이번 주 후보 확인 중',
-    summary: '필수 참석자 기준으로 가능한 시간을 찾았어요.'
+    status: '추천 후보 3개',
+    label: '이번 주 후보 확인 중',
+    time: '',
+    descriptions: [
+      '필수 참석자가 모두 가능한 시간이 3개 있어요.',
+      '가장 적합한 시간을 선택해 확정할 수 있어요.'
+    ],
+    ctaText: '후보 보기',
+    toastMsg: '추천 후보 목록은 다음 단계에서 연결할 예정이에요.'
   }
 ];
 
@@ -37,7 +49,7 @@ function renderCoordination() {
   if (!coordinationData || coordinationData.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <strong class="empty-state-title">내가 만든 조율이 없어요</strong>
+        <strong class="empty-state-title">확정 대기 중인 회의가 없어요</strong>
         <p class="empty-state-desc">새 회의를 만들면 확정 가능한 시간을 함께 찾아드릴게요.</p>
       </div>
     `;
@@ -48,9 +60,10 @@ function renderCoordination() {
     <div class="coordination-card">
       <h4 class="coordination-card-title">${item.title}</h4>
       <span class="coordination-status">${item.status}</span>
-      <p class="coordination-time">${item.time}</p>
-      <p class="coordination-summary">${item.summary}</p>
-      <button class="coordination-detail-btn" type="button" data-index="${index}">상세 보기</button>
+      <p class="coordination-card-label">${item.label}</p>
+      ${item.time ? `<p class="coordination-time">${item.time}</p>` : ''}
+      ${item.descriptions.map(d => `<p class="coordination-summary">${d}</p>`).join('')}
+      <button class="coordination-detail-btn" type="button" data-index="${index}">${item.ctaText}</button>
     </div>
   `).join('');
 
@@ -58,8 +71,8 @@ function renderCoordination() {
     btn.addEventListener('click', () => {
       const idx = btn.dataset.index;
       const item = coordinationData[idx];
-      console.log('상세 보기 클릭:', item.title);
-      showToast('상세 화면은 다음 단계에서 연결할 예정이에요.');
+      console.log('CTA 클릭:', item.ctaText, item.title);
+      showToast(item.toastMsg);
     });
   });
 }
