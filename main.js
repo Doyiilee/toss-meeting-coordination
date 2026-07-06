@@ -33,15 +33,15 @@ function renderCoordination() {
 
 function init() {
   document.getElementById('hero-primary-btn').addEventListener('click', () => {
-    console.log('새 회의 잡기 클릭');
+    window.location.href = 'create.html';
   });
 
   document.getElementById('bottom-cta-btn').addEventListener('click', () => {
-    console.log('새 회의 잡기 클릭');
+    window.location.href = 'create.html';
   });
 
   document.getElementById('empty-state-btn').addEventListener('click', () => {
-    console.log('새 회의 잡기 클릭');
+    window.location.href = 'create.html';
   });
 
   document.getElementById('hero-secondary-btn').addEventListener('click', () => {

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>새 회의 만들기 - 모두의 시간</title>
+  <link rel="stylesheet" href="create.css" />
+</head>
+<body>
+
+  <header class="create-header">
+    <button class="back-btn" id="back-btn" type="button" aria-label="뒤로가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#191F28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="create-header-text">
+      <h1 class="create-header-title">새 회의 만들기</h1>
+      <span class="create-header-step">1/3 회의 조건</span>
+    </div>
+  </header>
+
+  <main class="create-main">
+
+    <section class="create-hero">
+      <h2 class="create-hero-title">어떤 회의를 잡을까요?</h2>
+      <p class="create-hero-desc">회의 성립에 필요한 조건을 입력하면, 확정 가능성이 높은 시간을 찾아드려요.</p>
+    </section>
+
+    <section class="form-section">
+      <label class="form-label" for="meeting-title">회의명</label>
+      <input class="form-input" id="meeting-title" type="text" placeholder="예: 2분기 캠페인 의사결정 회의" />
+    </section>
+
+    <section class="form-section">
+      <label class="form-label">언제까지 만나야 하나요?</label>
+      <div class="chip-group" id="period-group">
+        <button class="chip" data-value="이번 주" type="button">이번 주</button>
+        <button class="chip chip-active" data-value="다음 주" type="button">다음 주</button>
+        <button class="chip" data-value="직접 선택" type="button">직접 선택</button>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <label class="form-label">회의 시간</label>
+      <div class="chip-group" id="duration-group">
+        <button class="chip" data-value="30분" type="button">30분</button>
+        <button class="chip chip-active" data-value="1시간" type="button">1시간</button>
+        <button class="chip" data-value="1시간 30분" type="button">1시간 30분</button>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <label class="form-label">참석자</label>
+      <p class="form-desc">의사결정권자와 핵심 실무자를 포함해 주세요.</p>
+      <div class="participant-input-row">
+        <input class="form-input" id="participant-input" type="text" placeholder="이름을 입력하세요" />
+        <button class="btn-add" id="add-participant-btn" type="button">추가</button>
+      </div>
+      <div id="participant-chips" class="participant-chips"></div>
+      <p class="form-error" id="participant-error"></p>
+    </section>
+
+  </main>
+
+  <div class="create-bottom-cta">
+    <button class="btn-primary-cta" id="submit-btn" type="button">참석자 조건 설정하기</button>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="create.js"></script>
+</body>
+</html>
