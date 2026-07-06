@@ -8,6 +8,8 @@ const DURATION_OPTIONS = ['30분', '1시간', '1시간 30분'];
 let selectedPeriod = '다음 주';
 let selectedDuration = '1시간';
 let participants = [...DEFAULT_PARTICIPANTS];
+let customStartDate = '';
+let customEndDate = '';
 
 // ─── DOM refs ───
 const backBtn = document.getElementById('back-btn');
@@ -20,6 +22,9 @@ const participantChips = document.getElementById('participant-chips');
 const participantError = document.getElementById('participant-error');
 const submitBtn = document.getElementById('submit-btn');
 const toast = document.getElementById('toast');
+const customPeriodSection = document.getElementById('custom-period-section');
+const startDateInput = document.getElementById('start-date');
+const endDateInput = document.getElementById('end-date');
 
 // ─── Navigation ───
 backBtn.addEventListener('click', () => {
@@ -31,7 +36,9 @@ function saveDraft() {
     meetingTitle: meetingTitleInput.value.trim(),
     period: selectedPeriod,
     duration: selectedDuration,
-    participants: participants
+    participants: participants,
+    customStartDate: customStartDate,
+    customEndDate: customEndDate
   };
   sessionStorage.setItem('meetingDraft', JSON.stringify(data));
 }
@@ -49,6 +56,13 @@ function updateActiveChip(group, value) {
   });
 }
 
+function toggleCustomPeriod() {
+  const isCustom = selectedPeriod === '직접 선택';
+  customPeriodSection.style.display = isCustom ? 'block' : 'none';
+  const err = document.querySelector('.validation-error');
+  if (err) err.remove();
+}
+
 // ─── Period selection ───
 periodGroup.addEventListener('click', (e) => {
   const btn = e.target.closest('.chip');
@@ -56,7 +70,12 @@ periodGroup.addEventListener('click', (e) => {
   periodGroup.querySelectorAll('.chip').forEach(el => el.classList.remove('chip-active'));
   btn.classList.add('chip-active');
   selectedPeriod = btn.dataset.value;
+  if (selectedPeriod !== '직접 선택') {
+    customStartDate = '';
+    customEndDate = '';
+  }
   saveDraft();
+  toggleCustomPeriod();
 });
 
 // ─── Duration selection ───
@@ -129,6 +148,21 @@ participantInput.addEventListener('keydown', (e) => {
   }
 });
 
+// ─── Custom date input changes ───
+startDateInput.addEventListener('change', () => {
+  customStartDate = startDateInput.value;
+  saveDraft();
+  const err = document.querySelector('.validation-error');
+  if (err) err.remove();
+});
+
+endDateInput.addEventListener('change', () => {
+  customEndDate = endDateInput.value;
+  saveDraft();
+  const err = document.querySelector('.validation-error');
+  if (err) err.remove();
+});
+
 // ─── Toast ───
 function showToast(message) {
   toast.textContent = message;
@@ -151,6 +185,16 @@ submitBtn.addEventListener('click', () => {
 
   if (!title) {
     errorMsg = '회의명을 입력해주세요.';
+  } else if (selectedPeriod === '직접 선택') {
+    if (!customStartDate) {
+      errorMsg = '시작일을 선택해주세요.';
+    } else if (!customEndDate) {
+      errorMsg = '종료일을 선택해주세요.';
+    } else if (customEndDate < customStartDate) {
+      errorMsg = '종료일은 시작일 이후로 선택해주세요.';
+    } else if (participants.length < 2) {
+      errorMsg = '참석자를 2명 이상 추가해주세요.';
+    }
   } else if (participants.length < 2) {
     errorMsg = '참석자를 2명 이상 추가해주세요.';
   }
@@ -167,11 +211,20 @@ submitBtn.addEventListener('click', () => {
     return;
   }
 
+  let displayPeriod = selectedPeriod;
+  if (selectedPeriod === '직접 선택' && customStartDate && customEndDate) {
+    const fmt = (d) => d.replace(/-/g, '.');
+    displayPeriod = `${fmt(customStartDate)} - ${fmt(customEndDate)}`;
+  }
+
   const data = {
     meetingTitle: title,
     period: selectedPeriod,
+    displayPeriod: displayPeriod,
     duration: selectedDuration,
-    participants: participants
+    participants: participants,
+    customStartDate: customStartDate,
+    customEndDate: customEndDate
   };
 
   sessionStorage.setItem('meetingDraft', JSON.stringify(data));
@@ -192,8 +245,13 @@ function init() {
     participants = draft.participants.length > 0
       ? [...draft.participants]
       : [...DEFAULT_PARTICIPANTS];
+    customStartDate = draft.customStartDate || '';
+    customEndDate = draft.customEndDate || '';
+    startDateInput.value = customStartDate;
+    endDateInput.value = customEndDate;
     updateActiveChip(periodGroup, selectedPeriod);
     updateActiveChip(durationGroup, selectedDuration);
+    toggleCustomPeriod();
   }
   renderParticipants();
 }

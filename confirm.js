@@ -100,7 +100,7 @@ function renderConfirmedCard() {
     </div>
     <div class="cf-confirmed-row">
       <span class="cf-confirmed-label">기간</span>
-      <span class="cf-confirmed-value">${meetingDraft?.period || '-'}</span>
+      <span class="cf-confirmed-value">${meetingDraft?.displayPeriod || meetingDraft?.period || '-'}</span>
     </div>
     <span class="cf-confirmed-badge">확정 완료</span>
   `;

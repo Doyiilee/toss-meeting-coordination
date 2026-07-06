@@ -125,6 +125,48 @@ button {
   box-shadow: 0 0 0 2px rgba(49, 130, 246, 0.12);
 }
 
+/* ─── Custom Period ─── */
+
+.custom-period-section {
+  margin-top: 12px;
+  padding: 16px;
+  background: #FFFFFF;
+  border: 1px solid #E5E8EB;
+  border-radius: 16px;
+}
+
+.custom-period-desc {
+  font-size: 0.8125rem;
+  color: #6B7684;
+  margin-bottom: 14px;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.custom-date-row {
+  margin-bottom: 12px;
+}
+
+.custom-date-row:last-child {
+  margin-bottom: 0;
+}
+
+.custom-date-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #191F28;
+  margin-bottom: 6px;
+}
+
+.custom-date-input {
+  min-height: 48px;
+}
+
+.custom-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
 /* ─── Chip Group ─── */
 
 .chip-group {
