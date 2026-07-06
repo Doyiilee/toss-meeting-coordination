@@ -252,7 +252,7 @@ function renderSummary(draft, roles) {
     </div>
     <div class="rs-summary-row">
       <span class="rs-summary-label">기간</span>
-      <span class="rs-summary-value">${draft.displayPeriod || draft.period}</span>
+      <span class="rs-summary-value">${draft.searchRangeLabel || draft.displayPeriod || draft.period}</span>
     </div>
     <div class="rs-summary-row">
       <span class="rs-summary-label">회의 길이</span>

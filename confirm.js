@@ -35,6 +35,71 @@ function loadData() {
   } catch { candidate = null; }
 }
 
+function formatShortDate(d) {
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}.${m}.${day}`;
+}
+
+function formatDateLabel(fullDate) {
+  if (!fullDate) return '';
+  const d = new Date(fullDate + 'T00:00:00');
+  const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}.${m}.${day} (${DAY_NAMES[d.getDay()]})`;
+}
+
+function getThisWeekMonday(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const dow = d.getDay();
+  const off = dow === 0 ? -6 : 1 - dow;
+  d.setDate(d.getDate() + off);
+  return d;
+}
+
+function getWeekRangeLabel(period, customStartDate, customEndDate) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (period === '이번 주') {
+    const mon = getThisWeekMonday(today);
+    const sun = new Date(mon);
+    sun.setDate(mon.getDate() + 6);
+    return `${formatShortDate(mon)} - ${formatShortDate(sun)}`;
+  }
+  if (period === '다음 주') {
+    const mon = getThisWeekMonday(today);
+    mon.setDate(mon.getDate() + 7);
+    const sun = new Date(mon);
+    sun.setDate(mon.getDate() + 6);
+    return `${formatShortDate(mon)} - ${formatShortDate(sun)}`;
+  }
+  if (period === '직접 선택' && customStartDate && customEndDate) {
+    const s = new Date(customStartDate + 'T00:00:00');
+    const e = new Date(customEndDate + 'T00:00:00');
+    return `${formatShortDate(s)} - ${formatShortDate(e)}`;
+  }
+  return '';
+}
+
+function getSearchRangeLabel(draft) {
+  if (!draft) return '-';
+  if (draft.searchRangeLabel) return draft.searchRangeLabel;
+  const label = getWeekRangeLabel(draft.period, draft.customStartDate, draft.customEndDate);
+  if (label) return label;
+  return draft.displayPeriod || draft.period || '-';
+}
+
+function getCandidateDateLabel(candidate) {
+  if (candidate.dateLabel) return candidate.dateLabel;
+  if (candidate.fullDate) {
+    const label = formatDateLabel(candidate.fullDate);
+    if (label) return label;
+  }
+  return candidate.date || '-';
+}
+
 function getRequiredParticipants() {
   if (participantRoles && participantRoles.requiredParticipants) {
     return participantRoles.requiredParticipants;
@@ -91,7 +156,7 @@ function renderConfirmedCard() {
     <div class="cf-confirmed-name">${meetingDraft?.meetingTitle || '회의'}</div>
     <div class="cf-confirmed-row">
       <span class="cf-confirmed-label">날짜</span>
-      <span class="cf-confirmed-value">${candidate.dateLabel || candidate.date}</span>
+      <span class="cf-confirmed-value">${getCandidateDateLabel(candidate)}</span>
     </div>
     <div class="cf-confirmed-row">
       <span class="cf-confirmed-label">시간</span>
@@ -102,8 +167,8 @@ function renderConfirmedCard() {
       <span class="cf-confirmed-value">${meetingDraft?.duration || '-'}</span>
     </div>
     <div class="cf-confirmed-row">
-      <span class="cf-confirmed-label">기간</span>
-      <span class="cf-confirmed-value">${meetingDraft?.displayPeriod || meetingDraft?.period || '-'}</span>
+      <span class="cf-confirmed-label">후보 탐색 기간</span>
+      <span class="cf-confirmed-value">${getSearchRangeLabel(meetingDraft)}</span>
     </div>
     <span class="cf-confirmed-badge">확정 완료</span>
   `;
