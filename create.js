@@ -7,6 +7,79 @@ const RECOMMENDED_PARTICIPANTS = [
   { name: '한지훈', team: '디자인팀', role: '크리에이티브' }
 ];
 
+function formatShortDate(d) {
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}.${m}.${day}`;
+}
+
+function getThisWeekMonday(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const dow = d.getDay();
+  const off = dow === 0 ? -6 : 1 - dow;
+  d.setDate(d.getDate() + off);
+  return d;
+}
+
+function getWeekRangeLabel(period, customStartDate, customEndDate) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (period === '이번 주') {
+    const mon = getThisWeekMonday(today);
+    const sun = new Date(mon);
+    sun.setDate(mon.getDate() + 6);
+    return `${formatShortDate(mon)} - ${formatShortDate(sun)}`;
+  }
+
+  if (period === '다음 주') {
+    const mon = getThisWeekMonday(today);
+    mon.setDate(mon.getDate() + 7);
+    const sun = new Date(mon);
+    sun.setDate(mon.getDate() + 6);
+    return `${formatShortDate(mon)} - ${formatShortDate(sun)}`;
+  }
+
+  if (period === '직접 선택' && customStartDate && customEndDate) {
+    const s = new Date(customStartDate + 'T00:00:00');
+    const e = new Date(customEndDate + 'T00:00:00');
+    return `${formatShortDate(s)} - ${formatShortDate(e)}`;
+  }
+
+  return '';
+}
+
+const MOCK_CONTACTS = {
+  이도이: { team: '프로덕트디자인팀', role: 'UX 디자이너' },
+  김도윤: { team: '브랜드마케팅팀', role: '캠페인 담당' },
+  박서연: { team: '데이터분석팀', role: '성과 분석' },
+  최유진: { team: '콘텐츠팀', role: '콘텐츠 기획' },
+  장민호: { team: '마케팅전략팀', role: '전략 담당' },
+  윤하늘: { team: '디자인팀', role: '크리에이티브' }
+};
+
+const FALLBACK_CONTACT_PROFILES = [
+  { team: '마케팅팀', role: '실무자' },
+  { team: '브랜드마케팅팀', role: '캠페인 담당' },
+  { team: '퍼포먼스마케팅팀', role: '광고 운영' },
+  { team: '콘텐츠팀', role: '콘텐츠 담당' },
+  { team: '데이터분석팀', role: '성과 분석' },
+  { team: '디자인팀', role: '크리에이티브' },
+  { team: '프로덕트디자인팀', role: 'UX 디자이너' }
+];
+
+function getStableProfileByName(name) {
+  const normalizedName = name.trim();
+  if (MOCK_CONTACTS[normalizedName]) {
+    return MOCK_CONTACTS[normalizedName];
+  }
+  const hash = Array.from(normalizedName).reduce((sum, char) => {
+    return sum + char.charCodeAt(0);
+  }, 0);
+  return FALLBACK_CONTACT_PROFILES[hash % FALLBACK_CONTACT_PROFILES.length];
+}
+
 const PERIOD_OPTIONS = ['이번 주', '다음 주', '직접 선택'];
 const DURATION_OPTIONS = ['30분', '1시간', '1시간 30분'];
 
@@ -204,7 +277,10 @@ function addParticipant(name) {
 
   participantError.textContent = '';
   participants.push(trimmed);
-  participantMeta[trimmed] = { team: '직접 추가', role: '참석자' };
+  if (!participantMeta[trimmed]) {
+    const profile = getStableProfileByName(trimmed);
+    participantMeta[trimmed] = { team: profile.team, role: profile.role };
+  }
   renderSelectedSection();
   renderRecommended();
   participantInput.value = '';
@@ -292,10 +368,13 @@ submitBtn.addEventListener('click', () => {
     displayPeriod = `${fmt(customStartDate)} - ${fmt(customEndDate)}`;
   }
 
+  const searchRangeLabel = getWeekRangeLabel(selectedPeriod, customStartDate, customEndDate);
+
   const data = {
     meetingTitle: title,
     period: selectedPeriod,
     displayPeriod: displayPeriod,
+    searchRangeLabel: searchRangeLabel,
     duration: selectedDuration,
     participants: participants,
     participantMeta: participantMeta,
