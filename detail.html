@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>후보 시간 상세 - 모두의 시간</title>
+  <link rel="stylesheet" href="detail.css" />
+</head>
+<body>
+
+  <header class="dt-header">
+    <button class="dt-back-btn" id="back-btn" type="button" aria-label="뒤로가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#191F28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="dt-header-text">
+      <h1 class="dt-header-title">후보 시간 상세</h1>
+      <span class="dt-header-step">확정 가능 근거</span>
+    </div>
+  </header>
+
+  <main class="dt-main">
+
+    <section class="dt-hero">
+      <h2 class="dt-hero-title">이 시간에 확정해도 될까요?</h2>
+      <p class="dt-hero-desc">참석자별 가능 여부와 확인 필요 상태를 확인한 뒤 회의를 확정할 수 있어요.</p>
+    </section>
+
+    <section class="dt-candidate-card" id="candidate-card"></section>
+
+    <section id="reason-section" class="dt-section">
+      <h3 class="dt-section-title">확정 가능 근거</h3>
+      <div class="dt-reason-card" id="reason-list"></div>
+    </section>
+
+    <section id="required-section" class="dt-section">
+      <h3 class="dt-section-title">필수 참석자</h3>
+      <p class="dt-section-desc">이 사람들이 가능해야 회의가 성립돼요.</p>
+      <div id="required-list" class="dt-participant-list"></div>
+    </section>
+
+    <section id="optional-section" class="dt-section">
+      <h3 class="dt-section-title">선택 참석자</h3>
+      <p class="dt-section-desc">가능하면 포함하지만, 회의 확정 조건에는 포함하지 않아요.</p>
+      <div id="optional-list" class="dt-participant-list"></div>
+    </section>
+
+    <section id="unresolved-section" class="dt-section" style="display:none">
+      <h3 class="dt-section-title">확인이 필요한 참석자</h3>
+      <p class="dt-section-desc">회의 확정을 막고 있는 참석자만 따로 확인할 수 있어요.</p>
+      <div id="unresolved-list" class="dt-participant-list"></div>
+    </section>
+
+    <section id="no-data-section" class="dt-no-data" style="display:none">
+      <strong class="dt-no-data-title">선택한 후보 시간이 없어요.</strong>
+      <p class="dt-no-data-desc">먼저 후보 시간을 선택해주세요.</p>
+      <button class="dt-btn-primary" id="go-back-btn" type="button">확정 가능 시간으로 돌아가기</button>
+    </section>
+
+  </main>
+
+  <div class="dt-bottom-cta">
+    <button class="dt-btn-primary" id="submit-btn" type="button"></button>
+  </div>
+
+  <div id="toast" class="dt-toast"></div>
+
+  <script src="detail.js"></script>
+</body>
+</html>

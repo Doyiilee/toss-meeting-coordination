@@ -1,0 +1,380 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #F7F8FA;
+  color: #191F28;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 88px;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+/* ─── Header ─── */
+
+.dt-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: #F7F8FA;
+}
+
+.dt-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  flex-shrink: 0;
+}
+
+.dt-header-text {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dt-header-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #191F28;
+  white-space: nowrap;
+}
+
+.dt-header-step {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #6B7684;
+  white-space: nowrap;
+}
+
+/* ─── Hero ─── */
+
+.dt-hero {
+  padding: 8px 20px 24px;
+}
+
+.dt-hero-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #191F28;
+  word-break: keep-all;
+}
+
+.dt-hero-desc {
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: #6B7684;
+  word-break: keep-all;
+}
+
+/* ─── Sections ─── */
+
+.dt-section {
+  padding: 0 20px;
+  margin-bottom: 24px;
+}
+
+.dt-section-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #191F28;
+  margin-bottom: 6px;
+}
+
+.dt-section-desc {
+  font-size: 0.8125rem;
+  color: #6B7684;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+/* ─── Candidate Card ─── */
+
+.dt-candidate-card {
+  margin: 0 20px 24px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #E5E8EB;
+}
+
+.dt-candidate-time {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #191F28;
+  margin-bottom: 10px;
+}
+
+.dt-candidate-badge {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+}
+
+.dt-badge-recommend {
+  background: #EEF4FF;
+  color: #3182F6;
+}
+
+.dt-badge-unresolved {
+  background: #FFF3E6;
+  color: #D9730D;
+}
+
+.dt-badge-low {
+  background: #F0F2F5;
+  color: #6B7684;
+}
+
+.dt-candidate-summary {
+  font-size: 0.875rem;
+  color: #6B7684;
+  line-height: 1.6;
+  word-break: keep-all;
+  margin-bottom: 2px;
+}
+
+/* ─── Reason Card ─── */
+
+.dt-reason-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.dt-reason-item {
+  font-size: 0.875rem;
+  color: #6B7684;
+  line-height: 1.6;
+  padding-left: 12px;
+  position: relative;
+  margin-bottom: 6px;
+  word-break: keep-all;
+}
+
+.dt-reason-item::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+}
+
+.dt-reason-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ─── Participant List ─── */
+
+.dt-participant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dt-participant-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dt-participant-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.dt-participant-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #191F28;
+}
+
+.dt-participant-desc {
+  font-size: 0.8125rem;
+  color: #6B7684;
+  margin-top: 2px;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+/* ─── Badges ─── */
+
+.dt-role-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.dt-role-required {
+  background: #F0F2F5;
+  color: #191F28;
+}
+
+.dt-role-optional {
+  background: #F0F2F5;
+  color: #6B7684;
+}
+
+.dt-status-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.dt-status-available {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.dt-status-unresolved {
+  background: #FFF3E6;
+  color: #D9730D;
+}
+
+.dt-status-impossible {
+  background: #F0F2F5;
+  color: #8B95A4;
+}
+
+.dt-status-waiting {
+  background: #EEF4FF;
+  color: #3182F6;
+}
+
+/* ─── Unresolved request button ─── */
+
+.dt-request-btn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  min-height: 44px;
+  background: #3182F6;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.dt-request-btn:hover {
+  background: #2771d6;
+}
+
+.dt-request-btn:disabled {
+  background: #B0B8C4;
+  cursor: default;
+}
+
+/* ─── No Data ─── */
+
+.dt-no-data {
+  margin: 0 20px 24px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.dt-no-data-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #191F28;
+  margin-bottom: 8px;
+}
+
+.dt-no-data-desc {
+  font-size: 0.875rem;
+  color: #6B7684;
+  line-height: 1.6;
+  word-break: keep-all;
+  margin-bottom: 20px;
+}
+
+/* ─── Bottom CTA ─── */
+
+.dt-bottom-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 20px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: #F7F8FA;
+}
+
+.dt-btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  background: #3182F6;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.dt-btn-primary:hover {
+  background: #2771d6;
+}
+
+.dt-btn-secondary {
+  background: #B0B8C4;
+}
+
+.dt-btn-disabled {
+  background: #B0B8C4;
+  cursor: default;
+}
+
+/* ─── Toast ─── */
+
+.dt-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #191F28;
+  color: #FFFFFF;
+  font-size: 0.875rem;
+  padding: 12px 24px;
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 100;
+}
+
+.dt-toast-visible {
+  opacity: 1;
+}

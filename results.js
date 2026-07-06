@@ -187,7 +187,18 @@ function renderCandidates(filter) {
     btn.addEventListener('click', () => {
       const id = btn.dataset.id;
       const candidate = timeCandidates.find(c => c.id === id);
-      console.log('후보 시간 선택 클릭:', candidate);
+      const data = {
+        selectedCandidateId: candidate.id,
+        date: candidate.date,
+        time: candidate.time,
+        status: candidate.status,
+        requiredSummary: candidate.requiredSummary,
+        optionalSummary: candidate.optionalSummary,
+        unresolvedSummary: candidate.unresolvedSummary,
+        reason: candidate.reason
+      };
+      sessionStorage.setItem('selectedTime', JSON.stringify(data));
+      window.location.href = 'detail.html';
     });
   });
 }
@@ -223,12 +234,16 @@ submitBtn.addEventListener('click', () => {
     status: recommend.status,
     requiredSummary: recommend.requiredSummary,
     optionalSummary: recommend.optionalSummary,
-    unresolvedSummary: recommend.unresolvedSummary
+    unresolvedSummary: recommend.unresolvedSummary,
+    reason: recommend.reason
   };
 
   sessionStorage.setItem('selectedTime', JSON.stringify(data));
   console.log('선택된 후보:', data);
   showToast('추천 시간을 선택했어요');
+  setTimeout(() => {
+    window.location.href = 'detail.html';
+  }, 400);
 });
 
 // ─── Init ───
