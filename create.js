@@ -131,6 +131,9 @@ submitBtn.addEventListener('click', () => {
   sessionStorage.setItem('meetingDraft', JSON.stringify(data));
   console.log('저장된 데이터:', data);
   showToast('회의 조건을 저장했어요');
+  setTimeout(() => {
+    window.location.href = 'participants.html';
+  }, 400);
 });
 
 // ─── Init ───

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>참석자 조건 설정 - 모두의 시간</title>
+  <link rel="stylesheet" href="participants.css" />
+</head>
+<body>
+
+  <header class="pa-header">
+    <button class="pa-back-btn" id="back-btn" type="button" aria-label="뒤로가기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="#191F28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="pa-header-text">
+      <h1 class="pa-header-title">참석자 조건 설정</h1>
+      <span class="pa-header-step">2/3 참석 조건</span>
+    </div>
+  </header>
+
+  <main class="pa-main">
+
+    <section class="pa-hero">
+      <h2 class="pa-hero-title">누가 꼭 참석해야 하나요?</h2>
+      <p class="pa-hero-desc">회의가 성립되기 위해 반드시 필요한 참석자를 먼저 정해주세요.</p>
+    </section>
+
+    <section class="pa-summary-card" id="summary-card">
+    </section>
+
+    <section id="participant-list" class="pa-list-section"></section>
+
+    <section id="no-data-section" class="pa-no-data" style="display:none">
+      <strong class="pa-no-data-title">회의 조건 정보가 없어요.</strong>
+      <p class="pa-no-data-desc">먼저 회의 조건을 입력해주세요.</p>
+      <button class="pa-btn-primary" id="go-back-btn" type="button">회의 조건 입력으로 돌아가기</button>
+    </section>
+
+    <section class="pa-condition-section" id="condition-section">
+      <h3 class="pa-section-title">회의 성립 조건</h3>
+      <div class="pa-condition-card">
+        <div class="pa-condition-count">
+          <span class="pa-count-badge" id="required-count">필수 0명</span>
+          <span class="pa-count-badge pa-count-badge-optional" id="optional-count">선택 0명</span>
+        </div>
+        <p class="pa-condition-rule" id="condition-rule-1"></p>
+        <p class="pa-condition-rule" id="condition-rule-2"></p>
+        <p class="pa-condition-rule" id="condition-rule-3"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="pa-bottom-cta">
+    <button class="pa-btn-primary" id="submit-btn" type="button">확정 가능 시간 찾기</button>
+  </div>
+
+  <div id="toast" class="pa-toast"></div>
+
+  <script src="participants.js"></script>
+</body>
+</html>
