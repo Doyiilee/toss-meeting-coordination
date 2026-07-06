@@ -211,70 +211,68 @@ button {
 .response-card-requester {
   font-size: 0.8125rem;
   color: #6B7684;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
-.request-role {
-  background: #F7F8FA;
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin-bottom: 10px;
-}
-
-.request-role-title {
-  display: block;
-  font-size: 0.8125rem;
+.request-time {
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #191F28;
-  margin-bottom: 2px;
-}
-
-.request-role-desc {
-  display: block;
-  font-size: 0.75rem;
-  color: #6B7684;
-  line-height: 1.4;
-}
-
-.request-schedule {
   margin-bottom: 14px;
-}
-
-.request-schedule-summary {
-  font-size: 0.8125rem;
-  color: #191F28;
-  margin-bottom: 2px;
   line-height: 1.5;
 }
 
-.request-calendar-status {
-  font-size: 0.75rem;
+.request-info-list {
+  background: #F7F8FA;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.request-info-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.request-info-row:last-child {
+  margin-bottom: 0;
+}
+
+.request-info-label {
+  flex-shrink: 0;
+  font-size: 0.8125rem;
   color: #8B95A4;
+  min-width: 52px;
+}
+
+.request-info-value {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #191F28;
   line-height: 1.4;
+  word-break: keep-all;
 }
 
 .response-action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
+  width: 100%;
+  min-height: 44px;
   padding: 0 20px;
   background: #3182F6;
   border: none;
   border-radius: 12px;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: #FFFFFF;
+  cursor: pointer;
 }
 
 .response-action-btn:active {
   background: #2771d6;
-}
-
-.response-card-info {
-  font-size: 0.8125rem;
-  color: #8B95A4;
-  margin-bottom: 14px;
 }
 
 /* ─── Schedule Section ─── */
