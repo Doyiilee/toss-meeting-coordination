@@ -50,6 +50,29 @@ function loadData() {
   }
 }
 
+// ─── Normalize candidate ───
+function normalizeCandidate(candidate, reqCount, optCount) {
+  const status = candidate.status || '추천';
+  const rt = typeof candidate.requiredTotal === 'number' ? candidate.requiredTotal : reqCount;
+  const ot = typeof candidate.optionalTotal === 'number' ? candidate.optionalTotal : optCount;
+
+  let ra;
+  if (typeof candidate.requiredAvailable === 'number') {
+    ra = candidate.requiredAvailable;
+  } else {
+    ra = status === '추천' ? rt : Math.max(rt - 1, 0);
+  }
+  let oa;
+  if (typeof candidate.optionalAvailable === 'number') {
+    oa = candidate.optionalAvailable;
+  } else {
+    oa = status === '추천' ? ot : Math.max(ot - 1, 0);
+  }
+  const uc = typeof candidate.unresolvedCount === 'number' ? candidate.unresolvedCount : 0;
+
+  return { ...candidate, requiredAvailable: ra, requiredTotal: rt, optionalAvailable: oa, optionalTotal: ot, unresolvedCount: uc };
+}
+
 // ─── Participant status helpers ───
 function getParticipantStatus(name, index, isRequired) {
   const { requiredAvailable, optionalAvailable, status } = selectedCandidate;
@@ -62,7 +85,7 @@ function getParticipantStatus(name, index, isRequired) {
 
   if (index < optionalAvailable) return { status: '가능', desc: '이 시간에 참석 가능해요.' };
   if (status === '확인 필요') return { status: '확인 필요', desc: '비공개 일정이 있어 참석 여부 확인이 필요해요.' };
-  return { status: '불가능', desc: '이 시간에는 참석이 어려워요.' };
+  return { status: '불가능', desc: '참석은 어렵지만 회의 확정 조건에는 영향이 없어요.' };
 }
 
 function getStatusBadgeClass(status) {
@@ -266,6 +289,10 @@ submitBtn.addEventListener('click', () => {
 // ─── Init ───
 function init() {
   loadData();
+
+  if (selectedCandidate) {
+    selectedCandidate = normalizeCandidate(selectedCandidate, requiredParticipants.length, optionalParticipants.length);
+  }
 
   if (!selectedCandidate) {
     document.querySelectorAll('.dt-section, .dt-candidate-card, .dt-hero, .dt-bottom-cta').forEach(el => {

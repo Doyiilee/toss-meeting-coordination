@@ -2,6 +2,7 @@ let timeCandidates = [];
 
 function optSummary(total, avail) {
   if (total === 0) return '선택 참석자 없음';
+  if (avail === 0) return `선택 참석자 ${total}명은 참석이 어려워요`;
   return `선택 참석자 ${total}명 중 ${avail}명 가능`;
 }
 
@@ -262,7 +263,12 @@ function renderCandidates(filter) {
         requiredSummary: candidate.requiredSummary,
         optionalSummary: candidate.optionalSummary,
         unresolvedSummary: candidate.unresolvedSummary,
-        reason: candidate.reason
+        reason: candidate.reason,
+        requiredAvailable: candidate.requiredAvailable,
+        requiredTotal: candidate.requiredTotal,
+        optionalAvailable: candidate.optionalAvailable,
+        optionalTotal: candidate.optionalTotal,
+        unresolvedCount: candidate.unresolvedCount
       };
       sessionStorage.setItem('selectedTime', JSON.stringify(data));
       window.location.href = 'detail.html';
@@ -302,7 +308,12 @@ submitBtn.addEventListener('click', () => {
     requiredSummary: recommend.requiredSummary,
     optionalSummary: recommend.optionalSummary,
     unresolvedSummary: recommend.unresolvedSummary,
-    reason: recommend.reason
+    reason: recommend.reason,
+    requiredAvailable: recommend.requiredAvailable,
+    requiredTotal: recommend.requiredTotal,
+    optionalAvailable: recommend.optionalAvailable,
+    optionalTotal: recommend.optionalTotal,
+    unresolvedCount: recommend.unresolvedCount
   };
 
   sessionStorage.setItem('selectedTime', JSON.stringify(data));
