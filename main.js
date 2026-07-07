@@ -83,17 +83,10 @@ function scrollToSection(id) {
   if (el) el.scrollIntoView({ behavior: 'smooth' });
 }
 
-// ─── Quick menu actions ───
-const quickActions = {
-  'new-meeting': () => {
-    clearPreviousSession();
-    window.location.href = 'create.html';
-  },
-  'my-schedule': () => {
-    scrollToSection('schedule-section');
-  },
-  'team-compare': () => {
-    showToast('팀 시간 비교 화면은 다음 단계에서 연결할 예정이에요.');
+// ─── Sidebar actions ───
+const sidebarActions = {
+  'dashboard': () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   },
   'received-requests': () => {
     scrollToSection('response-section');
@@ -102,21 +95,43 @@ const quickActions = {
     scrollToSection('coordination-section');
   },
   'confirmed': () => {
-    showToast('확정된 회의 화면은 다음 단계에서 연결할 예정이에요.');
+    scrollToSection('confirmed-section');
+  },
+  'my-schedule': () => {
+    scrollToSection('schedule-section');
+  },
+  'team-compare': () => {
+    showToast('팀 시간 비교 화면은 다음 단계에서 연결할 예정이에요.');
+  },
+  'new-meeting': () => {
+    clearPreviousSession();
+    window.location.href = 'create.html';
   }
 };
 
 // ─── Init ───
 function init() {
-  // Home create button
-  document.getElementById('home-create-btn').addEventListener('click', () => {
+  // Header create button
+  document.getElementById('header-create-btn').addEventListener('click', () => {
     clearPreviousSession();
     window.location.href = 'create.html';
   });
 
-  // Header schedule button
-  document.getElementById('header-schedule-btn').addEventListener('click', () => {
-    scrollToSection('schedule-section');
+  // Sidebar menus
+  document.querySelectorAll('.sidebar-menu').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      // Update active state
+      document.querySelectorAll('.sidebar-menu').forEach(m => m.classList.remove('sidebar-menu-active'));
+      btn.classList.add('sidebar-menu-active');
+      if (sidebarActions[action]) sidebarActions[action]();
+    });
+  });
+
+  // Sidebar create button
+  document.querySelector('.sidebar-create-btn').addEventListener('click', () => {
+    clearPreviousSession();
+    window.location.href = 'create.html';
   });
 
   // Response buttons
@@ -140,14 +155,6 @@ function init() {
   document.getElementById('confirmed-view-btn').addEventListener('click', () => {
     console.log('회의 일정 보기 클릭');
     showToast('회의 일정 상세 화면은 다음 단계에서 연결할 예정이에요.');
-  });
-
-  // Quick menu
-  document.querySelectorAll('.quick-menu-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const action = btn.dataset.action;
-      if (quickActions[action]) quickActions[action]();
-    });
   });
 
   renderCoordination();

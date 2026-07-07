@@ -2,164 +2,169 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>모두의 시간</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>모두의 시간 - Meeting Coordination</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <header class="app-header">
-    <span class="brand-name">모두의 시간</span>
-    <button class="schedule-shortcut" id="header-schedule-btn" type="button">내 일정</button>
-  </header>
+<div class="dashboard-layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h1 class="sidebar-title">모두의 시간</h1>
+      <p class="sidebar-subtitle">Meeting Coordination</p>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="sidebar-menu sidebar-menu-active" data-action="dashboard">대시보드</button>
+      <button class="sidebar-menu" data-action="received-requests">받은 회의 요청</button>
+      <button class="sidebar-menu" data-action="sent-coordination">주최한 회의</button>
+      <button class="sidebar-menu" data-action="confirmed">확정된 회의</button>
+      <button class="sidebar-menu" data-action="my-schedule">내 일정</button>
+      <button class="sidebar-menu" data-action="team-compare">팀 시간 비교</button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="sidebar-create-btn" data-action="new-meeting">+ 새 회의 잡기</button>
+    </div>
+  </aside>
 
-  <main>
-
-    <p class="home-status">오늘 응답 2건 · 확인 필요 1건</p>
-
-    <button class="create-action-card" id="home-create-btn" type="button">
-      <span class="create-action-icon">+</span>
-      <span class="create-action-text">
-        <span class="create-action-title">새 회의 잡기</span>
-        <span class="create-action-desc">참석자를 추가하고 가능한 시간을 찾아보세요.</span>
-      </span>
-      <span class="create-action-chevron">›</span>
-    </button>
-
-    <section class="response-section" id="response-section">
-      <div class="section-header">
-        <h3 class="section-title">응답이 필요한 회의</h3>
-        <p class="section-desc">요청받은 회의 시간에 참석 가능 여부를 알려주세요.</p>
+  <main class="main-content">
+    <header class="main-header">
+      <div class="main-header-left">
+        <h2 class="main-header-title">회의 조율 대시보드</h2>
+        <p class="main-header-desc">오늘 응답할 요청과 확정 대기 회의를 한눈에 확인하세요.</p>
       </div>
-      <div class="response-card">
-        <div class="response-card-top">
-          <span class="response-status-badge response-status-need">오늘까지 응답</span>
-        </div>
-        <h4 class="response-card-title">2분기 캠페인 의사결정 회의</h4>
-        <p class="response-card-requester">김민지님이 요청</p>
-        <p class="request-time">2026.07.14 (화) 10:00 - 11:00</p>
-        <div class="request-info-list">
-          <div class="request-info-row">
-            <span class="request-info-label">역할</span>
-            <span class="request-info-value">필수 참석자</span>
+      <button class="header-create-btn" id="header-create-btn">+ 새 회의 잡기</button>
+    </header>
+
+    <div class="status-grid">
+      <div class="status-card">
+        <span class="status-label">응답 필요</span>
+        <span class="status-value">2건</span>
+        <span class="status-desc">오늘까지 응답해야 할 요청</span>
+      </div>
+      <div class="status-card">
+        <span class="status-label">확인 필요</span>
+        <span class="status-value">1명</span>
+        <span class="status-desc">확정 전 확인이 필요한 참석자</span>
+      </div>
+      <div class="status-card">
+        <span class="status-label">확정 완료</span>
+        <span class="status-value">1건</span>
+        <span class="status-desc">캘린더에 추가된 회의</span>
+      </div>
+      <div class="status-card">
+        <span class="status-label">일정 충돌</span>
+        <span class="status-value">1건</span>
+        <span class="status-desc">요청 시간과 겹치는 일정</span>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dashboard-col">
+        <section class="response-section" id="response-section">
+          <div class="section-header">
+            <h3 class="section-title">받은 회의 요청</h3>
+            <p class="section-desc">요청받은 회의 시간에 참석 가능 여부를 알려주세요.</p>
           </div>
-          <div class="request-info-row">
-            <span class="request-info-label">내 일정</span>
-            <span class="request-info-value">충돌 없음</span>
+          <div class="response-card">
+            <div class="response-card-top">
+              <span class="badge badge-urgent">오늘까지 응답</span>
+            </div>
+            <h4 class="response-card-title">2분기 캠페인 의사결정 회의</h4>
+            <p class="response-card-requester">김민지님이 요청</p>
+            <p class="request-time">2026.07.14 (화) 10:00 - 11:00</p>
+            <div class="request-meta">
+              <span class="request-role-label">필수 참석자</span>
+              <span class="request-divider">·</span>
+              <span class="request-conflict-label">내 일정 충돌 없음</span>
+            </div>
+            <button class="response-action-btn" id="response-btn-1" type="button">참석 여부 응답하기</button>
           </div>
-        </div>
-        <button class="response-action-btn" id="response-btn-1" type="button">참석 여부 응답하기</button>
-      </div>
-      <div class="response-card">
-        <div class="response-card-top">
-          <span class="response-status-badge response-status-conflict">충돌 있음</span>
-        </div>
-        <h4 class="response-card-title">신규 브랜드 영상 킥오프</h4>
-        <p class="response-card-requester">박준호님이 요청</p>
-        <p class="request-time">2026.07.16 (목) 13:00 - 14:00</p>
-        <div class="request-info-list">
-          <div class="request-info-row">
-            <span class="request-info-label">역할</span>
-            <span class="request-info-value">선택 참석자</span>
+          <div class="response-card">
+            <div class="response-card-top">
+              <span class="badge badge-conflict">충돌 있음</span>
+            </div>
+            <h4 class="response-card-title">신규 브랜드 영상 킥오프</h4>
+            <p class="response-card-requester">박준호님이 요청</p>
+            <p class="request-time">2026.07.16 (목) 13:00 - 14:00</p>
+            <div class="request-meta">
+              <span class="request-role-label">선택 참석자</span>
+              <span class="request-divider">·</span>
+              <span class="request-conflict-label request-conflict-warn">&#39;캠페인 리뷰&#39;와 시간이 겹쳐요.</span>
+            </div>
+            <button class="response-action-btn" id="response-btn-2" type="button">일정 확인 후 응답하기</button>
           </div>
-          <div class="request-info-row">
-            <span class="request-info-label">내 일정</span>
-            <span class="request-info-value">&#39;캠페인 리뷰&#39;와 시간이 겹쳐요.</span>
+        </section>
+      </div>
+
+      <div class="dashboard-col">
+        <section class="schedule-section" id="schedule-section">
+          <div class="section-header">
+            <h3 class="section-title">내 일정</h3>
+            <p class="section-desc">회의 요청과 겹치는 일정을 함께 확인해보세요.</p>
           </div>
-        </div>
-        <button class="response-action-btn" id="response-btn-2" type="button">일정 확인 후 응답하기</button>
+          <div class="schedule-card">
+            <p class="schedule-card-date">2026.07.14 (화) 10:00 - 11:00</p>
+            <div class="schedule-card-top">
+              <h4 class="schedule-card-title">외부 미팅</h4>
+              <span class="schedule-badge schedule-badge-clear">충돌 없음</span>
+            </div>
+            <p class="schedule-card-desc">2분기 캠페인 의사결정 회의 요청 시간과 겹치지 않아요.</p>
+          </div>
+          <div class="schedule-card schedule-card-conflict">
+            <p class="schedule-card-date">2026.07.16 (목) 13:00 - 14:00</p>
+            <div class="schedule-card-top">
+              <h4 class="schedule-card-title">캠페인 리뷰</h4>
+              <span class="schedule-badge schedule-badge-conflict">요청 시간과 겹침</span>
+            </div>
+            <p class="schedule-card-desc">신규 브랜드 영상 킥오프 요청 시간과 겹쳐요.</p>
+          </div>
+          <div class="schedule-card">
+            <p class="schedule-card-date">2026.07.17 (금) 16:00 - 17:00</p>
+            <div class="schedule-card-top">
+              <h4 class="schedule-card-title">성과 리포트 정리</h4>
+              <span class="schedule-badge schedule-badge-planned">예정</span>
+            </div>
+            <p class="schedule-card-desc">다음 회의 조율 시 참고할 수 있어요.</p>
+          </div>
+          <button class="text-btn" id="view-all-schedule-btn" type="button">내 일정 전체 보기</button>
+        </section>
       </div>
-    </section>
+    </div>
 
-    <section class="coordination-section" id="coordination-section">
-      <div class="section-header">
-        <h3 class="section-title">확정 대기 중인 회의</h3>
-        <p class="section-desc">참석 조건을 확인하고 회의 시간을 확정해보세요.</p>
+    <div class="dashboard-grid">
+      <div class="dashboard-col">
+        <section class="coordination-section" id="coordination-section">
+          <div class="section-header">
+            <h3 class="section-title">확정 대기 중인 회의</h3>
+            <p class="section-desc">참석 조건을 확인하고 회의 시간을 확정해보세요.</p>
+          </div>
+          <div id="coordination-list"></div>
+        </section>
       </div>
-      <div id="coordination-list"></div>
-    </section>
 
-    <section class="confirmed-section">
-      <div class="section-header">
-        <h3 class="section-title">확정된 회의</h3>
-        <p class="section-desc">확정된 회의 시간을 확인해보세요.</p>
+      <div class="dashboard-col">
+        <section class="confirmed-section" id="confirmed-section">
+          <div class="section-header">
+            <h3 class="section-title">확정된 회의</h3>
+            <p class="section-desc">확정된 회의 시간을 확인해보세요.</p>
+          </div>
+          <div class="confirmed-card">
+            <span class="confirmed-badge">확정 완료</span>
+            <h4 class="confirmed-card-title">브랜드 캠페인 주간 회의</h4>
+            <p class="confirmed-time">2026.07.15 (수) 14:00 - 15:00</p>
+            <p class="confirmed-meta">참석자 6명 · 회의실 A</p>
+            <p class="confirmed-calendar-status">내 캘린더에 추가됐어요.</p>
+            <button class="confirmed-action" id="confirmed-view-btn" type="button">회의 일정 보기</button>
+          </div>
+        </section>
       </div>
-      <div class="confirmed-card">
-        <span class="confirmed-badge">확정 완료</span>
-        <h4 class="confirmed-card-title">브랜드 캠페인 주간 회의</h4>
-        <p class="confirmed-time">2026.07.15 (수) 14:00 - 15:00</p>
-        <p class="confirmed-meta">참석자 6명 · 회의실 A</p>
-        <p class="confirmed-calendar-status">내 캘린더에 추가됐어요.</p>
-        <button class="confirmed-action" id="confirmed-view-btn" type="button">회의 일정 보기</button>
-      </div>
-    </section>
-
-    <section class="schedule-section" id="schedule-section">
-      <div class="section-header">
-        <h3 class="section-title">내 일정</h3>
-        <p class="section-desc">회의 요청과 겹치는 일정을 함께 확인해보세요.</p>
-      </div>
-      <div class="schedule-card">
-        <p class="schedule-card-date">2026.07.14 (화) 10:00 - 11:00</p>
-        <div class="schedule-card-top">
-          <h4 class="schedule-card-title">외부 미팅</h4>
-          <span class="schedule-badge schedule-badge-clear">충돌 없음</span>
-        </div>
-        <p class="schedule-card-desc">2분기 캠페인 의사결정 회의 요청 시간과 겹치지 않아요.</p>
-      </div>
-      <div class="schedule-card schedule-card-conflict">
-        <p class="schedule-card-date">2026.07.16 (목) 13:00 - 14:00</p>
-        <div class="schedule-card-top">
-          <h4 class="schedule-card-title">캠페인 리뷰</h4>
-          <span class="schedule-badge schedule-badge-conflict">요청 시간과 겹침</span>
-        </div>
-        <p class="schedule-card-desc">신규 브랜드 영상 킥오프 요청 시간과 겹쳐요.</p>
-      </div>
-      <div class="schedule-card">
-        <p class="schedule-card-date">2026.07.17 (금) 16:00 - 17:00</p>
-        <div class="schedule-card-top">
-          <h4 class="schedule-card-title">성과 리포트 정리</h4>
-          <span class="schedule-badge schedule-badge-planned">예정</span>
-        </div>
-        <p class="schedule-card-desc">다음 회의 조율 시 참고할 수 있어요.</p>
-      </div>
-      <button class="text-btn" id="view-all-schedule-btn" type="button">내 일정 전체 보기</button>
-    </section>
-
-    <section class="quick-menu-section">
-      <h3 class="section-title">빠른 실행</h3>
-      <div class="quick-menu-grid">
-        <button class="quick-menu-item" data-action="new-meeting" type="button">
-          <span class="quick-menu-icon quick-menu-icon-new">+</span>
-          <span class="quick-menu-label">새 회의 잡기</span>
-        </button>
-        <button class="quick-menu-item" data-action="my-schedule" type="button">
-          <span class="quick-menu-icon quick-menu-icon-cal">&#x25CB;</span>
-          <span class="quick-menu-label">내 일정 보기</span>
-        </button>
-        <button class="quick-menu-item" data-action="team-compare" type="button">
-          <span class="quick-menu-icon quick-menu-icon-team">&#x25D1;</span>
-          <span class="quick-menu-label">팀 시간 비교</span>
-        </button>
-        <button class="quick-menu-item" data-action="received-requests" type="button">
-          <span class="quick-menu-icon quick-menu-icon-req">&#x25A1;</span>
-          <span class="quick-menu-label">받은 회의 요청</span>
-        </button>
-        <button class="quick-menu-item" data-action="sent-coordination" type="button">
-          <span class="quick-menu-icon quick-menu-icon-sent">&#x25A3;</span>
-          <span class="quick-menu-label">주최한 회의</span>
-        </button>
-        <button class="quick-menu-item" data-action="confirmed" type="button">
-          <span class="quick-menu-icon quick-menu-icon-done">&#x2713;</span>
-          <span class="quick-menu-label">확정된 회의</span>
-        </button>
-      </div>
-    </section>
-
+    </div>
   </main>
+</div>
 
-  <div id="toast" class="toast"></div>
+<div id="toast" class="toast"></div>
 
-  <script src="main.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
