@@ -22,9 +22,6 @@
       <button class="sidebar-menu" data-action="my-schedule">내 일정</button>
       <button class="sidebar-menu" data-action="team-compare">팀 시간 비교</button>
     </nav>
-    <div class="sidebar-footer">
-      <button class="sidebar-create-btn" data-action="new-meeting">+ 새 회의 잡기</button>
-    </div>
   </aside>
 
   <main class="main-content">
@@ -37,22 +34,22 @@
     </header>
 
     <div class="status-grid">
-      <div class="status-card">
+      <div class="status-card status-card-urgent">
         <span class="status-label">응답 필요</span>
         <span class="status-value">2건</span>
         <span class="status-desc">오늘까지 응답해야 할 요청</span>
       </div>
-      <div class="status-card">
+      <div class="status-card status-card-warning">
         <span class="status-label">확인 필요</span>
         <span class="status-value">1명</span>
         <span class="status-desc">확정 전 확인이 필요한 참석자</span>
       </div>
-      <div class="status-card">
+      <div class="status-card status-card-success">
         <span class="status-label">확정 완료</span>
         <span class="status-value">1건</span>
         <span class="status-desc">캘린더에 추가된 회의</span>
       </div>
-      <div class="status-card">
+      <div class="status-card status-card-conflict">
         <span class="status-label">일정 충돌</span>
         <span class="status-value">1건</span>
         <span class="status-desc">요청 시간과 겹치는 일정</span>
@@ -66,33 +63,37 @@
             <h3 class="section-title">받은 회의 요청</h3>
             <p class="section-desc">요청받은 회의 시간에 참석 가능 여부를 알려주세요.</p>
           </div>
-          <div class="response-card">
-            <div class="response-card-top">
+          <div class="response-row">
+            <div class="response-row-left">
               <span class="badge badge-urgent">오늘까지 응답</span>
+              <div class="response-row-text">
+                <h4 class="response-row-title">2분기 캠페인 의사결정 회의</h4>
+                <span class="response-row-requester">김민지님이 요청</span>
+              </div>
             </div>
-            <h4 class="response-card-title">2분기 캠페인 의사결정 회의</h4>
-            <p class="response-card-requester">김민지님이 요청</p>
-            <p class="request-time">2026.07.14 (화) 10:00 - 11:00</p>
-            <div class="request-meta">
-              <span class="request-role-label">필수 참석자</span>
-              <span class="request-divider">·</span>
-              <span class="request-conflict-label">내 일정 충돌 없음</span>
+            <span class="response-row-time">2026.07.14 (화) 10:00 - 11:00</span>
+            <div class="response-row-meta">
+              <span class="response-row-role">필수 참석자</span>
+              <span class="response-row-divider">·</span>
+              <span class="response-row-conflict">내 일정 충돌 없음</span>
             </div>
-            <button class="response-action-btn" id="response-btn-1" type="button">참석 여부 응답하기</button>
+            <button class="response-row-action" id="response-btn-1" type="button">참석 여부 응답하기</button>
           </div>
-          <div class="response-card">
-            <div class="response-card-top">
+          <div class="response-row">
+            <div class="response-row-left">
               <span class="badge badge-conflict">충돌 있음</span>
+              <div class="response-row-text">
+                <h4 class="response-row-title">신규 브랜드 영상 킥오프</h4>
+                <span class="response-row-requester">박준호님이 요청</span>
+              </div>
             </div>
-            <h4 class="response-card-title">신규 브랜드 영상 킥오프</h4>
-            <p class="response-card-requester">박준호님이 요청</p>
-            <p class="request-time">2026.07.16 (목) 13:00 - 14:00</p>
-            <div class="request-meta">
-              <span class="request-role-label">선택 참석자</span>
-              <span class="request-divider">·</span>
-              <span class="request-conflict-label request-conflict-warn">&#39;캠페인 리뷰&#39;와 시간이 겹쳐요.</span>
+            <span class="response-row-time">2026.07.16 (목) 13:00 - 14:00</span>
+            <div class="response-row-meta">
+              <span class="response-row-role">선택 참석자</span>
+              <span class="response-row-divider">·</span>
+              <span class="response-row-conflict response-row-conflict-warn">&#39;캠페인 리뷰&#39;와 시간이 겹쳐요.</span>
             </div>
-            <button class="response-action-btn" id="response-btn-2" type="button">일정 확인 후 응답하기</button>
+            <button class="response-row-action" id="response-btn-2" type="button">일정 확인 후 응답하기</button>
           </div>
         </section>
       </div>
@@ -127,7 +128,7 @@
             </div>
             <p class="schedule-card-desc">다음 회의 조율 시 참고할 수 있어요.</p>
           </div>
-          <button class="text-btn" id="view-all-schedule-btn" type="button">내 일정 전체 보기</button>
+          <button class="link-btn" id="view-all-schedule-btn" type="button">내 일정 전체 보기</button>
         </section>
       </div>
     </div>

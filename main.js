@@ -57,13 +57,19 @@ function renderCoordination() {
   }
 
   container.innerHTML = coordinationData.map((item, index) => `
-    <div class="coordination-card">
-      <h4 class="coordination-card-title">${item.title}</h4>
-      <span class="coordination-status">${item.status}</span>
-      <p class="coordination-card-label">${item.label}</p>
-      ${item.time ? `<p class="coordination-time">${item.time}</p>` : ''}
-      ${item.descriptions.map(d => `<p class="coordination-summary">${d}</p>`).join('')}
-      <button class="coordination-detail-btn" type="button" data-index="${index}">${item.ctaText}</button>
+    <div class="coordination-row">
+      <div class="coordination-row-main">
+        <span class="coordination-row-badge">${item.status}</span>
+        <h4 class="coordination-row-title">${item.title}</h4>
+      </div>
+      <div class="coordination-row-info">
+        <span class="coordination-row-label">${item.label}</span>
+        ${item.time ? `<span class="coordination-row-time">${item.time}</span>` : '<span class="coordination-row-time">가능한 시간 3개</span>'}
+      </div>
+      <div class="coordination-row-meta">
+        <span class="coordination-row-desc">${item.descriptions[item.descriptions.length - 1]}</span>
+        <button class="coordination-detail-btn" type="button" data-index="${index}">${item.ctaText}</button>
+      </div>
     </div>
   `).join('');
 
@@ -126,12 +132,6 @@ function init() {
       btn.classList.add('sidebar-menu-active');
       if (sidebarActions[action]) sidebarActions[action]();
     });
-  });
-
-  // Sidebar create button
-  document.querySelector('.sidebar-create-btn').addEventListener('click', () => {
-    clearPreviousSession();
-    window.location.href = 'create.html';
   });
 
   // Response buttons
