@@ -119,11 +119,224 @@ button {
   min-width: 0;
 }
 
-/* ─── Right Reserved Area ─── */
+/* ─── Right Panel ─── */
 
 .dashboard-aside {
   width: 340px;
   background: #F7F7F7;
+  padding: 44px 0 40px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ─── Profile Card ─── */
+
+.aside-profile-card {
+  background: #FFFFFF;
+  border: 1px solid #E8E6E1;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.aside-profile-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.aside-avatar {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #1F1F1F;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.aside-profile-info {
+  min-width: 0;
+}
+
+.aside-profile-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #171717;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.aside-profile-role {
+  font-size: 13px;
+  color: #6F7378;
+  line-height: 1.4;
+}
+
+.aside-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #6F7378;
+  line-height: 1.4;
+}
+
+.aside-status-dot {
+  color: #D0CEC9;
+}
+
+/* ─── Calendar Card ─── */
+
+.aside-calendar-card {
+  background: #FFFFFF;
+  border: 1px solid #E8E6E1;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.aside-calendar-header {
+  font-size: 16px;
+  font-weight: 700;
+  color: #171717;
+  margin-bottom: 14px;
+}
+
+.aside-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9A9EA4;
+  margin-bottom: 8px;
+}
+
+.aside-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 2px;
+}
+
+.aside-calendar-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #171717;
+  border-radius: 6px;
+}
+
+.aside-day-request {
+  background: #FFF4E5;
+  color: #B45309;
+  font-weight: 700;
+}
+
+.aside-day-confirmed {
+  background: #EAF7EF;
+  color: #15803D;
+  font-weight: 700;
+}
+
+.aside-day-conflict {
+  background: #FFF1F1;
+  color: #DC2626;
+  font-weight: 700;
+}
+
+.aside-day-planned {
+  background: #F0EFEA;
+  color: #6F7378;
+  font-weight: 600;
+}
+
+/* ─── Schedule Card ─── */
+
+.aside-schedule-card {
+  background: #FFFFFF;
+  border: 1px solid #E8E6E1;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.aside-schedule-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #171717;
+  margin-bottom: 14px;
+}
+
+.aside-schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #F0EFEA;
+}
+
+.aside-schedule-item:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.aside-schedule-item:first-of-type {
+  padding-top: 0;
+}
+
+.aside-schedule-time {
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6F7378;
+  min-width: 90px;
+}
+
+.aside-schedule-name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: #171717;
+  min-width: 0;
+}
+
+.aside-schedule-badge {
+  flex-shrink: 0;
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #DC2626;
+  background: #FFF1F1;
+  padding: 2px 8px;
+  border-radius: 999px;
+  width: auto;
+}
+
+.aside-schedule-link {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: #FF6B2C;
+  padding: 14px 0 0;
+  display: block;
+  transition: opacity 0.15s;
+}
+
+.aside-schedule-link:hover {
+  opacity: 0.7;
 }
 
 /* ─── Main Header ─── */
@@ -147,17 +360,28 @@ button {
   line-height: 1.5;
 }
 
-/* ─── Dashboard 2-Column Grid ─── */
+/* ─── Dashboard Content Grid ─── */
 
-.dashboard-grid {
+.dashboard-content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(340px, 1fr);
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 1fr);
   gap: 28px;
-  margin-bottom: 44px;
 }
 
-.dashboard-grid:last-of-type {
-  margin-bottom: 0;
+.priority-section {
+  grid-column: 1 / -1;
+}
+
+.response-section {
+  grid-column: 1 / -1;
+}
+
+.coordination-section {
+  /* auto placed — left column */
+}
+
+.confirmed-section {
+  /* auto placed — right column */
 }
 
 .dashboard-col {
@@ -181,6 +405,101 @@ button {
   font-size: 16px;
   color: #6F7378;
   line-height: 1.5;
+}
+
+/* ─── Priority Section ─── */
+
+.priority-section {
+  background: #FFFFFF;
+  border: 1px solid #E8E6E1;
+  border-radius: 20px;
+  padding: 28px;
+}
+
+.priority-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid #F0EFEA;
+  cursor: pointer;
+  transition: background 0.12s;
+  margin: 0 -8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 8px;
+}
+
+.priority-row:hover {
+  background: #F7F7F7;
+}
+
+.priority-row:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.priority-row:first-of-type {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.priority-number {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1F1F1F;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
+}
+
+.priority-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.priority-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #171717;
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
+.priority-desc {
+  font-size: 13px;
+  color: #6F7378;
+  line-height: 1.4;
+}
+
+.priority-badge {
+  flex-shrink: 0;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.priority-badge-urgent {
+  background: #FFF4E5;
+  color: #B45309;
+}
+
+.priority-badge-conflict {
+  background: #FFF1F1;
+  color: #DC2626;
+}
+
+.priority-badge-choice {
+  background: #EAF7EF;
+  color: #15803D;
 }
 
 /* ─── Badges (shared) ─── */
@@ -659,9 +978,13 @@ button {
   .dashboard-main {
     padding: 32px 24px 60px;
   }
-  .dashboard-grid {
+  .dashboard-content-grid {
     gap: 20px;
     grid-template-columns: 1fr;
+  }
+  .priority-section,
+  .response-section {
+    grid-column: auto;
   }
 }
 

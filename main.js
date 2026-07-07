@@ -134,6 +134,14 @@ function init() {
     });
   });
 
+  // Priority row click
+  document.querySelectorAll('.priority-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const target = row.dataset.target;
+      if (target) scrollToSection(target);
+    });
+  });
+
   // Response buttons
   document.getElementById('response-btn-1').addEventListener('click', () => {
     console.log('참석 여부 응답하기 클릭');
@@ -145,16 +153,16 @@ function init() {
     showToast('일정 확인 후 응답 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
-  // View all schedule
-  document.getElementById('view-all-schedule-btn').addEventListener('click', () => {
-    console.log('내 일정 전체 보기 클릭');
-    showToast('전체 일정 화면은 다음 단계에서 연결할 예정이에요.');
-  });
-
   // Confirmed meeting view
   document.getElementById('confirmed-view-btn').addEventListener('click', () => {
     console.log('회의 일정 보기 클릭');
     showToast('회의 일정 상세 화면은 다음 단계에서 연결할 예정이에요.');
+  });
+
+  // Right panel schedule link
+  document.getElementById('aside-schedule-link').addEventListener('click', () => {
+    console.log('내 일정 전체 보기 클릭');
+    showToast('전체 일정 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   renderCoordination();
