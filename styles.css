@@ -123,24 +123,35 @@ button {
 
 .dashboard-aside {
   width: 340px;
-  background: #F7F7F7;
-  padding: 44px 0 40px;
+  background: #FFFFFF;
+  border-left: 1px solid #E8E6E1;
+  padding: 40px 16px;
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0;
 }
 
-/* ─── Profile Card ─── */
+.aside-section {
+  padding: 0 0 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #E8E6E1;
+}
+
+.aside-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* ─── Profile Section ─── */
 
 .aside-profile-card {
-  background: #FFFFFF;
-  border: 1px solid #E8E6E1;
-  border-radius: 20px;
-  padding: 20px;
+  padding: 0 0 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #E8E6E1;
 }
 
 .aside-profile-top {
@@ -195,13 +206,12 @@ button {
   color: #D0CEC9;
 }
 
-/* ─── Calendar Card ─── */
+/* ─── Calendar Section ─── */
 
 .aside-calendar-card {
-  background: #FFFFFF;
-  border: 1px solid #E8E6E1;
-  border-radius: 20px;
-  padding: 20px;
+  padding: 0 0 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #E8E6E1;
 }
 
 .aside-calendar-header {
@@ -215,25 +225,25 @@ button {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #9A9EA4;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .aside-calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  gap: 2px;
+  gap: 1px;
 }
 
 .aside-calendar-day {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 30px;
-  font-size: 13px;
+  height: 28px;
+  font-size: 12px;
   font-weight: 500;
   color: #171717;
   border-radius: 6px;
@@ -263,13 +273,12 @@ button {
   font-weight: 600;
 }
 
-/* ─── Schedule Card ─── */
+/* ─── Schedule Section ─── */
 
 .aside-schedule-card {
-  background: #FFFFFF;
-  border: 1px solid #E8E6E1;
-  border-radius: 20px;
-  padding: 20px;
+  padding: 0 0 24px;
+  margin-bottom: 0;
+  border-bottom: none;
 }
 
 .aside-schedule-title {
