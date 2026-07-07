@@ -15,9 +15,9 @@
     </div>
     <nav class="sidebar-nav">
       <button class="sidebar-menu sidebar-menu-active" data-action="dashboard">대시보드</button>
-      <button class="sidebar-menu" data-action="received-requests">받은 회의 요청</button>
-      <button class="sidebar-menu" data-action="sent-coordination">주최한 회의</button>
-      <button class="sidebar-menu" data-action="confirmed">확정된 회의</button>
+      <button class="sidebar-menu" data-action="received-requests">받은 조율 요청</button>
+      <button class="sidebar-menu" data-action="sent-coordination">주최한 조율</button>
+      <button class="sidebar-menu" data-action="confirmed">확정된 일정</button>
       <button class="sidebar-menu" data-action="team-compare">팀 시간 비교</button>
       <button class="sidebar-menu" data-action="my-schedule">내 일정</button>
     </nav>
@@ -27,19 +27,19 @@
   <main class="dashboard-main">
     <header class="main-header">
       <h2 class="main-header-title">대시보드</h2>
-      <p class="main-header-desc">오늘 처리할 회의 요청과 확정 대기 상태를 확인하세요.</p>
+      <p class="main-header-desc">오늘 처리할 조율 요청과 주요 업무 일정을 확인하세요.</p>
     </header>
 
     <div class="dashboard-content-grid">
       <section class="priority-section">
         <div class="section-header">
           <h3 class="section-title">오늘의 우선순위</h3>
-          <p class="section-desc">먼저 확인해야 할 회의 조율 업무를 정리했어요.</p>
+          <p class="section-desc">먼저 확인해야 할 일정 조율 업무를 정리했어요.</p>
         </div>
         <div class="priority-row" data-target="response-section">
           <span class="priority-number">1</span>
           <div class="priority-content">
-            <h4 class="priority-title">2분기 캠페인 의사결정 회의 응답</h4>
+            <h4 class="priority-title">2분기 캠페인 의사결정 일정 응답</h4>
             <p class="priority-desc">오늘까지 응답 필요</p>
           </div>
           <span class="priority-badge priority-badge-urgent">응답 필요</span>
@@ -55,7 +55,7 @@
         <div class="priority-row" data-target="coordination-section">
           <span class="priority-number">3</span>
           <div class="priority-content">
-            <h4 class="priority-title">제품 런칭 리뷰 회의 후보 선택</h4>
+            <h4 class="priority-title">제품 런칭 리뷰 일정 후보 선택</h4>
             <p class="priority-desc">추천 후보 3개</p>
           </div>
           <span class="priority-badge priority-badge-choice">후보 선택</span>
@@ -64,8 +64,8 @@
 
       <section class="response-section" id="response-section">
         <div class="section-header">
-          <h3 class="section-title">받은 회의 요청</h3>
-          <p class="section-desc">요청받은 회의 시간에 참석 가능 여부를 알려주세요.</p>
+          <h3 class="section-title">받은 조율 요청</h3>
+          <p class="section-desc">요청받은 시간에 참석 가능 여부를 알려주세요.</p>
         </div>
         <div class="response-row">
           <div class="response-row-left">
@@ -103,16 +103,16 @@
 
       <section class="coordination-section" id="coordination-section">
         <div class="section-header">
-          <h3 class="section-title">확정 대기 중인 회의</h3>
-          <p class="section-desc">참석 조건을 확인하고 회의 시간을 확정해보세요.</p>
+          <h3 class="section-title">확정 대기 중인 일정</h3>
+          <p class="section-desc">참석 조건을 확인하고 일정을 확정해보세요.</p>
         </div>
         <div id="coordination-list"></div>
       </section>
 
       <section class="confirmed-section" id="confirmed-section">
         <div class="section-header">
-          <h3 class="section-title">확정된 회의</h3>
-          <p class="section-desc">확정된 회의 시간을 확인해보세요.</p>
+          <h3 class="section-title">확정된 일정</h3>
+          <p class="section-desc">확정된 일정을 확인해보세요.</p>
         </div>
         <div class="confirmed-card">
           <span class="confirmed-badge">확정 완료</span>
@@ -120,7 +120,7 @@
           <p class="confirmed-time">2026.07.15 (수) 14:00 - 15:00</p>
           <p class="confirmed-meta">참석자 6명 · 회의실 A</p>
           <p class="confirmed-calendar-status">내 캘린더에 추가됐어요.</p>
-          <button class="confirmed-action" id="confirmed-view-btn" type="button">회의 일정 보기</button>
+          <button class="confirmed-action" id="confirmed-view-btn" type="button">일정 상세 보기</button>
         </div>
       </section>
     </div>
@@ -132,7 +132,7 @@
         <div class="aside-avatar">D</div>
         <div class="aside-profile-info">
           <h4 class="aside-profile-name">도이</h4>
-          <p class="aside-profile-role">마케팅팀 · 회의 주최자</p>
+          <p class="aside-profile-role">마케팅팀 · 일정 조율자</p>
         </div>
       </div>
       <div class="aside-status-bar">

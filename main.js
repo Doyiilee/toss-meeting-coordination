@@ -49,7 +49,7 @@ function renderCoordination() {
   if (!coordinationData || coordinationData.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
-        <strong class="empty-state-title">확정 대기 중인 회의가 없어요</strong>
+        <strong class="empty-state-title">확정 대기 중인 일정이 없어요</strong>
         <p class="empty-state-desc">새 회의를 만들면 확정 가능한 시간을 함께 찾아드릴게요.</p>
       </div>
     `;
@@ -155,8 +155,8 @@ function init() {
 
   // Confirmed meeting view
   document.getElementById('confirmed-view-btn').addEventListener('click', () => {
-    console.log('회의 일정 보기 클릭');
-    showToast('회의 일정 상세 화면은 다음 단계에서 연결할 예정이에요.');
+    console.log('일정 상세 보기 클릭');
+    showToast('일정 상세 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   // Right panel schedule link
