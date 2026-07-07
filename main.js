@@ -117,8 +117,8 @@ const sidebarActions = {
 
 // ─── Init ───
 function init() {
-  // Header create button
-  document.getElementById('header-create-btn').addEventListener('click', () => {
+  // Sidebar create button
+  document.getElementById('sidebar-create-btn').addEventListener('click', () => {
     clearPreviousSession();
     window.location.href = 'create.html';
   });
