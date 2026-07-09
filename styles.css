@@ -90,8 +90,8 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 
 .profile-avatar {
@@ -175,10 +175,10 @@ ul {
 
 .dashboard-main {
   flex: 1;
-  padding: 40px 36px;
+  padding: 36px 32px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 32px;
   overflow-y: auto;
   min-width: 0;
 }
@@ -221,19 +221,19 @@ ul {
   background: #EEF3FF;
   border: 1px solid #E5E8EB;
   border-radius: 14px;
-  padding: 24px 40px;
+  padding: 20px 32px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
 }
 
 .summary-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 24px;
-  line-height: 32px;
+  gap: 6px;
+  font-size: 20px;
+  line-height: 28px;
   white-space: nowrap;
 }
 
@@ -258,8 +258,8 @@ ul {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 22px;
   color: #171A1F;
   white-space: nowrap;
 }
@@ -285,21 +285,21 @@ ul {
 .section-header-block {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .section-title-large {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #171A1F;
-  line-height: 32px;
+  line-height: 28px;
 }
 
 .section-desc-large {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   color: #343B46;
-  line-height: 24px;
+  line-height: 22px;
 }
 
 /* ─── Urgent Section ─── */
@@ -308,26 +308,25 @@ ul {
   background: #FFFFFF;
   border: 1px solid #E5E8EB;
   border-radius: 14px;
-  padding: 40px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
 }
 
 .urgent-cards {
   display: flex;
-  gap: 28px;
-  overflow-x: auto;
+  gap: 24px;
 }
 
 .urgent-card {
-  width: 300px;
-  min-width: 300px;
-  height: 350px;
+  width: 290px;
+  min-width: 290px;
+  height: auto;
   background: #FFFFFF;
   border: 1px solid #D6DADE;
-  border-radius: 16px;
-  padding: 24px 28px 28px;
+  border-radius: 14px;
+  padding: 20px 24px 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -337,7 +336,7 @@ ul {
 .urgent-card-body {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .card-badge {
@@ -363,14 +362,14 @@ ul {
 .card-text-block {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .card-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: #171A1F;
-  line-height: 24px;
+  line-height: 22px;
 }
 
 .card-highlight {
@@ -386,7 +385,7 @@ ul {
 .card-meta-grid {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .card-meta-row {
@@ -475,7 +474,7 @@ ul {
 
 .bottom-row {
   display: flex;
-  gap: 32px;
+  gap: 24px;
   align-items: flex-start;
 }
 
@@ -485,17 +484,17 @@ ul {
   background: #FFFFFF;
   border: 1px solid #E5E8EB;
   border-radius: 14px;
-  padding: 40px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
   flex: 1;
 }
 
 .next-schedule-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .next-schedule-title-row {
@@ -564,7 +563,7 @@ ul {
 .received-section {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
   min-width: 0;
 }
 
@@ -574,12 +573,12 @@ ul {
 }
 
 .received-card {
-  width: 300px;
-  min-width: 300px;
+  width: 290px;
+  min-width: 290px;
   background: #FFFFFF;
   border: 1px solid #D6DADE;
-  border-radius: 16px;
-  padding: 24px 28px 28px;
+  border-radius: 14px;
+  padding: 20px 24px 24px;
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -589,7 +588,7 @@ ul {
 .received-card-body {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .card-subtitle {
@@ -602,7 +601,7 @@ ul {
 /* ─── Right Panel ─── */
 
 .dashboard-aside {
-  width: 340px;
+  width: 398px;
   flex-shrink: 0;
   position: sticky;
   top: 80px;
@@ -928,13 +927,13 @@ ul {
 
 /* ─── Responsive ─── */
 
-@media (max-width: 1600px) {
+@media (max-width: 1750px) {
   .dashboard-aside {
     width: 300px;
   }
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1550px) {
   .dashboard-aside {
     display: none;
   }
