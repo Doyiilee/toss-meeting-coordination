@@ -523,9 +523,10 @@ ul {
 /* ─── Bottom Row ─── */
 
 .bottom-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 350px minmax(0, 1fr);
   gap: 28px;
-  align-items: flex-start;
+  align-items: start;
   width: 100%;
 }
 
@@ -625,12 +626,12 @@ ul {
 }
 
 .received-cards {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 28px;
 }
 
 .received-card {
-  flex: 1;
   min-width: 0;
   background: var(--color-white);
   border: 1px solid var(--color-card-border);
@@ -638,7 +639,7 @@ ul {
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  justify-content: space-between;
   box-shadow: 2px 4px 8px 0 rgba(95,95,95,0.06);
 }
 
@@ -674,6 +675,11 @@ ul {
 .aside-divider {
   border: none;
   border-top: 1px solid var(--color-border);
+}
+
+.aside-content {
+  max-width: 338px;
+  margin: 0 auto;
 }
 
 /* Profile */
@@ -961,13 +967,16 @@ ul {
     padding: 32px 24px 60px;
   }
   .bottom-row {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
   .next-schedule-section {
     width: 100%;
   }
   .received-section {
     width: 100%;
+  }
+  .received-cards {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -999,9 +1008,6 @@ ul {
   }
   .urgent-cards {
     grid-template-columns: 1fr;
-  }
-  .received-cards {
-    flex-direction: column;
   }
   .summary-banner {
     padding: 20px 24px;
