@@ -12,6 +12,12 @@ function clearPreviousSession() {
   keys.forEach(key => sessionStorage.removeItem(key));
 }
 
+function setActiveNav(action) {
+  document.querySelectorAll('.sidebar-icon-btn').forEach(btn => {
+    btn.classList.toggle('sidebar-icon-active', btn.dataset.action === action);
+  });
+}
+
 function init() {
   document.getElementById('btn-add-schedule').addEventListener('click', () => {
     clearPreviousSession();
@@ -21,10 +27,28 @@ function init() {
   document.querySelectorAll('.sidebar-icon-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.dataset.action;
-      if (action === 'dashboard') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        showToast('해당 기능은 준비 중이에요.');
+      switch (action) {
+        case 'dashboard':
+          setActiveNav('dashboard');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          break;
+        case 'calendar':
+          document.querySelector('.urgent-section').scrollIntoView({ behavior: 'smooth' });
+          break;
+        case 'meeting':
+          document.querySelector('.received-section').scrollIntoView({ behavior: 'smooth' });
+          break;
+        case 'message':
+          showToast('메시지 화면은 다음 단계에서 연결할 예정이에요.');
+          break;
+        case 'mail':
+          showToast('메일 화면은 다음 단계에서 연결할 예정이에요.');
+          break;
+        case 'address':
+          showToast('주소록 화면은 다음 단계에서 연결할 예정이에요.');
+          break;
+        default:
+          showToast('해당 기능은 준비 중이에요.');
       }
     });
   });
@@ -38,7 +62,7 @@ function init() {
   });
 
   document.getElementById('sidebar-more-btn').addEventListener('click', () => {
-    showToast('더보기 메뉴는 준비 중이에요.');
+    showToast('더보기 메뉴는 다음 단계에서 연결할 예정이에요.');
   });
 
   document.getElementById('urgent-btn-1').addEventListener('click', () => {
@@ -46,15 +70,15 @@ function init() {
   });
 
   document.getElementById('urgent-btn-2').addEventListener('click', () => {
-    showToast('답장 기능은 다음 단계에서 연결할 예정이에요.');
+    showToast('답장 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   document.getElementById('urgent-btn-3').addEventListener('click', () => {
-    showToast('확인 기능은 다음 단계에서 연결할 예정이에요.');
+    showToast('확인 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   document.getElementById('urgent-btn-4').addEventListener('click', () => {
-    showToast('검토 기능은 다음 단계에서 연결할 예정이에요.');
+    showToast('검토 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   document.getElementById('next-schedule-btn').addEventListener('click', () => {
