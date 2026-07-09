@@ -20,8 +20,7 @@ function setActiveNav(action) {
 
 function init() {
   document.getElementById('btn-add-schedule').addEventListener('click', () => {
-    clearPreviousSession();
-    window.location.href = 'create.html';
+    showToast('일정 추가 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   document.querySelectorAll('.sidebar-icon-btn').forEach(btn => {

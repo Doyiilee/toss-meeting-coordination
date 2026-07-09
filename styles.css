@@ -40,7 +40,7 @@ body {
   color: var(--color-text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 button {
@@ -147,19 +147,19 @@ ul {
   grid-template-columns: 76px minmax(0, 1fr) 378px;
   width: 100%;
   min-height: calc(100dvh - 72px);
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 /* ─── Sidebar ─── */
 
 .sidebar {
-  position: sticky;
+  position: fixed;
   top: 72px;
+  left: 0;
   width: 76px;
   height: calc(100dvh - 72px);
   background: var(--color-white);
-  border-right: 0;
-  box-shadow: inset -1px 0 0 var(--color-border);
+  border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -210,8 +210,9 @@ ul {
 /* ─── Main Content ─── */
 
 .dashboard-main {
+  grid-column: 2;
   min-width: 0;
-  padding: 40px 24px;
+  padding: 40px 36px 40px 36px;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -263,6 +264,7 @@ ul {
   align-items: flex-start;
   gap: 12px;
   width: 100%;
+  min-height: 116px;
 }
 
 .summary-title {
@@ -345,7 +347,7 @@ ul {
   background: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  padding: 32px 20px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -365,11 +367,11 @@ ul {
 }
 
 .urgent-card {
-  min-height: 320px;
+  min-height: 350px;
   background: var(--color-white);
   border: 1px solid var(--color-card-border);
   border-radius: 14px;
-  padding: 24px;
+  padding: 24px 28px 28px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -531,8 +533,8 @@ ul {
 
 .bottom-row {
   display: grid;
-  grid-template-columns: minmax(300px, 320px) minmax(0, 1fr);
-  gap: 24px;
+  grid-template-columns: 358px minmax(0, 1fr);
+  gap: 32px;
   align-items: start;
   width: 100%;
   min-width: 0;
@@ -544,11 +546,12 @@ ul {
   background: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  padding: 40px 32px;
+  padding: 40px 48px 40px 40px;
   display: flex;
   flex-direction: column;
   gap: 24px;
   width: 100%;
+  min-height: 540px;
   min-width: 0;
 }
 
@@ -625,17 +628,17 @@ ul {
   background: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  padding: 32px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
   min-width: 0;
 }
 
 .received-cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  gap: 28px;
   min-width: 0;
 }
 
@@ -662,19 +665,20 @@ ul {
 .dashboard-aside {
   width: 378px;
   min-width: 0;
-  position: sticky;
+  position: fixed;
   top: 72px;
+  right: 0;
   height: calc(100dvh - 72px);
   overflow-y: auto;
   overflow-x: hidden;
   padding: 40px 40px 40px 0;
   background: var(--color-white);
-  border-left: 0;
-  box-shadow: inset 1px 0 0 var(--color-border), 3px 6px 12px 0 rgba(0,0,0,0.06);
+  border-left: 1px solid var(--color-border);
+  box-shadow: 3px 6px 12px 0 rgba(0,0,0,0.06);
 }
 
 .aside-section {
-  padding: 0;
+  padding: 0 21px;
 }
 
 .aside-section + .aside-divider {
@@ -970,6 +974,7 @@ ul {
   .body-layout {
     grid-template-columns: 76px minmax(0, 1fr);
   }
+
   .dashboard-aside {
     display: none;
   }
@@ -997,6 +1002,7 @@ ul {
   .body-layout {
     grid-template-columns: 1fr;
   }
+
   .sidebar {
     position: relative;
     top: 0;
@@ -1014,6 +1020,7 @@ ul {
     display: none;
   }
   .dashboard-main {
+    grid-column: 1;
     padding: 24px 16px 48px;
   }
   .main-title {
