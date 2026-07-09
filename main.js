@@ -35,7 +35,7 @@ function init() {
           document.querySelector('.urgent-section').scrollIntoView({ behavior: 'smooth' });
           break;
         case 'meeting':
-          document.querySelector('.received-section').scrollIntoView({ behavior: 'smooth' });
+          window.location.href = 'meetings.html';
           break;
         case 'message':
           showToast('메시지 화면은 다음 단계에서 연결할 예정이에요.');
