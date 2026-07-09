@@ -40,6 +40,7 @@ body {
   color: var(--color-text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 
 button {
@@ -137,10 +138,16 @@ ul {
 
 /* ─── Body Layout ─── */
 
+.app-layout {
+  min-height: 100vh;
+}
+
 .body-layout {
-  display: flex;
-  flex: 1;
-  min-height: 0;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) 378px;
+  width: 100%;
+  min-height: calc(100dvh - 72px);
+  overflow-x: clip;
 }
 
 /* ─── Sidebar ─── */
@@ -151,7 +158,8 @@ ul {
   width: 76px;
   height: calc(100dvh - 72px);
   background: var(--color-white);
-  border-right: 1px solid var(--color-border);
+  border-right: 0;
+  box-shadow: inset -1px 0 0 var(--color-border);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -202,13 +210,12 @@ ul {
 /* ─── Main Content ─── */
 
 .dashboard-main {
-  flex: 1;
-  padding: 40px 36px 40px 36px;
+  min-width: 0;
+  padding: 40px 24px;
   display: flex;
   flex-direction: column;
   gap: 40px;
-  overflow-y: auto;
-  min-width: 0;
+  overflow-x: hidden;
 }
 
 .main-top-bar {
@@ -524,10 +531,11 @@ ul {
 
 .bottom-row {
   display: grid;
-  grid-template-columns: 350px minmax(0, 1fr);
-  gap: 28px;
+  grid-template-columns: minmax(300px, 320px) minmax(0, 1fr);
+  gap: 24px;
   align-items: start;
   width: 100%;
+  min-width: 0;
 }
 
 /* ─── Next Schedule Section ─── */
@@ -536,12 +544,12 @@ ul {
   background: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  padding: 40px 48px 40px 40px;
+  padding: 40px 32px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  width: 350px;
-  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
 }
 
 .next-schedule-header {
@@ -617,18 +625,18 @@ ul {
   background: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: 14px;
-  padding: 40px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 24px;
   min-width: 0;
-  flex: 1;
 }
 
 .received-cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
+  gap: 24px;
+  min-width: 0;
 }
 
 .received-card {
@@ -653,15 +661,16 @@ ul {
 
 .dashboard-aside {
   width: 378px;
-  flex-shrink: 0;
+  min-width: 0;
   position: sticky;
   top: 72px;
   height: calc(100dvh - 72px);
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 40px 40px 40px 0;
   background: var(--color-white);
-  border-left: 1px solid var(--color-border);
-  box-shadow: 3px 6px 12px 0 rgba(0,0,0,0.06);
+  border-left: 0;
+  box-shadow: inset 1px 0 0 var(--color-border), 3px 6px 12px 0 rgba(0,0,0,0.06);
 }
 
 .aside-section {
@@ -958,6 +967,9 @@ ul {
 /* ─── Responsive ─── */
 
 @media (max-width: 1280px) {
+  .body-layout {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
   .dashboard-aside {
     display: none;
   }
@@ -982,6 +994,9 @@ ul {
 }
 
 @media (max-width: 900px) {
+  .body-layout {
+    grid-template-columns: 1fr;
+  }
   .sidebar {
     position: relative;
     top: 0;
