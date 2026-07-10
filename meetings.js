@@ -12,9 +12,71 @@ function clearPreviousSession() {
   keys.forEach(key => sessionStorage.removeItem(key));
 }
 
-function goToCreate() {
+const selectedParticipants = new Set();
+
+function resetSelectedParticipants() {
+  selectedParticipants.clear();
+  document.querySelectorAll('.participant-chip').forEach(chip => {
+    chip.classList.remove('chip-selected');
+  });
+  renderSelectedParticipants();
+}
+
+function renderSelectedParticipants() {
+  const list = document.getElementById('selected-participants');
+  const empty = document.getElementById('empty-participants');
+  list.querySelectorAll('.selected-participant-item').forEach(item => item.remove());
+
+  if (selectedParticipants.size === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  selectedParticipants.forEach(name => {
+    const item = document.createElement('span');
+    item.className = 'selected-participant-item';
+    item.textContent = name;
+
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.className = 'remove-participant';
+    removeButton.setAttribute('aria-label', `${name} 제거`);
+    removeButton.textContent = '×';
+    removeButton.addEventListener('click', () => {
+      selectedParticipants.delete(name);
+      document.querySelector(`.participant-chip[data-participant="${name}"]`)?.classList.remove('chip-selected');
+      renderSelectedParticipants();
+    });
+
+    item.appendChild(removeButton);
+    list.appendChild(item);
+  });
+}
+
+function openMeetingDrawer() {
   clearPreviousSession();
-  window.location.href = 'create.html';
+  resetSelectedParticipants();
+  const drawer = document.getElementById('meeting-drawer');
+  const backdrop = document.getElementById('meeting-drawer-backdrop');
+
+  drawer.classList.add('drawer-visible');
+  backdrop.classList.add('drawer-visible');
+  drawer.setAttribute('aria-hidden', 'false');
+  backdrop.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('drawer-open');
+  setTimeout(() => document.getElementById('meeting-title-input').focus(), 80);
+}
+
+function closeMeetingDrawer() {
+  const drawer = document.getElementById('meeting-drawer');
+  const backdrop = document.getElementById('meeting-drawer-backdrop');
+
+  drawer.classList.remove('drawer-visible');
+  backdrop.classList.remove('drawer-visible');
+  drawer.setAttribute('aria-hidden', 'true');
+  backdrop.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('drawer-open');
 }
 
 function initNav() {
@@ -51,13 +113,45 @@ function init() {
   initNav();
 
   document.querySelectorAll('.btn-new-meeting').forEach(btn => {
-    btn.addEventListener('click', goToCreate);
+    btn.addEventListener('click', openMeetingDrawer);
+  });
+
+  document.getElementById('meeting-drawer-close').addEventListener('click', closeMeetingDrawer);
+  document.getElementById('meeting-drawer-cancel').addEventListener('click', closeMeetingDrawer);
+  document.getElementById('meeting-drawer-backdrop').addEventListener('click', closeMeetingDrawer);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && document.body.classList.contains('drawer-open')) {
+      closeMeetingDrawer();
+    }
+  });
+
+  document.querySelectorAll('.segment-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.parentElement.querySelectorAll('.segment-btn').forEach(item => item.classList.remove('segment-active'));
+      btn.classList.add('segment-active');
+    });
+  });
+
+  document.querySelectorAll('.participant-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const name = chip.dataset.participant;
+      if (selectedParticipants.has(name)) {
+        return;
+      }
+      selectedParticipants.add(name);
+      chip.classList.add('chip-selected');
+      renderSelectedParticipants();
+    });
   });
 
   document.querySelectorAll('[data-toast]').forEach(btn => {
     btn.addEventListener('click', () => {
       showToast(btn.dataset.toast);
     });
+  });
+
+  document.getElementById('drawer-next-step').addEventListener('click', () => {
+    showToast('참석자 조건 설정 단계는 다음 작업에서 연결할 예정이에요.');
   });
 
   document.getElementById('notif-btn').addEventListener('click', () => {
@@ -71,6 +165,8 @@ function init() {
   document.getElementById('sidebar-more-btn').addEventListener('click', () => {
     showToast('더보기 메뉴는 다음 단계에서 연결할 예정이에요.');
   });
+
+  resetSelectedParticipants();
 }
 
 document.addEventListener('DOMContentLoaded', init);

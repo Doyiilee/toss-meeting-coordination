@@ -251,6 +251,74 @@
   </main>
 </div>
 
+<div class="drawer-backdrop" id="meeting-drawer-backdrop" aria-hidden="true"></div>
+
+<aside class="meeting-drawer" id="meeting-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="meeting-drawer-title">
+  <div class="drawer-header">
+    <button type="button" class="drawer-close-btn" id="meeting-drawer-close" aria-label="닫기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M18 6L6 18" stroke="#171A1F" stroke-width="2" stroke-linecap="round"/>
+        <path d="M6 6L18 18" stroke="#171A1F" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div>
+      <p class="drawer-eyebrow">새 회의 잡기</p>
+      <h2 id="meeting-drawer-title">회의 조건을 입력하세요</h2>
+      <p class="drawer-description">참석자와 조건을 설정하면 가능한 회의 시간을 추천해요.</p>
+    </div>
+  </div>
+
+  <div class="drawer-body">
+    <div class="drawer-section">
+      <label class="drawer-label" for="meeting-title-input">회의명</label>
+      <input class="drawer-input" id="meeting-title-input" type="text" placeholder="예) 2분기 캠페인 의사결정 회의" />
+    </div>
+
+    <div class="drawer-section">
+      <p class="drawer-label">회의 기간</p>
+      <div class="segmented-control" role="group" aria-label="회의 기간">
+        <button type="button" class="segment-btn segment-active">이번 주</button>
+        <button type="button" class="segment-btn">다음 주</button>
+        <button type="button" class="segment-btn">직접 선택</button>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <p class="drawer-label">회의 길이</p>
+      <div class="segmented-control" role="group" aria-label="회의 길이">
+        <button type="button" class="segment-btn">30분</button>
+        <button type="button" class="segment-btn segment-active">60분</button>
+        <button type="button" class="segment-btn">90분</button>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <label class="drawer-label" for="participant-input">참석자</label>
+      <input class="drawer-input" id="participant-input" type="text" placeholder="이름 또는 이메일 입력" />
+      <div class="recommended-chips" aria-label="추천 참석자">
+        <button type="button" class="participant-chip" data-participant="김민지">김민지</button>
+        <button type="button" class="participant-chip" data-participant="박준호">박준호</button>
+        <button type="button" class="participant-chip" data-participant="이연수">이연수</button>
+        <button type="button" class="participant-chip" data-participant="정다은">정다은</button>
+        <button type="button" class="participant-chip" data-participant="한지훈">한지훈</button>
+        <button type="button" class="participant-chip" data-participant="최현우">최현우</button>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <p class="drawer-label">선택된 참석자</p>
+      <div class="selected-participants" id="selected-participants">
+        <p class="empty-participants" id="empty-participants">참석자를 추가하면 여기에 표시돼요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-footer">
+    <button type="button" class="drawer-btn drawer-btn-secondary" id="meeting-drawer-cancel">취소</button>
+    <button type="button" class="drawer-btn drawer-btn-primary" id="drawer-next-step">참석자 조건 설정하기</button>
+  </div>
+</aside>
+
 <div id="toast" class="toast"></div>
 
 <script src="meetings.js"></script>
