@@ -744,14 +744,12 @@ button {
   color: var(--color-text-tertiary);
 }
 
-.quick-chip-row,
 .duration-options {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.quick-chip,
 .duration-option {
   height: 40px;
   padding: 0 14px;
@@ -763,12 +761,10 @@ button {
   font-weight: 700;
 }
 
-.quick-chip:hover,
 .duration-option:hover {
   background: var(--color-bg);
 }
 
-.quick-chip-active,
 .duration-active {
   background: var(--color-summary-bg);
   border-color: var(--color-blue);
@@ -839,19 +835,34 @@ button {
   line-height: 20px;
 }
 
+.calendar-day[data-date] {
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.calendar-day[data-date]:hover {
+  background: var(--color-bg);
+}
+
+.calendar-day[data-date]:focus-visible {
+  outline: 2px solid rgba(53, 100, 255, 0.35);
+  outline-offset: 2px;
+}
+
 .calendar-muted {
   color: #A8ADB5;
 }
 
 .calendar-range {
   background: var(--color-summary-bg);
-  color: var(--color-blue);
+  color: var(--color-text-primary);
 }
 
 .calendar-range-start,
 .calendar-range-end {
   background: var(--color-blue);
   color: var(--color-white);
+  border-radius: 999px;
 }
 
 .duration-custom {

@@ -14,11 +14,10 @@ function clearPreviousSession() {
 
 const selectedParticipants = new Set();
 let selectedDuration = 60;
-
-const dateRanges = {
-  'this-week': ['2026.07.14', '2026.07.18'],
-  'next-week': ['2026.07.21', '2026.07.25']
-};
+const defaultStartDate = '2026.07.14';
+const defaultEndDate = '2026.07.20';
+let startDate = defaultStartDate;
+let endDate = defaultEndDate;
 
 function resetSelectedParticipants() {
   selectedParticipants.clear();
@@ -63,6 +62,7 @@ function renderSelectedParticipants() {
 function openMeetingDrawer() {
   clearPreviousSession();
   resetSelectedParticipants();
+  setCalendarRange(defaultStartDate, defaultEndDate);
   const drawer = document.getElementById('meeting-drawer');
   const backdrop = document.getElementById('meeting-drawer-backdrop');
 
@@ -85,26 +85,51 @@ function closeMeetingDrawer() {
   document.body.classList.remove('drawer-open');
 }
 
-function setDateRange(preset) {
-  const range = dateRanges[preset];
-  if (!range) {
-    showToast('직접 날짜 선택은 다음 단계에서 연결할 예정이에요.');
+function parseDate(dateString) {
+  const [year, month, day] = dateString.split('.').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function getInclusiveDayCount(start, end) {
+  const dayMs = 24 * 60 * 60 * 1000;
+  return Math.round((parseDate(end) - parseDate(start)) / dayMs) + 1;
+}
+
+function renderCalendarRange() {
+  const rangeText = endDate ? `${startDate} - ${endDate}` : `${startDate} - 종료일 선택`;
+  document.getElementById('selected-date-range').textContent = `선택된 기간: ${rangeText}`;
+  document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
+    const date = day.dataset.date;
+    const isInRange = endDate ? date >= startDate && date <= endDate : date === startDate;
+    day.classList.toggle('calendar-range', isInRange);
+    day.classList.toggle('calendar-range-start', date === startDate);
+    day.classList.toggle('calendar-range-end', Boolean(endDate) && date === endDate);
+  });
+}
+
+function setCalendarRange(start, end = '') {
+  startDate = start;
+  endDate = end;
+  renderCalendarRange();
+}
+
+function selectCalendarDate(date) {
+  if (startDate && endDate) {
+    setCalendarRange(date);
     return;
   }
 
-  document.querySelectorAll('.quick-chip').forEach(chip => {
-    chip.classList.toggle('quick-chip-active', chip.dataset.rangePreset === preset);
-  });
+  if (date < startDate) {
+    setCalendarRange(date);
+    return;
+  }
 
-  const [start, end] = range;
-  document.getElementById('selected-date-range').textContent = `선택된 기간: ${start} - ${end}`;
+  if (getInclusiveDayCount(startDate, date) > 7) {
+    showToast('회의 후보 탐색 기간은 최대 1주일까지만 설정할 수 있어요.');
+    return;
+  }
 
-  document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
-    const date = day.dataset.date;
-    day.classList.toggle('calendar-range', date >= start && date <= end);
-    day.classList.toggle('calendar-range-start', date === start);
-    day.classList.toggle('calendar-range-end', date === end);
-  });
+  setCalendarRange(startDate, date);
 }
 
 function setDuration(value, showCustom = false) {
@@ -173,9 +198,18 @@ function init() {
     }
   });
 
-  document.querySelectorAll('.quick-chip').forEach(btn => {
-    btn.addEventListener('click', () => {
-      setDateRange(btn.dataset.rangePreset);
+  document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
+    day.setAttribute('role', 'button');
+    day.setAttribute('tabindex', '0');
+    day.setAttribute('aria-label', `2026년 7월 ${day.textContent.trim()}일 선택`);
+    day.addEventListener('click', () => {
+      selectCalendarDate(day.dataset.date);
+    });
+    day.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectCalendarDate(day.dataset.date);
+      }
     });
   });
 
@@ -228,7 +262,7 @@ function init() {
   });
 
   resetSelectedParticipants();
-  setDateRange('this-week');
+  setCalendarRange(defaultStartDate, defaultEndDate);
   setDurationOption('60');
 }
 
