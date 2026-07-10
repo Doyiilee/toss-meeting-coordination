@@ -13,6 +13,12 @@ function clearPreviousSession() {
 }
 
 const selectedParticipants = new Set();
+let selectedDuration = 60;
+
+const dateRanges = {
+  'this-week': ['2026.07.14', '2026.07.18'],
+  'next-week': ['2026.07.21', '2026.07.25']
+};
 
 function resetSelectedParticipants() {
   selectedParticipants.clear();
@@ -79,6 +85,48 @@ function closeMeetingDrawer() {
   document.body.classList.remove('drawer-open');
 }
 
+function setDateRange(preset) {
+  const range = dateRanges[preset];
+  if (!range) {
+    showToast('직접 날짜 선택은 다음 단계에서 연결할 예정이에요.');
+    return;
+  }
+
+  document.querySelectorAll('.quick-chip').forEach(chip => {
+    chip.classList.toggle('quick-chip-active', chip.dataset.rangePreset === preset);
+  });
+
+  const [start, end] = range;
+  document.getElementById('selected-date-range').textContent = `선택된 기간: ${start} - ${end}`;
+
+  document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
+    const date = day.dataset.date;
+    day.classList.toggle('calendar-range', date >= start && date <= end);
+    day.classList.toggle('calendar-range-start', date === start);
+    day.classList.toggle('calendar-range-end', date === end);
+  });
+}
+
+function setDuration(value, showCustom = false) {
+  selectedDuration = Math.max(15, Math.min(180, value));
+  document.getElementById('selected-duration').textContent = `선택된 길이: ${selectedDuration}분`;
+  document.getElementById('custom-duration-value').textContent = `${selectedDuration}분`;
+  document.getElementById('duration-custom').hidden = !showCustom;
+}
+
+function setDurationOption(option) {
+  document.querySelectorAll('.duration-option').forEach(btn => {
+    btn.classList.toggle('duration-active', btn.dataset.duration === option);
+  });
+
+  if (option === 'custom') {
+    setDuration(selectedDuration, true);
+    return;
+  }
+
+  setDuration(Number(option), false);
+}
+
 function initNav() {
   document.querySelectorAll('.sidebar-icon-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -125,11 +173,24 @@ function init() {
     }
   });
 
-  document.querySelectorAll('.segment-btn').forEach(btn => {
+  document.querySelectorAll('.quick-chip').forEach(btn => {
     btn.addEventListener('click', () => {
-      btn.parentElement.querySelectorAll('.segment-btn').forEach(item => item.classList.remove('segment-active'));
-      btn.classList.add('segment-active');
+      setDateRange(btn.dataset.rangePreset);
     });
+  });
+
+  document.querySelectorAll('.duration-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setDurationOption(btn.dataset.duration);
+    });
+  });
+
+  document.getElementById('duration-minus').addEventListener('click', () => {
+    setDuration(selectedDuration - 15, true);
+  });
+
+  document.getElementById('duration-plus').addEventListener('click', () => {
+    setDuration(selectedDuration + 15, true);
   });
 
   document.querySelectorAll('.participant-chip').forEach(chip => {
@@ -167,6 +228,8 @@ function init() {
   });
 
   resetSelectedParticipants();
+  setDateRange('this-week');
+  setDurationOption('60');
 }
 
 document.addEventListener('DOMContentLoaded', init);

@@ -262,7 +262,21 @@
       </svg>
     </button>
     <div>
-      <p class="drawer-eyebrow">새 회의 잡기</p>
+      <p class="drawer-breadcrumb">회의 / 새 회의 잡기</p>
+      <div class="drawer-stepper" aria-label="새 회의 잡기 단계">
+        <div class="drawer-step drawer-step-active">
+          <span>1</span>
+          <strong>회의 조건</strong>
+        </div>
+        <div class="drawer-step">
+          <span>2</span>
+          <strong>참석자 조건</strong>
+        </div>
+        <div class="drawer-step">
+          <span>3</span>
+          <strong>후보 시간 추천</strong>
+        </div>
+      </div>
       <h2 id="meeting-drawer-title">회의 조건을 입력하세요</h2>
       <p class="drawer-description">참석자와 조건을 설정하면 가능한 회의 시간을 추천해요.</p>
     </div>
@@ -275,21 +289,81 @@
     </div>
 
     <div class="drawer-section">
-      <p class="drawer-label">회의 기간</p>
-      <div class="segmented-control" role="group" aria-label="회의 기간">
-        <button type="button" class="segment-btn segment-active">이번 주</button>
-        <button type="button" class="segment-btn">다음 주</button>
-        <button type="button" class="segment-btn">직접 선택</button>
+      <div class="drawer-section-title">
+        <p class="drawer-label">회의 후보 탐색 기간</p>
+        <p class="drawer-helper">가능한 회의 시간을 찾을 기간을 선택하세요.</p>
+      </div>
+      <div class="quick-chip-row" role="group" aria-label="회의 후보 탐색 기간 빠른 선택">
+        <button type="button" class="quick-chip quick-chip-active" data-range-preset="this-week">이번 주</button>
+        <button type="button" class="quick-chip" data-range-preset="next-week">다음 주</button>
+        <button type="button" class="quick-chip" data-range-preset="custom">직접 선택</button>
+      </div>
+      <div class="drawer-calendar" aria-label="2026년 7월 회의 후보 탐색 기간">
+        <div class="drawer-calendar-header">
+          <strong>2026년 7월</strong>
+          <span id="selected-date-range">선택된 기간: 2026.07.14 - 2026.07.18</span>
+        </div>
+        <div class="drawer-calendar-weekdays">
+          <span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span>
+        </div>
+        <div class="drawer-calendar-grid" id="drawer-calendar-grid">
+          <span class="calendar-day calendar-muted">30</span>
+          <span class="calendar-day" data-date="2026.07.01">1</span>
+          <span class="calendar-day" data-date="2026.07.02">2</span>
+          <span class="calendar-day" data-date="2026.07.03">3</span>
+          <span class="calendar-day" data-date="2026.07.04">4</span>
+          <span class="calendar-day" data-date="2026.07.05">5</span>
+          <span class="calendar-day" data-date="2026.07.06">6</span>
+          <span class="calendar-day" data-date="2026.07.07">7</span>
+          <span class="calendar-day" data-date="2026.07.08">8</span>
+          <span class="calendar-day" data-date="2026.07.09">9</span>
+          <span class="calendar-day" data-date="2026.07.10">10</span>
+          <span class="calendar-day" data-date="2026.07.11">11</span>
+          <span class="calendar-day" data-date="2026.07.12">12</span>
+          <span class="calendar-day" data-date="2026.07.13">13</span>
+          <span class="calendar-day" data-date="2026.07.14">14</span>
+          <span class="calendar-day" data-date="2026.07.15">15</span>
+          <span class="calendar-day" data-date="2026.07.16">16</span>
+          <span class="calendar-day" data-date="2026.07.17">17</span>
+          <span class="calendar-day" data-date="2026.07.18">18</span>
+          <span class="calendar-day" data-date="2026.07.19">19</span>
+          <span class="calendar-day" data-date="2026.07.20">20</span>
+          <span class="calendar-day" data-date="2026.07.21">21</span>
+          <span class="calendar-day" data-date="2026.07.22">22</span>
+          <span class="calendar-day" data-date="2026.07.23">23</span>
+          <span class="calendar-day" data-date="2026.07.24">24</span>
+          <span class="calendar-day" data-date="2026.07.25">25</span>
+          <span class="calendar-day" data-date="2026.07.26">26</span>
+          <span class="calendar-day" data-date="2026.07.27">27</span>
+          <span class="calendar-day" data-date="2026.07.28">28</span>
+          <span class="calendar-day" data-date="2026.07.29">29</span>
+          <span class="calendar-day" data-date="2026.07.30">30</span>
+          <span class="calendar-day" data-date="2026.07.31">31</span>
+          <span class="calendar-day calendar-muted">1</span>
+          <span class="calendar-day calendar-muted">2</span>
+          <span class="calendar-day calendar-muted">3</span>
+        </div>
       </div>
     </div>
 
     <div class="drawer-section">
-      <p class="drawer-label">회의 길이</p>
-      <div class="segmented-control" role="group" aria-label="회의 길이">
-        <button type="button" class="segment-btn">30분</button>
-        <button type="button" class="segment-btn segment-active">60분</button>
-        <button type="button" class="segment-btn">90분</button>
+      <div class="drawer-section-title">
+        <p class="drawer-label">회의 길이</p>
+        <p class="drawer-helper">회의에 필요한 시간을 선택하거나 직접 설정하세요.</p>
       </div>
+      <div class="duration-options" role="group" aria-label="회의 길이">
+        <button type="button" class="duration-option" data-duration="30">30분</button>
+        <button type="button" class="duration-option" data-duration="45">45분</button>
+        <button type="button" class="duration-option duration-active" data-duration="60">60분</button>
+        <button type="button" class="duration-option" data-duration="90">90분</button>
+        <button type="button" class="duration-option" data-duration="custom">직접 설정</button>
+      </div>
+      <div class="duration-custom" id="duration-custom" hidden>
+        <button type="button" class="duration-stepper-btn" id="duration-minus" aria-label="회의 길이 15분 줄이기">-</button>
+        <strong id="custom-duration-value">60분</strong>
+        <button type="button" class="duration-stepper-btn" id="duration-plus" aria-label="회의 길이 15분 늘리기">+</button>
+      </div>
+      <p class="selected-duration" id="selected-duration">선택된 길이: 60분</p>
     </div>
 
     <div class="drawer-section">

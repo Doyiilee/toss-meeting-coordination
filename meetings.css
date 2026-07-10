@@ -617,12 +617,59 @@ button {
   background: var(--color-bg);
 }
 
-.drawer-eyebrow {
+.drawer-breadcrumb {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  line-height: 20px;
+  margin-bottom: 16px;
+}
+
+.drawer-stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.drawer-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  color: #6F7378;
   font-size: 14px;
   font-weight: 700;
+}
+
+.drawer-step + .drawer-step::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  margin-right: 2px;
+  background: var(--color-border);
+}
+
+.drawer-step span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-summary-bg);
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.drawer-step-active {
   color: var(--color-blue);
-  line-height: 20px;
-  margin-bottom: 8px;
+}
+
+.drawer-step-active span {
+  background: var(--color-blue);
+  color: var(--color-white);
 }
 
 .drawer-header h2 {
@@ -657,11 +704,23 @@ button {
 
 .drawer-label {
   display: block;
-  margin-bottom: 12px;
   font-size: 16px;
   font-weight: 700;
   color: var(--color-text-primary);
   line-height: 24px;
+}
+
+.drawer-section-title {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.drawer-helper {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 22px;
 }
 
 .drawer-input {
@@ -685,29 +744,161 @@ button {
   color: var(--color-text-tertiary);
 }
 
-.segmented-control {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.quick-chip-row,
+.duration-options {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
-.segment-btn {
+.quick-chip,
+.duration-option {
   height: 40px;
+  padding: 0 14px;
   border: 1px solid var(--color-search-border);
   border-radius: 10px;
   color: var(--color-text-secondary);
+  background: var(--color-white);
   font-size: 15px;
   font-weight: 700;
 }
 
-.segment-btn:hover {
+.quick-chip:hover,
+.duration-option:hover {
   background: var(--color-bg);
 }
 
-.segment-active {
+.quick-chip-active,
+.duration-active {
   background: var(--color-summary-bg);
   border-color: var(--color-blue);
   color: var(--color-blue);
+}
+
+.drawer-calendar {
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-white);
+}
+
+.drawer-calendar-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.drawer-calendar-header strong {
+  font-size: 17px;
+  color: var(--color-text-primary);
+  line-height: 24px;
+}
+
+.drawer-calendar-header span {
+  color: var(--color-blue);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: right;
+}
+
+.drawer-calendar-weekdays,
+.drawer-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.drawer-calendar-weekdays {
+  margin-bottom: 8px;
+}
+
+.drawer-calendar-weekdays span {
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.drawer-calendar-grid {
+  gap: 6px;
+}
+
+.calendar-day {
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.calendar-muted {
+  color: #A8ADB5;
+}
+
+.calendar-range {
+  background: var(--color-summary-bg);
+  color: var(--color-blue);
+}
+
+.calendar-range-start,
+.calendar-range-end {
+  background: var(--color-blue);
+  color: var(--color-white);
+}
+
+.duration-custom {
+  width: fit-content;
+  min-width: 186px;
+  height: 44px;
+  margin-top: 14px;
+  padding: 4px;
+  border: 1px solid var(--color-search-border);
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--color-white);
+}
+
+.duration-stepper-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.duration-stepper-btn:hover {
+  background: var(--color-summary-bg);
+  color: var(--color-blue);
+}
+
+#custom-duration-value {
+  min-width: 54px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  line-height: 24px;
+}
+
+.selected-duration {
+  margin-top: 12px;
+  color: var(--color-blue);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
 }
 
 .recommended-chips {
