@@ -22,6 +22,8 @@ const defaultStartDate = '2026.07.14';
 const defaultEndDate = '2026.07.20';
 let startDate = null;
 let endDate = null;
+let currentStep = 1;
+let selectedCandidateId = null;
 
 function resetSelectedParticipants() {
   selectedParticipants.clear();
@@ -155,17 +157,26 @@ function goToStep(step) {
   } else if (step === 2) {
     title.textContent = '참석자 조건을 설정하세요';
     desc.textContent = '참석자의 역할(필수/선택)을 선택해주세요.';
+  } else if (step === 3) {
+    title.textContent = '후보 시간을 추천했어요';
+    desc.textContent = '필수 참석자의 가능 여부를 기준으로 확정 가능한 시간을 먼저 보여드려요.';
   }
 
   document.getElementById('drawer-prev-step').hidden = step === 1;
   document.getElementById('meeting-drawer-cancel').hidden = step !== 1;
   document.getElementById('drawer-next-step').hidden = step !== 1;
-  document.getElementById('drawer-submit').hidden = step === 1;
+  document.getElementById('drawer-submit').hidden = step !== 2;
+  document.getElementById('drawer-confirm-step').hidden = step !== 3;
 
   if (step === 2) {
     renderParticipantRoles();
     updateRoleSummary();
+  } else if (step === 3) {
+    document.querySelector('.drawer-body').scrollTop = 0;
+    renderCandidates();
   }
+
+  currentStep = step;
 }
 
 function renderParticipantRoles() {
@@ -212,6 +223,151 @@ function updateRoleSummary() {
 
   document.getElementById('required-count').textContent = required;
   document.getElementById('optional-count').textContent = optional;
+}
+
+function addDays(dateStr, days) {
+  const date = parseDate(dateStr);
+  date.setDate(date.getDate() + days);
+  return formatCalendarDate(date);
+}
+
+function getDayOfWeek(dateStr) {
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  return days[parseDate(dateStr).getDay()];
+}
+
+function formatTimeRange(startHour, startMin, duration) {
+  const startStr = `${String(startHour).padStart(2, '0')}:${String(startMin).padStart(2, '0')}`;
+  const totalMin = startHour * 60 + startMin + duration;
+  const endHour = Math.floor(totalMin / 60);
+  const endMin = totalMin % 60;
+  const endStr = `${String(endHour).padStart(2, '0')}:${String(endMin).padStart(2, '0')}`;
+  return `${startStr} - ${endStr}`;
+}
+
+function getCandidateData(candidateId) {
+  const card = document.querySelector(`.drawer-candidate-card[data-candidate-id="${candidateId}"]`);
+  if (!card) return null;
+  return {
+    id: candidateId,
+    date: card.dataset.date,
+    dayOfWeek: card.dataset.dayOfWeek,
+    timeRange: card.dataset.timeRange,
+    duration: selectedDuration,
+  };
+}
+
+function renderCandidates() {
+  const container = document.getElementById('drawer-candidate-list');
+  container.innerHTML = '';
+
+  let requiredTotal = 0;
+  let optionalTotal = 0;
+  selectedParticipants.forEach(name => {
+    if ((participantRole.get(name) || 'required') === 'required') requiredTotal++;
+    else optionalTotal++;
+  });
+
+  const baseDate = startDate || defaultStartDate;
+  const duration = selectedDuration;
+
+  const candidates = [
+    {
+      id: 'candidate-1',
+      badge: '가장 추천',
+      badgeClass: 'badge-blue',
+      dayOffset: 0,
+      startHour: 10,
+      startMin: 0,
+      statusText: '확정 가능',
+      statusClass: 'green',
+      requiredNum: requiredTotal,
+      requiredDen: requiredTotal,
+      optionalNum: Math.max(optionalTotal - 1, 0),
+      optionalDen: optionalTotal,
+      needCheck: optionalTotal > 0 ? '선택 참석자 1명' : '없음',
+      desc: '필수 참석자가 모두 가능해 바로 확정할 수 있어요.',
+    },
+    {
+      id: 'candidate-2',
+      badge: '대안',
+      badgeClass: 'badge-green',
+      dayOffset: 1,
+      startHour: 14,
+      startMin: 0,
+      statusText: '확정 가능',
+      statusClass: 'green',
+      requiredNum: requiredTotal,
+      requiredDen: requiredTotal,
+      optionalNum: optionalTotal,
+      optionalDen: optionalTotal,
+      needCheck: '없음',
+      desc: '모든 참석자가 가능한 안정적인 후보예요.',
+    },
+    {
+      id: 'candidate-3',
+      badge: '확인 필요',
+      badgeClass: 'badge-yellow',
+      dayOffset: 2,
+      startHour: 13,
+      startMin: 0,
+      statusText: '확인 후 확정',
+      statusClass: 'yellow',
+      requiredNum: Math.max(requiredTotal - 1, 0),
+      requiredDen: requiredTotal,
+      optionalNum: optionalTotal,
+      optionalDen: optionalTotal,
+      needCheck: requiredTotal > 0 ? '필수 참석자 1명' : '없음',
+      desc: requiredTotal > 0 ? '필수 참석자 1명의 확인이 필요해요.' : '',
+    },
+  ];
+
+  candidates.forEach(candidate => {
+    const dateStr = addDays(baseDate, candidate.dayOffset);
+    const dayOfWeek = getDayOfWeek(dateStr);
+    const timeStr = formatTimeRange(candidate.startHour, candidate.startMin, duration);
+    const selected = selectedCandidateId === candidate.id;
+
+    let optionalText;
+    if (optionalTotal > 0) {
+      optionalText = `${candidate.optionalNum}/${candidate.optionalDen} 가능`;
+    } else {
+      optionalText = '선택 참석자 없음';
+    }
+
+    const card = document.createElement('div');
+    card.className = `drawer-candidate-card${selected ? ' selected' : ''}`;
+    card.dataset.candidateId = candidate.id;
+    card.dataset.date = dateStr;
+    card.dataset.dayOfWeek = dayOfWeek;
+    card.dataset.timeRange = timeStr;
+
+    card.innerHTML = `
+      <div class="drawer-candidate-head">
+        <span class="badge ${candidate.badgeClass}">${candidate.badge}</span>
+        ${selected ? '<span class="drawer-candidate-selected-mark">선택됨</span>' : ''}
+      </div>
+      <h4 class="drawer-candidate-time">${dateStr} (${dayOfWeek})<br />${timeStr}</h4>
+      <div class="drawer-candidate-metrics">
+        <div class="drawer-candidate-metric drawer-candidate-metric-required">
+          <span>필수 참석자</span>
+          <strong>${candidate.requiredNum}/${candidate.requiredDen} 가능</strong>
+        </div>
+        <div class="drawer-candidate-metric drawer-candidate-metric-optional">
+          <span>선택 참석자</span>
+          <strong>${optionalText}</strong>
+        </div>
+        <div class="drawer-candidate-metric">
+          <span>확인 필요</span>
+          <strong>${candidate.needCheck}</strong>
+        </div>
+      </div>
+      <span class="candidate-status-pill ${candidate.statusClass}">${candidate.statusText}</span>
+      <p class="candidate-status-desc">${candidate.desc}</p>
+    `;
+
+    container.appendChild(card);
+  });
 }
 
 function parseDate(dateString) {
@@ -481,12 +637,12 @@ function init() {
   });
 
   document.getElementById('drawer-prev-step').addEventListener('click', () => {
-    goToStep(1);
+    goToStep(currentStep - 1);
   });
 
   document.getElementById('drawer-submit').addEventListener('click', () => {
     if (!validateStep2()) return;
-    showToast('후보 시간 추천 단계는 다음 단계에서 연결할 예정이에요.');
+    goToStep(3);
   });
 
   document.getElementById('role-card-list').addEventListener('click', (event) => {
@@ -505,6 +661,29 @@ function init() {
 
     participantRole.set(name, newRole);
     updateRoleSummary();
+  });
+
+  document.getElementById('drawer-confirm-step').addEventListener('click', () => {
+    if (!selectedCandidateId) {
+      showToast('확정할 후보 시간을 선택해주세요.');
+      return;
+    }
+    const data = getCandidateData(selectedCandidateId);
+    sessionStorage.setItem('selectedTime', JSON.stringify(data));
+    showToast('회의 시간이 확정됐어요.');
+    closeMeetingDrawer();
+  });
+
+  document.getElementById('drawer-candidate-list').addEventListener('click', (event) => {
+    const card = event.target.closest('.drawer-candidate-card');
+    if (!card) return;
+
+    const id = card.dataset.candidateId;
+    if (selectedCandidateId === id) return;
+
+    document.querySelectorAll('.drawer-candidate-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedCandidateId = id;
   });
 
   document.getElementById('notif-btn').addEventListener('click', () => {

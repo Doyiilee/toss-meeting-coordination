@@ -1279,6 +1279,146 @@ button {
   line-height: 18px;
 }
 
+.candidate-info-card {
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--color-search-border);
+  background: var(--color-summary-bg);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 22px;
+}
+
+.candidate-info-card strong {
+  color: var(--color-blue);
+  font-weight: 700;
+}
+
+.drawer-candidate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.drawer-candidate-card {
+  padding: 20px 24px;
+  border: 1px solid var(--color-card-border);
+  border-radius: 14px;
+  background: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  box-shadow: 2px 4px 8px 0 rgba(95,95,95,0.06);
+}
+
+.drawer-candidate-card:hover {
+  border-color: var(--color-blue);
+}
+
+.drawer-candidate-card.selected {
+  border: 2px solid var(--color-blue);
+  background: #F8FBFF;
+  padding: 19px 23px;
+}
+
+.drawer-candidate-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.drawer-candidate-selected-mark {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-blue);
+  line-height: 18px;
+}
+
+.drawer-candidate-time {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 26px;
+}
+
+.drawer-candidate-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.drawer-candidate-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 0;
+}
+
+.drawer-candidate-metric span {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 20px;
+}
+
+.drawer-candidate-metric strong {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: right;
+}
+
+.drawer-candidate-metric-required strong {
+  color: var(--color-text-primary);
+  font-weight: 800;
+}
+
+.drawer-candidate-metric-optional strong {
+  color: var(--color-text-tertiary);
+  font-weight: 600;
+}
+
+.drawer-candidate-card .badge {
+  margin: 0;
+}
+
+.candidate-status-pill {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.candidate-status-pill.green {
+  background: var(--color-green-bg);
+  color: var(--color-green-text);
+}
+
+.candidate-status-pill.yellow {
+  background: var(--color-yellow-bg);
+  color: var(--color-yellow-text);
+}
+
+.candidate-status-desc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 20px;
+  word-break: keep-all;
+}
+
 .toast {
   position: fixed;
   bottom: 40px;
