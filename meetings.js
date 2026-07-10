@@ -13,6 +13,8 @@ function clearPreviousSession() {
 }
 
 const selectedParticipants = new Set();
+const participantRole = new Map();
+const participantReason = new Map();
 let selectedDuration = 60;
 const calendarYear = 2026;
 const calendarMonth = 6;
@@ -23,6 +25,8 @@ let endDate = null;
 
 function resetSelectedParticipants() {
   selectedParticipants.clear();
+  participantRole.clear();
+  participantReason.clear();
   document.querySelectorAll('.participant-chip').forEach(chip => {
     chip.classList.remove('chip-selected');
   });
@@ -52,6 +56,8 @@ function renderSelectedParticipants() {
     removeButton.textContent = '×';
     removeButton.addEventListener('click', () => {
       selectedParticipants.delete(name);
+      participantRole.delete(name);
+      participantReason.delete(name);
       document.querySelector(`.participant-chip[data-participant="${name}"]`)?.classList.remove('chip-selected');
       renderSelectedParticipants();
     });
@@ -65,6 +71,7 @@ function openMeetingDrawer() {
   clearPreviousSession();
   resetSelectedParticipants();
   renderCalendarRange();
+  goToStep(1);
   const drawer = document.getElementById('meeting-drawer');
   const backdrop = document.getElementById('meeting-drawer-backdrop');
 
@@ -85,6 +92,126 @@ function closeMeetingDrawer() {
   drawer.setAttribute('aria-hidden', 'true');
   backdrop.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('drawer-open');
+}
+
+function validateStep1() {
+  const title = document.getElementById('meeting-title-input').value.trim();
+  if (!title) {
+    showToast('회의명을 입력해주세요.');
+    return false;
+  }
+  if (!startDate || !endDate) {
+    showToast('회의 후보 탐색 기간을 선택해주세요.');
+    return false;
+  }
+  if (selectedParticipants.size < 2) {
+    showToast('참석자를 최소 2명 이상 추가해주세요.');
+    return false;
+  }
+  return true;
+}
+
+function validateStep2() {
+  let hasRequired = false;
+  selectedParticipants.forEach(name => {
+    if ((participantRole.get(name) || 'required') === 'required') {
+      hasRequired = true;
+    }
+  });
+  if (!hasRequired) {
+    showToast('필수 참석자를 최소 1명 이상 지정해주세요.');
+    return false;
+  }
+  return true;
+}
+
+function goToStep(step) {
+  document.querySelectorAll('.drawer-step-content').forEach(el => {
+    el.hidden = el.dataset.step !== String(step);
+  });
+
+  const steps = document.querySelectorAll('.drawer-step');
+  steps.forEach((el, i) => {
+    const num = i + 1;
+    el.classList.remove('drawer-step-active', 'drawer-step-completed');
+    const span = el.querySelector('span');
+    if (num < step) {
+      el.classList.add('drawer-step-completed');
+      span.textContent = '✓';
+    } else if (num === step) {
+      el.classList.add('drawer-step-active');
+      span.textContent = String(num);
+    } else {
+      span.textContent = String(num);
+    }
+  });
+
+  const title = document.getElementById('meeting-drawer-title');
+  const desc = document.querySelector('.drawer-description');
+
+  if (step === 1) {
+    title.textContent = '회의 조건을 입력하세요';
+    desc.textContent = '참석자와 조건을 설정하면 가능한 회의 시간을 추천해요.';
+  } else if (step === 2) {
+    title.textContent = '참석자 조건을 설정하세요';
+    desc.textContent = '참석자의 역할(필수/선택)을 선택해주세요.';
+  }
+
+  document.getElementById('drawer-prev-step').hidden = step === 1;
+  document.getElementById('meeting-drawer-cancel').hidden = step !== 1;
+  document.getElementById('drawer-next-step').hidden = step !== 1;
+  document.getElementById('drawer-submit').hidden = step === 1;
+
+  if (step === 2) {
+    renderParticipantRoles();
+    updateRoleSummary();
+  }
+}
+
+function renderParticipantRoles() {
+  const list = document.getElementById('role-card-list');
+  list.innerHTML = '';
+
+  if (selectedParticipants.size === 0) {
+    list.innerHTML = '<p class="role-card-list-empty">선택된 참석자가 없어요.</p>';
+    return;
+  }
+
+  selectedParticipants.forEach(name => {
+    const role = participantRole.get(name) || 'required';
+    const reason = participantReason.get(name) || '직접 추가';
+
+    const card = document.createElement('div');
+    card.className = 'role-card';
+    card.dataset.participant = name;
+
+    card.innerHTML = `
+      <div class="role-card-info">
+        <span class="role-card-name">${name}</span>
+        <span class="role-card-reason">${reason}</span>
+      </div>
+      <div class="role-segmented" role="group" aria-label="${name} 역할">
+        <button type="button" class="role-option ${role === 'required' ? 'role-option-active' : ''}" data-role="required">필수</button>
+        <button type="button" class="role-option ${role === 'optional' ? 'role-option-active' : ''}" data-role="optional">선택</button>
+      </div>
+    `;
+
+    list.appendChild(card);
+  });
+}
+
+function updateRoleSummary() {
+  let required = 0;
+  let optional = 0;
+
+  selectedParticipants.forEach(name => {
+    const role = participantRole.get(name) || 'required';
+    if (role === 'required') required++;
+    else optional++;
+  });
+
+  document.getElementById('required-count').textContent = required;
+  document.getElementById('optional-count').textContent = optional;
 }
 
 function parseDate(dateString) {
@@ -304,6 +431,8 @@ function init() {
         return;
       }
       selectedParticipants.add(name);
+      participantRole.set(name, 'required');
+      participantReason.set(name, chip.querySelector('.participant-reason')?.textContent || name);
       chip.classList.add('chip-selected');
       renderSelectedParticipants();
     });
@@ -334,6 +463,8 @@ function init() {
     }
 
     selectedParticipants.add(name);
+    participantRole.set(name, 'required');
+    participantReason.set(name, '직접 추가');
     renderSelectedParticipants();
     participantInput.value = '';
   });
@@ -345,7 +476,35 @@ function init() {
   });
 
   document.getElementById('drawer-next-step').addEventListener('click', () => {
-    showToast('참석자 조건 설정 단계는 다음 작업에서 연결할 예정이에요.');
+    if (!validateStep1()) return;
+    goToStep(2);
+  });
+
+  document.getElementById('drawer-prev-step').addEventListener('click', () => {
+    goToStep(1);
+  });
+
+  document.getElementById('drawer-submit').addEventListener('click', () => {
+    if (!validateStep2()) return;
+    showToast('후보 시간 추천 단계는 다음 단계에서 연결할 예정이에요.');
+  });
+
+  document.getElementById('role-card-list').addEventListener('click', (event) => {
+    const option = event.target.closest('.role-option');
+    if (!option) return;
+
+    const card = option.closest('.role-card');
+    if (!card) return;
+
+    const name = card.dataset.participant;
+    const newRole = option.dataset.role;
+
+    card.querySelectorAll('.role-option').forEach(btn => {
+      btn.classList.toggle('role-option-active', btn.dataset.role === newRole);
+    });
+
+    participantRole.set(name, newRole);
+    updateRoleSummary();
   });
 
   document.getElementById('notif-btn').addEventListener('click', () => {

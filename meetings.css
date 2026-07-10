@@ -1139,6 +1139,146 @@ button {
   background: var(--color-blue-dark);
 }
 
+.drawer-step-content {
+  display: block;
+}
+
+.drawer-step-content[hidden] {
+  display: none;
+}
+
+.drawer-step-completed {
+  color: var(--color-blue);
+}
+
+.drawer-step-completed span {
+  background: var(--color-blue);
+  color: var(--color-white);
+}
+
+.role-info-card {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--color-summary-bg);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 22px;
+}
+
+.role-info-card strong {
+  color: var(--color-blue);
+  font-weight: 700;
+}
+
+.role-card-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.role-card-list-empty {
+  color: var(--color-text-tertiary);
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.role-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-white);
+}
+
+.role-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.role-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 22px;
+}
+
+.role-card-reason {
+  font-size: 13px;
+  color: #6F7378;
+  line-height: 18px;
+  word-break: keep-all;
+}
+
+.role-segmented {
+  display: flex;
+  flex-shrink: 0;
+  border: 1px solid var(--color-search-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.role-option {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 0;
+  background: var(--color-white);
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.role-option + .role-option {
+  border-left: 1px solid var(--color-search-border);
+}
+
+.role-option:hover {
+  background: var(--color-bg);
+}
+
+.role-option-active {
+  background: var(--color-summary-bg);
+  color: var(--color-blue);
+}
+
+.role-summary {
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg);
+}
+
+.role-summary-text {
+  display: flex;
+  gap: 16px;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  line-height: 22px;
+}
+
+.role-summary-text strong {
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+.role-summary-desc {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #6F7378;
+  line-height: 18px;
+}
+
 .toast {
   position: fixed;
   bottom: 40px;

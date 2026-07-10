@@ -338,99 +338,125 @@
   </div>
 
   <div class="drawer-body">
-    <div class="drawer-section">
-      <label class="drawer-label" for="meeting-title-input">회의명</label>
-      <input class="drawer-input" id="meeting-title-input" type="text" placeholder="예) 2분기 캠페인 의사결정 회의" />
-    </div>
+    <div class="drawer-step-content" data-step="1">
+      <div class="drawer-section">
+        <label class="drawer-label" for="meeting-title-input">회의명</label>
+        <input class="drawer-input" id="meeting-title-input" type="text" placeholder="예) 2분기 캠페인 의사결정 회의" />
+      </div>
 
-    <div class="drawer-section">
-      <div class="drawer-section-title">
-        <p class="drawer-label">회의 후보 탐색 기간</p>
-        <p class="drawer-helper">가능한 회의 시간을 찾을 기간을 선택하세요.</p>
-      </div>
-      <div class="drawer-calendar" aria-label="2026년 7월 회의 후보 탐색 기간">
-        <div class="drawer-calendar-header">
-          <strong>2026년 7월</strong>
-          <span id="selected-date-range">선택된 기간: 2026.07.14 - 2026.07.20</span>
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <p class="drawer-label">회의 후보 탐색 기간</p>
+          <p class="drawer-helper">가능한 회의 시간을 찾을 기간을 선택하세요.</p>
         </div>
-        <div class="drawer-calendar-weekdays">
-          <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
-        </div>
-        <div class="drawer-calendar-grid" id="drawer-calendar-grid"></div>
-      </div>
-    </div>
-
-    <div class="drawer-section">
-      <div class="drawer-section-title">
-        <p class="drawer-label">회의 길이</p>
-        <p class="drawer-helper">회의에 필요한 시간을 선택하거나 직접 설정하세요.</p>
-      </div>
-      <div class="duration-options" role="group" aria-label="회의 길이">
-        <button type="button" class="duration-option" data-duration="30">30분</button>
-        <button type="button" class="duration-option" data-duration="45">45분</button>
-        <button type="button" class="duration-option duration-active" data-duration="60">60분</button>
-        <button type="button" class="duration-option" data-duration="90">90분</button>
-        <button type="button" class="duration-option" data-duration="custom">직접 설정</button>
-      </div>
-      <div class="duration-custom" id="duration-custom" hidden>
-        <button type="button" class="duration-stepper-btn" id="duration-minus" aria-label="회의 길이 15분 줄이기">-</button>
-        <strong id="custom-duration-value">60분</strong>
-        <button type="button" class="duration-stepper-btn" id="duration-plus" aria-label="회의 길이 15분 늘리기">+</button>
-      </div>
-      <p class="selected-duration" id="selected-duration">선택된 길이: 60분</p>
-    </div>
-
-    <div class="drawer-section">
-      <div class="drawer-section-title">
-        <label class="drawer-label" for="participant-input">참석자</label>
-        <p class="drawer-helper">이름 또는 이메일을 입력하세요.</p>
-      </div>
-      <input class="drawer-input" id="participant-input" type="text" placeholder="이름 또는 이메일 입력" />
-      <div class="recommended-participants">
-        <div class="recommendation-header">
-          <p class="recommendation-title">추천 참석자</p>
-          <p class="recommendation-description">같은 팀이거나 최근 함께 회의한 사람을 추천해요.</p>
-        </div>
-        <div class="recommended-chips" aria-label="추천 참석자">
-          <button type="button" class="participant-chip" data-participant="김민지">
-            <span class="participant-name">김민지</span>
-            <span class="participant-reason">같은 팀 · Leader</span>
-          </button>
-          <button type="button" class="participant-chip" data-participant="박준호">
-            <span class="participant-name">박준호</span>
-            <span class="participant-reason">프로젝트 멤버</span>
-          </button>
-          <button type="button" class="participant-chip" data-participant="이연수">
-            <span class="participant-name">이연수</span>
-            <span class="participant-reason">최근 함께 회의</span>
-          </button>
-          <button type="button" class="participant-chip" data-participant="정다은">
-            <span class="participant-name">정다은</span>
-            <span class="participant-reason">데이터 분석 협업</span>
-          </button>
-          <button type="button" class="participant-chip" data-participant="한지훈">
-            <span class="participant-name">한지훈</span>
-            <span class="participant-reason">자주 초대</span>
-          </button>
-          <button type="button" class="participant-chip" data-participant="최현우">
-            <span class="participant-name">최현우</span>
-            <span class="participant-reason">디자인 협업</span>
-          </button>
+        <div class="drawer-calendar" aria-label="2026년 7월 회의 후보 탐색 기간">
+          <div class="drawer-calendar-header">
+            <strong>2026년 7월</strong>
+            <span id="selected-date-range">선택된 기간: 2026.07.14 - 2026.07.20</span>
+          </div>
+          <div class="drawer-calendar-weekdays">
+            <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+          </div>
+          <div class="drawer-calendar-grid" id="drawer-calendar-grid"></div>
         </div>
       </div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <p class="drawer-label">회의 길이</p>
+          <p class="drawer-helper">회의에 필요한 시간을 선택하거나 직접 설정하세요.</p>
+        </div>
+        <div class="duration-options" role="group" aria-label="회의 길이">
+          <button type="button" class="duration-option" data-duration="30">30분</button>
+          <button type="button" class="duration-option" data-duration="45">45분</button>
+          <button type="button" class="duration-option duration-active" data-duration="60">60분</button>
+          <button type="button" class="duration-option" data-duration="90">90분</button>
+          <button type="button" class="duration-option" data-duration="custom">직접 설정</button>
+        </div>
+        <div class="duration-custom" id="duration-custom" hidden>
+          <button type="button" class="duration-stepper-btn" id="duration-minus" aria-label="회의 길이 15분 줄이기">-</button>
+          <strong id="custom-duration-value">60분</strong>
+          <button type="button" class="duration-stepper-btn" id="duration-plus" aria-label="회의 길이 15분 늘리기">+</button>
+        </div>
+        <p class="selected-duration" id="selected-duration">선택된 길이: 60분</p>
+      </div>
+
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <label class="drawer-label" for="participant-input">참석자</label>
+          <p class="drawer-helper">이름 또는 이메일을 입력하세요.</p>
+        </div>
+        <input class="drawer-input" id="participant-input" type="text" placeholder="이름 또는 이메일 입력" />
+        <div class="recommended-participants">
+          <div class="recommendation-header">
+            <p class="recommendation-title">추천 참석자</p>
+            <p class="recommendation-description">같은 팀이거나 최근 함께 회의한 사람을 추천해요.</p>
+          </div>
+          <div class="recommended-chips" aria-label="추천 참석자">
+            <button type="button" class="participant-chip" data-participant="김민지">
+              <span class="participant-name">김민지</span>
+              <span class="participant-reason">같은 팀 · Leader</span>
+            </button>
+            <button type="button" class="participant-chip" data-participant="박준호">
+              <span class="participant-name">박준호</span>
+              <span class="participant-reason">프로젝트 멤버</span>
+            </button>
+            <button type="button" class="participant-chip" data-participant="이연수">
+              <span class="participant-name">이연수</span>
+              <span class="participant-reason">최근 함께 회의</span>
+            </button>
+            <button type="button" class="participant-chip" data-participant="정다은">
+              <span class="participant-name">정다은</span>
+              <span class="participant-reason">데이터 분석 협업</span>
+            </button>
+            <button type="button" class="participant-chip" data-participant="한지훈">
+              <span class="participant-name">한지훈</span>
+              <span class="participant-reason">자주 초대</span>
+            </button>
+            <button type="button" class="participant-chip" data-participant="최현우">
+              <span class="participant-name">최현우</span>
+              <span class="participant-reason">디자인 협업</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-section">
+        <p class="drawer-label">선택된 참석자</p>
+        <div class="selected-participants" id="selected-participants">
+          <p class="empty-participants" id="empty-participants">참석자를 추가하면 여기에 표시돼요.</p>
+        </div>
+      </div>
     </div>
 
-    <div class="drawer-section">
-      <p class="drawer-label">선택된 참석자</p>
-      <div class="selected-participants" id="selected-participants">
-        <p class="empty-participants" id="empty-participants">참석자를 추가하면 여기에 표시돼요.</p>
+    <div class="drawer-step-content" data-step="2" hidden>
+      <div class="drawer-section">
+        <div class="role-info-card">
+          <strong>필수 참석자</strong>가 모두 가능한 시간이 확정 후보가 돼요.<br />
+          선택 참석자의 일정은 참고 정보로 함께 비교돼요.
+        </div>
+      </div>
+      <div class="drawer-section">
+        <p class="drawer-label">참석자별 역할 선택</p>
+        <div class="role-card-list" id="role-card-list">
+          <p class="role-card-list-empty">참석자 목록을 불러오는 중이에요.</p>
+        </div>
+        <div class="role-summary" id="role-summary">
+          <div class="role-summary-text">
+            <span>필수 참석자 <strong id="required-count">0</strong>명</span>
+            <span>선택 참석자 <strong id="optional-count">0</strong>명</span>
+          </div>
+          <p class="role-summary-desc">필수 참석자는 회의 확정 기준에 포함돼요.</p>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="drawer-footer">
+    <button type="button" class="drawer-btn drawer-btn-secondary" id="drawer-prev-step" hidden>이전</button>
     <button type="button" class="drawer-btn drawer-btn-secondary" id="meeting-drawer-cancel">취소</button>
     <button type="button" class="drawer-btn drawer-btn-primary" id="drawer-next-step">참석자 조건 설정하기</button>
+    <button type="button" class="drawer-btn drawer-btn-primary" id="drawer-submit" hidden>후보 시간 추천받기</button>
   </div>
 </aside>
 
