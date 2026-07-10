@@ -473,6 +473,31 @@
   </div>
 </aside>
 
+<div class="detail-drawer-backdrop" id="detail-drawer-backdrop" aria-hidden="true"></div>
+
+<aside class="detail-drawer" id="detail-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="detail-drawer-title">
+  <div class="detail-drawer-header">
+    <button type="button" class="detail-drawer-close-btn" id="detail-drawer-close" aria-label="닫기">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M18 6L6 18" stroke="#171A1F" stroke-width="2" stroke-linecap="round"/>
+        <path d="M6 6L18 18" stroke="#171A1F" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div>
+      <span class="badge badge-green">확정 완료</span>
+      <h2 id="detail-drawer-title">회의명</h2>
+      <p class="detail-drawer-desc">선택한 후보 시간으로 회의가 확정됐어요.</p>
+    </div>
+  </div>
+  <div class="detail-drawer-body" id="detail-drawer-body">
+    <!-- rendered by JS -->
+  </div>
+  <div class="detail-drawer-footer">
+    <button type="button" class="drawer-btn drawer-btn-secondary" id="detail-drawer-close-btn">닫기</button>
+    <button type="button" class="drawer-btn drawer-btn-primary" id="detail-drawer-calendar-btn">캘린더에서 보기</button>
+  </div>
+</aside>
+
 <div id="toast" class="toast"></div>
 
 <script src="meetings.js"></script>

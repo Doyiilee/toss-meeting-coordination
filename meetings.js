@@ -376,7 +376,7 @@ function renderConfirmedMeetings() {
 
   document.querySelectorAll('.confirmed-card--new').forEach(el => el.remove());
 
-  meetings.forEach(meeting => {
+  meetings.forEach((meeting, index) => {
     const allParticipants = [...meeting.requiredParticipants, ...meeting.optionalParticipants];
     let nameText;
     if (allParticipants.length <= 3) {
@@ -401,12 +401,95 @@ function renderConfirmedMeetings() {
     `;
 
     card.querySelector('.btn-secondary').addEventListener('click', () => {
-      showToast('회의 상세 화면은 다음 작업에서 연결할 예정이에요.');
+      openDetailDrawer(index);
     });
 
     const header = section.querySelector('.section-header');
     header.after(card);
   });
+}
+
+function openDetailDrawer(index) {
+  const meetings = JSON.parse(sessionStorage.getItem('confirmedMeetings') || '[]');
+  const meeting = meetings[index];
+  if (!meeting) return;
+
+  renderDetailContent(meeting);
+
+  const drawer = document.getElementById('detail-drawer');
+  const backdrop = document.getElementById('detail-drawer-backdrop');
+
+  drawer.classList.add('visible');
+  backdrop.classList.add('visible');
+  drawer.setAttribute('aria-hidden', 'false');
+  backdrop.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('detail-drawer-open');
+}
+
+function closeDetailDrawer() {
+  const drawer = document.getElementById('detail-drawer');
+  const backdrop = document.getElementById('detail-drawer-backdrop');
+
+  drawer.classList.remove('visible');
+  backdrop.classList.remove('visible');
+  drawer.setAttribute('aria-hidden', 'true');
+  backdrop.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('detail-drawer-open');
+}
+
+function renderDetailContent(meeting) {
+  document.getElementById('detail-drawer-title').textContent = meeting.title;
+
+  const body = document.getElementById('detail-drawer-body');
+  body.innerHTML = `
+    <div class="detail-info-card">
+      <div class="detail-info-row">
+        <span>날짜</span>
+        <strong>${meeting.date} (${meeting.dayOfWeek})</strong>
+      </div>
+      <div class="detail-info-row">
+        <span>시간</span>
+        <strong>${meeting.timeRange}</strong>
+      </div>
+      <div class="detail-info-row">
+        <span>회의 길이</span>
+        <strong>${meeting.duration}분</strong>
+      </div>
+      <div class="detail-info-row">
+        <span>선택 후보</span>
+        <strong>${meeting.candidateLabel}</strong>
+      </div>
+    </div>
+    <div class="detail-participant-section">
+      <div class="detail-participant-section-title">참석자 조건</div>
+      <div class="detail-info-row">
+        <span>필수 참석자</span>
+        <strong>${meeting.requiredParticipants.length}명</strong>
+      </div>
+      <div class="detail-info-row">
+        <span>선택 참석자</span>
+        <strong>${meeting.optionalParticipants.length}명</strong>
+      </div>
+    </div>
+    <div class="detail-participant-section">
+      <div class="detail-participant-section-title">필수 참석자</div>
+      <div class="detail-participant-list">
+        ${meeting.requiredParticipants.length > 0
+          ? meeting.requiredParticipants.map(name => `<div class="detail-participant-item">${name}</div>`).join('')
+          : '<div class="detail-participant-empty">필수 참석자가 없어요.</div>'
+        }
+      </div>
+    </div>
+    <div class="detail-participant-section">
+      <div class="detail-participant-section-title">선택 참석자</div>
+      <div class="detail-participant-list">
+        ${meeting.optionalParticipants.length > 0
+          ? meeting.optionalParticipants.map(name => `<div class="detail-participant-item">${name}</div>`).join('')
+          : '<div class="detail-participant-empty">선택 참석자가 없어요.</div>'
+        }
+      </div>
+    </div>
+  `;
 }
 
 function parseDate(dateString) {
@@ -590,9 +673,22 @@ function init() {
   document.getElementById('meeting-drawer-cancel').addEventListener('click', closeMeetingDrawer);
   document.getElementById('meeting-drawer-backdrop').addEventListener('click', closeMeetingDrawer);
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && document.body.classList.contains('drawer-open')) {
-      closeMeetingDrawer();
+    if (event.key === 'Escape') {
+      if (document.body.classList.contains('detail-drawer-open')) {
+        closeDetailDrawer();
+        return;
+      }
+      if (document.body.classList.contains('drawer-open')) {
+        closeMeetingDrawer();
+      }
     }
+  });
+
+  document.getElementById('detail-drawer-close').addEventListener('click', closeDetailDrawer);
+  document.getElementById('detail-drawer-close-btn').addEventListener('click', closeDetailDrawer);
+  document.getElementById('detail-drawer-backdrop').addEventListener('click', closeDetailDrawer);
+  document.getElementById('detail-drawer-calendar-btn').addEventListener('click', () => {
+    showToast('캘린더에서 보기 기능은 다음 단계에서 연결할 예정이에요.');
   });
 
   renderCalendar();
