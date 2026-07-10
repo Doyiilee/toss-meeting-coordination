@@ -156,10 +156,10 @@ function goToStep(step) {
     desc.textContent = '참석자와 조건을 설정하면 가능한 회의 시간을 추천해요.';
   } else if (step === 2) {
     title.textContent = '참석자 조건을 설정하세요';
-    desc.textContent = '참석자의 역할(필수/선택)을 선택해주세요.';
+    desc.textContent = '각 참석자의 역할을 필수 또는 선택으로 지정해주세요.';
   } else if (step === 3) {
     title.textContent = '후보 시간을 추천했어요';
-    desc.textContent = '필수 참석자의 가능 여부를 기준으로 확정 가능한 시간을 먼저 보여드려요.';
+    desc.textContent = '필수 참석자와 선택 참석자의 일정을 비교해 추천하는 후보예요.';
   }
 
   document.getElementById('drawer-prev-step').hidden = step === 1;
@@ -461,18 +461,7 @@ function renderDetailContent(meeting) {
       </div>
     </div>
     <div class="detail-participant-section">
-      <div class="detail-participant-section-title">참석자 조건</div>
-      <div class="detail-info-row">
-        <span>필수 참석자</span>
-        <strong>${meeting.requiredParticipants.length}명</strong>
-      </div>
-      <div class="detail-info-row">
-        <span>선택 참석자</span>
-        <strong>${meeting.optionalParticipants.length}명</strong>
-      </div>
-    </div>
-    <div class="detail-participant-section">
-      <div class="detail-participant-section-title">필수 참석자</div>
+      <div class="detail-participant-section-title">필수 참석자 ${meeting.requiredParticipants.length}명</div>
       <div class="detail-participant-list">
         ${meeting.requiredParticipants.length > 0
           ? meeting.requiredParticipants.map(name => `<div class="detail-participant-item">${name}</div>`).join('')
@@ -481,7 +470,7 @@ function renderDetailContent(meeting) {
       </div>
     </div>
     <div class="detail-participant-section">
-      <div class="detail-participant-section-title">선택 참석자</div>
+      <div class="detail-participant-section-title">선택 참석자 ${meeting.optionalParticipants.length}명</div>
       <div class="detail-participant-list">
         ${meeting.optionalParticipants.length > 0
           ? meeting.optionalParticipants.map(name => `<div class="detail-participant-item">${name}</div>`).join('')
