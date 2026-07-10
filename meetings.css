@@ -479,6 +479,65 @@ button {
   line-height: 23px;
 }
 
+.response-status-list {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg);
+}
+
+.response-list-title {
+  margin-bottom: 2px;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.response-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.response-row span {
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.response-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.response-accepted {
+  background: var(--color-green-bg);
+  color: var(--color-green-text);
+}
+
+.response-pending {
+  background: var(--color-yellow-bg);
+  color: var(--color-yellow-text);
+}
+
+.response-declined {
+  background: var(--color-red-bg);
+  color: var(--color-red-text);
+}
+
 .candidate-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

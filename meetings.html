@@ -156,29 +156,84 @@
 
       <section class="content-section">
         <div class="section-header">
-          <h3 class="section-title">확정 대기</h3>
-          <p class="section-description">참석 조건을 확인하고 회의 시간을 확정하세요.</p>
+          <h3 class="section-title">확정 요청 대기</h3>
+          <p class="section-description">내가 보낸 회의 요청의 참석 응답 상태를 확인하세요.</p>
         </div>
         <div class="request-list">
           <article class="wide-card">
-            <span class="badge badge-yellow">확인 필요 1명</span>
+            <span class="badge badge-yellow">미응답 1명</span>
             <h4 class="card-title">2분기 캠페인 의사결정 회의</h4>
-            <p class="card-support">추천 후보: 2026.07.14 (화) 10:00 - 11:00</p>
-            <ul class="plain-list">
-              <li>필수 참석자 4명 전원 가능</li>
-              <li>선택 참석자 1명 확인 필요</li>
-            </ul>
-            <button class="btn-secondary" data-toast="확인 필요자 상세 화면은 다음 단계에서 연결할 예정이에요.">확인하러 가기</button>
+            <p class="card-support">2026.07.14 (화) 10:00 - 11:00</p>
+            <div class="response-status-list" aria-label="참석자 응답 상태">
+              <p class="response-list-title">참석자 응답 상태</p>
+              <div class="response-row">
+                <span>김민지</span>
+                <strong class="response-pill response-accepted">수락 완료</strong>
+              </div>
+              <div class="response-row">
+                <span>박준호</span>
+                <strong class="response-pill response-accepted">수락 완료</strong>
+              </div>
+              <div class="response-row">
+                <span>이연수</span>
+                <strong class="response-pill response-pending">미응답</strong>
+              </div>
+              <div class="response-row">
+                <span>정다은</span>
+                <strong class="response-pill response-accepted">수락 완료</strong>
+              </div>
+            </div>
+            <button class="btn-secondary" data-toast="미응답자에게 알림을 보냈어요.">미응답자에게 알림 보내기</button>
           </article>
           <article class="wide-card">
-            <span class="badge badge-blue">추천 후보 3개</span>
+            <span class="badge badge-green">전원 수락</span>
             <h4 class="card-title">제품 런칭 리뷰 회의</h4>
-            <p class="card-support">이번 주 후보 확인 중</p>
-            <ul class="plain-list">
-              <li>가능한 시간 3개</li>
-              <li>가장 적합한 시간을 선택해 확정할 수 있어요.</li>
-            </ul>
-            <button class="btn-secondary" data-toast="추천 후보 목록은 다음 단계에서 연결할 예정이에요.">후보 보기</button>
+            <p class="card-support">2026.07.15 (수) 14:00 - 15:00</p>
+            <div class="response-status-list" aria-label="참석자 응답 상태">
+              <p class="response-list-title">참석자 응답 상태</p>
+              <div class="response-row">
+                <span>김민지</span>
+                <strong class="response-pill response-accepted">수락 완료</strong>
+              </div>
+              <div class="response-row">
+                <span>박준호</span>
+                <strong class="response-pill response-accepted">수락 완료</strong>
+              </div>
+              <div class="response-row">
+                <span>이연수</span>
+                <strong class="response-pill response-accepted">수락 완료</strong>
+              </div>
+              <div class="response-row">
+                <span>정다은</span>
+                <strong class="response-pill response-accepted">수락 완료</strong>
+              </div>
+            </div>
+            <button class="btn-secondary" data-toast="회의가 확정됐어요.">회의 확정하기</button>
+          </article>
+          <article class="wide-card">
+            <span class="badge badge-red">참석 불가 1명</span>
+            <h4 class="card-title">신규 브랜드 영상 킥오프</h4>
+            <p class="card-support">2026.07.16 (목) 13:00 - 14:00</p>
+            <div class="response-status-list" aria-label="참석자 응답 상태">
+              <p class="response-list-title">참석자 응답 상태</p>
+              <div class="response-row">
+                <span>김민지</span>
+                <strong class="response-pill response-accepted">수락 완료</strong>
+              </div>
+              <div class="response-row">
+                <span>박준호</span>
+                <strong class="response-pill response-declined">참석 불가</strong>
+              </div>
+              <div class="response-row">
+                <span>이연수</span>
+                <strong class="response-pill response-accepted">수락 완료</strong>
+              </div>
+              <div class="response-row">
+                <span>정다은</span>
+                <strong class="response-pill response-pending">미응답</strong>
+              </div>
+            </div>
+            <button class="btn-secondary" data-toast="후보 시간 비교 영역으로 이동할 예정이에요.">후보 시간 다시 보기</button>
           </article>
         </div>
       </section>
