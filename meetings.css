@@ -201,7 +201,6 @@ button {
 
 .page-description,
 .section-description,
-.summary-copy,
 .card-support {
   font-size: 16px;
   font-weight: 400;
@@ -245,13 +244,6 @@ button {
   background: var(--color-bg);
 }
 
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 24px;
-}
-
-.summary-card,
 .start-card,
 .content-section,
 .wide-card,
@@ -260,36 +252,6 @@ button {
   background: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: 14px;
-}
-
-.summary-card {
-  min-height: 154px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.summary-label {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  line-height: 22px;
-}
-
-.summary-value {
-  font-size: 34px;
-  font-weight: 800;
-  color: var(--color-blue);
-  line-height: 42px;
-}
-
-.summary-value-yellow {
-  color: var(--color-yellow-text);
-}
-
-.summary-value-green {
-  color: var(--color-green-text);
 }
 
 .start-card {
@@ -616,7 +578,6 @@ button {
 }
 
 @media (max-width: 1180px) {
-  .summary-grid,
   .candidate-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -659,7 +620,6 @@ button {
     align-items: stretch;
   }
 
-  .summary-grid,
   .candidate-grid {
     grid-template-columns: 1fr;
   }
