@@ -318,7 +318,7 @@ function renderCandidates() {
       optionalNum: optionalTotal,
       optionalDen: optionalTotal,
       needCheck: requiredTotal > 0 ? '필수 참석자 1명' : '없음',
-      desc: requiredTotal > 0 ? '필수 참석자 1명의 확인이 필요해요.' : '',
+      desc: requiredTotal > 0 ? '필수 참석자 1명의 확인이 필요해 바로 확정할 수 없어요.' : '',
     },
   ];
 
@@ -793,10 +793,17 @@ function init() {
       return;
     }
 
-    const title = document.getElementById('meeting-title-input').value.trim();
-    const candidate = getCandidateData(selectedCandidateId);
     const card = document.querySelector(`.drawer-candidate-card[data-candidate-id="${selectedCandidateId}"]`);
     const badgeEl = card?.querySelector('.badge');
+    const isCheckRequired = badgeEl && badgeEl.textContent === '확인 필요';
+
+    if (isCheckRequired) {
+      showToast('필수 참석자에게 확인 요청을 보냈어요.');
+      return;
+    }
+
+    const title = document.getElementById('meeting-title-input').value.trim();
+    const candidate = getCandidateData(selectedCandidateId);
     const candidateLabel = badgeEl ? badgeEl.textContent : '';
 
     const requiredParticipants = [];
@@ -841,6 +848,12 @@ function init() {
     document.querySelectorAll('.drawer-candidate-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     selectedCandidateId = id;
+
+    const badge = card.querySelector('.badge');
+    const confirmBtn = document.getElementById('drawer-confirm-step');
+    confirmBtn.textContent = badge && badge.textContent === '확인 필요'
+      ? '확인 요청 후 확정하기'
+      : '선택한 시간으로 확정하기';
   });
 
   document.getElementById('notif-btn').addEventListener('click', () => {
