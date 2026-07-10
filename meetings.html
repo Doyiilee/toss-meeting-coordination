@@ -367,15 +367,42 @@
     </div>
 
     <div class="drawer-section">
-      <label class="drawer-label" for="participant-input">참석자</label>
+      <div class="drawer-section-title">
+        <label class="drawer-label" for="participant-input">참석자</label>
+        <p class="drawer-helper">이름 또는 이메일을 입력하세요.</p>
+      </div>
       <input class="drawer-input" id="participant-input" type="text" placeholder="이름 또는 이메일 입력" />
-      <div class="recommended-chips" aria-label="추천 참석자">
-        <button type="button" class="participant-chip" data-participant="김민지">김민지</button>
-        <button type="button" class="participant-chip" data-participant="박준호">박준호</button>
-        <button type="button" class="participant-chip" data-participant="이연수">이연수</button>
-        <button type="button" class="participant-chip" data-participant="정다은">정다은</button>
-        <button type="button" class="participant-chip" data-participant="한지훈">한지훈</button>
-        <button type="button" class="participant-chip" data-participant="최현우">최현우</button>
+      <div class="recommended-participants">
+        <div class="recommendation-header">
+          <p class="recommendation-title">추천 참석자</p>
+          <p class="recommendation-description">같은 팀이거나 최근 함께 회의한 사람을 추천해요.</p>
+        </div>
+        <div class="recommended-chips" aria-label="추천 참석자">
+          <button type="button" class="participant-chip" data-participant="김민지">
+            <span class="participant-name">김민지</span>
+            <span class="participant-reason">같은 팀 · Leader</span>
+          </button>
+          <button type="button" class="participant-chip" data-participant="박준호">
+            <span class="participant-name">박준호</span>
+            <span class="participant-reason">프로젝트 멤버</span>
+          </button>
+          <button type="button" class="participant-chip" data-participant="이연수">
+            <span class="participant-name">이연수</span>
+            <span class="participant-reason">최근 함께 회의</span>
+          </button>
+          <button type="button" class="participant-chip" data-participant="정다은">
+            <span class="participant-name">정다은</span>
+            <span class="participant-reason">데이터 분석 협업</span>
+          </button>
+          <button type="button" class="participant-chip" data-participant="한지훈">
+            <span class="participant-name">한지훈</span>
+            <span class="participant-reason">자주 초대</span>
+          </button>
+          <button type="button" class="participant-chip" data-participant="최현우">
+            <span class="participant-name">최현우</span>
+            <span class="participant-reason">디자인 협업</span>
+          </button>
+        </div>
       </div>
     </div>
 

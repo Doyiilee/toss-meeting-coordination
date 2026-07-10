@@ -901,30 +901,78 @@ button {
   line-height: 22px;
 }
 
-.recommended-chips {
+.recommended-participants {
+  margin-top: 18px;
+}
+
+.recommendation-header {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.recommendation-title {
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.recommendation-description {
+  color: #6F7378;
+  font-size: 14px;
+  line-height: 22px;
+  word-break: keep-all;
+}
+
+.recommended-chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin-top: 14px;
 }
 
 .participant-chip {
-  height: 36px;
-  padding: 0 14px;
+  min-height: 52px;
+  padding: 10px 12px;
   border: 1px solid var(--color-search-border);
-  border-radius: 999px;
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  font-weight: 700;
+  border-radius: 12px;
+  background: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .participant-chip:hover {
   background: var(--color-bg);
+  border-color: var(--color-blue);
 }
 
 .participant-chip.chip-selected {
   background: var(--color-summary-bg);
   border-color: var(--color-blue);
+}
+
+.participant-name {
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.participant-reason {
+  color: #6F7378;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  word-break: keep-all;
+}
+
+.participant-chip.chip-selected .participant-name,
+.participant-chip.chip-selected .participant-reason {
   color: var(--color-blue);
 }
 
