@@ -370,6 +370,45 @@ function renderCandidates() {
   });
 }
 
+function renderConfirmedMeetings() {
+  const section = document.querySelector('.confirmed-section');
+  const meetings = JSON.parse(sessionStorage.getItem('confirmedMeetings') || '[]');
+
+  document.querySelectorAll('.confirmed-card--new').forEach(el => el.remove());
+
+  meetings.forEach(meeting => {
+    const allParticipants = [...meeting.requiredParticipants, ...meeting.optionalParticipants];
+    let nameText;
+    if (allParticipants.length <= 3) {
+      nameText = allParticipants.join(', ');
+    } else {
+      nameText = `${allParticipants.slice(0, 3).join(', ')} 외 ${allParticipants.length - 3}명`;
+    }
+
+    const card = document.createElement('article');
+    card.className = 'confirmed-card confirmed-card--new';
+    card.innerHTML = `
+      <div>
+        <span class="badge badge-green">확정 완료</span>
+        <h4 class="card-title">${meeting.title}</h4>
+        <div class="confirmed-meta">
+          <span>${meeting.date} (${meeting.dayOfWeek}) ${meeting.timeRange}</span>
+          <span>필수 참석자 ${meeting.requiredParticipants.length}명 · 선택 참석자 ${meeting.optionalParticipants.length}명</span>
+        </div>
+        <p class="card-support">${nameText}</p>
+      </div>
+      <button type="button" class="btn-secondary">회의 상세 보기</button>
+    `;
+
+    card.querySelector('.btn-secondary').addEventListener('click', () => {
+      showToast('회의 상세 화면은 다음 작업에서 연결할 예정이에요.');
+    });
+
+    const header = section.querySelector('.section-header');
+    header.after(card);
+  });
+}
+
 function parseDate(dateString) {
   const [year, month, day] = dateString.split('.').map(Number);
   return new Date(year, month - 1, day);
@@ -668,8 +707,41 @@ function init() {
       showToast('확정할 후보 시간을 선택해주세요.');
       return;
     }
-    const data = getCandidateData(selectedCandidateId);
-    sessionStorage.setItem('selectedTime', JSON.stringify(data));
+
+    const title = document.getElementById('meeting-title-input').value.trim();
+    const candidate = getCandidateData(selectedCandidateId);
+    const card = document.querySelector(`.drawer-candidate-card[data-candidate-id="${selectedCandidateId}"]`);
+    const badgeEl = card?.querySelector('.badge');
+    const candidateLabel = badgeEl ? badgeEl.textContent : '';
+
+    const requiredParticipants = [];
+    const optionalParticipants = [];
+    selectedParticipants.forEach(name => {
+      if ((participantRole.get(name) || 'required') === 'required') {
+        requiredParticipants.push(name);
+      } else {
+        optionalParticipants.push(name);
+      }
+    });
+
+    sessionStorage.setItem('selectedTime', JSON.stringify(candidate));
+
+    const confirmedMeeting = {
+      title,
+      date: candidate.date,
+      dayOfWeek: candidate.dayOfWeek,
+      timeRange: candidate.timeRange,
+      duration: candidate.duration,
+      requiredParticipants,
+      optionalParticipants,
+      candidateLabel,
+    };
+
+    const existing = JSON.parse(sessionStorage.getItem('confirmedMeetings') || '[]');
+    existing.unshift(confirmedMeeting);
+    sessionStorage.setItem('confirmedMeetings', JSON.stringify(existing));
+
+    renderConfirmedMeetings();
     showToast('회의 시간이 확정됐어요.');
     closeMeetingDrawer();
   });
@@ -701,6 +773,7 @@ function init() {
   resetSelectedParticipants();
   renderCalendarRange();
   setDurationOption('60');
+  renderConfirmedMeetings();
 }
 
 document.addEventListener('DOMContentLoaded', init);
