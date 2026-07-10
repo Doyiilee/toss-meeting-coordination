@@ -14,6 +14,8 @@ function clearPreviousSession() {
 
 const selectedParticipants = new Set();
 let selectedDuration = 60;
+const calendarYear = 2026;
+const calendarMonth = 6;
 const defaultStartDate = '2026.07.14';
 const defaultEndDate = '2026.07.20';
 let startDate = defaultStartDate;
@@ -90,9 +92,43 @@ function parseDate(dateString) {
   return new Date(year, month - 1, day);
 }
 
+function formatCalendarDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}.${month}.${day}`;
+}
+
 function getInclusiveDayCount(start, end) {
   const dayMs = 24 * 60 * 60 * 1000;
   return Math.round((parseDate(end) - parseDate(start)) / dayMs) + 1;
+}
+
+function renderCalendar() {
+  const calendarGrid = document.getElementById('drawer-calendar-grid');
+  const firstDayOfMonth = new Date(calendarYear, calendarMonth, 1);
+  const gridStartDate = new Date(calendarYear, calendarMonth, 1 - firstDayOfMonth.getDay());
+
+  calendarGrid.innerHTML = '';
+
+  for (let index = 0; index < 35; index += 1) {
+    const date = new Date(gridStartDate);
+    date.setDate(gridStartDate.getDate() + index);
+
+    const dayButton = document.createElement('button');
+    dayButton.type = 'button';
+    dayButton.className = 'calendar-day';
+    dayButton.dataset.date = formatCalendarDate(date);
+    dayButton.textContent = String(date.getDate());
+    dayButton.setAttribute('aria-label', `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 선택`);
+
+    if (date.getMonth() !== calendarMonth) {
+      dayButton.classList.add('calendar-muted');
+      dayButton.disabled = true;
+    }
+
+    calendarGrid.appendChild(dayButton);
+  }
 }
 
 function renderCalendarRange() {
@@ -198,19 +234,14 @@ function init() {
     }
   });
 
-  document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
-    day.setAttribute('role', 'button');
-    day.setAttribute('tabindex', '0');
-    day.setAttribute('aria-label', `2026년 7월 ${day.textContent.trim()}일 선택`);
-    day.addEventListener('click', () => {
-      selectCalendarDate(day.dataset.date);
-    });
-    day.addEventListener('keydown', event => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        selectCalendarDate(day.dataset.date);
-      }
-    });
+  renderCalendar();
+  document.getElementById('drawer-calendar-grid').addEventListener('click', event => {
+    const dayButton = event.target.closest('.calendar-day[data-date]');
+    if (!dayButton || dayButton.disabled) {
+      return;
+    }
+
+    selectCalendarDate(dayButton.dataset.date);
   });
 
   document.querySelectorAll('.duration-option').forEach(btn => {
