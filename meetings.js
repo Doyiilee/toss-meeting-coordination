@@ -18,8 +18,8 @@ const calendarYear = 2026;
 const calendarMonth = 6;
 const defaultStartDate = '2026.07.14';
 const defaultEndDate = '2026.07.20';
-let startDate = defaultStartDate;
-let endDate = defaultEndDate;
+let startDate = null;
+let endDate = null;
 
 function resetSelectedParticipants() {
   selectedParticipants.clear();
@@ -64,7 +64,7 @@ function renderSelectedParticipants() {
 function openMeetingDrawer() {
   clearPreviousSession();
   resetSelectedParticipants();
-  setCalendarRange(defaultStartDate, defaultEndDate);
+  renderCalendarRange();
   const drawer = document.getElementById('meeting-drawer');
   const backdrop = document.getElementById('meeting-drawer-backdrop');
 
@@ -132,40 +132,79 @@ function renderCalendar() {
 }
 
 function renderCalendarRange() {
-  const rangeText = endDate ? `${startDate} - ${endDate}` : `${startDate} - 종료일 선택`;
-  document.getElementById('selected-date-range').textContent = `선택된 기간: ${rangeText}`;
+  const rangeSpan = document.getElementById('selected-date-range');
+  document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
+    day.classList.remove('calendar-range', 'calendar-range-start', 'calendar-range-end');
+  });
+
+  if (!startDate) {
+    rangeSpan.textContent = '선택된 기간: 아직 선택되지 않았어요.';
+    return;
+  }
+
+  if (!endDate) {
+    rangeSpan.textContent = `선택된 기간: ${startDate} - 종료일을 선택해주세요.`;
+  } else {
+    rangeSpan.textContent = `선택된 기간: ${startDate} - ${endDate}`;
+  }
+
   document.querySelectorAll('.calendar-day[data-date]').forEach(day => {
     const date = day.dataset.date;
-    const isInRange = endDate ? date >= startDate && date <= endDate : date === startDate;
-    day.classList.toggle('calendar-range', isInRange);
-    day.classList.toggle('calendar-range-start', date === startDate);
-    day.classList.toggle('calendar-range-end', Boolean(endDate) && date === endDate);
+    if (endDate) {
+      if (date >= startDate && date <= endDate) {
+        day.classList.add('calendar-range');
+      }
+      if (date === startDate) {
+        day.classList.add('calendar-range-start');
+      }
+      if (date === endDate) {
+        day.classList.add('calendar-range-end');
+      }
+    } else {
+      if (date === startDate) {
+        day.classList.add('calendar-range', 'calendar-range-start');
+      }
+    }
   });
 }
 
-function setCalendarRange(start, end = '') {
+function setCalendarRange(start, end) {
   startDate = start;
   endDate = end;
   renderCalendarRange();
 }
 
 function selectCalendarDate(date) {
+  if (!startDate) {
+    setCalendarRange(date, null);
+    return;
+  }
+
+  if (startDate && !endDate) {
+    if (date === startDate) {
+      setCalendarRange(null, null);
+      return;
+    }
+    if (date < startDate) {
+      setCalendarRange(date, null);
+      return;
+    }
+    const dayCount = getInclusiveDayCount(startDate, date);
+    if (dayCount > 7) {
+      showToast('회의 후보 탐색 기간은 최대 1주일까지만 설정할 수 있어요.');
+      return;
+    }
+    setCalendarRange(startDate, date);
+    return;
+  }
+
   if (startDate && endDate) {
-    setCalendarRange(date);
-    return;
+    if (date >= startDate && date <= endDate) {
+      setCalendarRange(null, null);
+      return;
+    }
+    setCalendarRange(date, null);
   }
-
-  if (date < startDate) {
-    setCalendarRange(date);
-    return;
-  }
-
-  if (getInclusiveDayCount(startDate, date) > 7) {
-    showToast('회의 후보 탐색 기간은 최대 1주일까지만 설정할 수 있어요.');
-    return;
-  }
-
-  setCalendarRange(startDate, date);
 }
 
 function setDuration(value, showCustom = false) {
@@ -270,6 +309,35 @@ function init() {
     });
   });
 
+  const participantInput = document.getElementById('participant-input');
+  let isParticipantComposing = false;
+
+  participantInput.addEventListener('compositionstart', () => {
+    isParticipantComposing = true;
+  });
+
+  participantInput.addEventListener('compositionend', () => {
+    isParticipantComposing = false;
+  });
+
+  participantInput.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter') return;
+    if (event.isComposing || isParticipantComposing) return;
+    event.preventDefault();
+
+    const name = participantInput.value.trim();
+    if (!name) return;
+
+    if (selectedParticipants.has(name)) {
+      showToast('이미 추가된 참석자예요.');
+      return;
+    }
+
+    selectedParticipants.add(name);
+    renderSelectedParticipants();
+    participantInput.value = '';
+  });
+
   document.querySelectorAll('[data-toast]').forEach(btn => {
     btn.addEventListener('click', () => {
       showToast(btn.dataset.toast);
@@ -293,7 +361,7 @@ function init() {
   });
 
   resetSelectedParticipants();
-  setCalendarRange(defaultStartDate, defaultEndDate);
+  renderCalendarRange();
   setDurationOption('60');
 }
 
