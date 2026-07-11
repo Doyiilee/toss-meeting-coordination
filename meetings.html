@@ -104,7 +104,7 @@
     <section class="team-timeline">
       <div class="timeline-header">
         <h3 class="section-title">팀 일정 한눈에 보기</h3>
-        <p class="section-description">팀원들의 일정을 비교하고, 비어 있는 시간을 선택해 바로 회의를 만들 수 있어요.</p>
+        <p class="section-description">팀원들의 일정을 비교하고, 비어 있는 시간을 선택해 바로 회의를 잡을 수 있어요.</p>
       </div>
       <div class="timeline-controls">
         <div class="timeline-buttons">
@@ -122,59 +122,77 @@
             <option>팀원 전체 빈 시간</option>
           </select>
         </div>
+        <div class="timeline-filter timeline-duration-filter">
+          <select class="timeline-select">
+            <option>회의 길이 1시간</option>
+          </select>
+        </div>
       </div>
-      <div class="quick-slot-summary">
-        <p class="quick-slot-title">바로 잡을 수 있는 시간</p>
-        <div class="quick-slot-cards" id="quick-slot-cards"></div>
-      </div>
-      <div class="timeline-summary">필수 참석자 기준으로 가능한 시간을 먼저 보여드려요.</div>
-      <div class="timeline-grid-wrapper">
-        <div class="timeline-grid" id="timeline-grid"></div>
+      <div class="timeline-layout">
+        <div class="timeline-calendar-panel">
+          <div class="timeline-grid-wrapper">
+            <div class="timeline-grid" id="timeline-grid"></div>
+          </div>
+          <div class="timeline-legend" aria-label="일정 겹침 범례">
+            <span><i class="legend-unavailable-low"></i>2명 이상 불가</span>
+            <span><i class="legend-unavailable-high"></i>3명 이상 불가</span>
+            <span><i class="legend-available"></i>전원 가능</span>
+          </div>
+        </div>
+        <div class="quick-slot-summary">
+          <div class="quick-slot-cards" id="quick-slot-cards"></div>
+        </div>
       </div>
     </section>
 
     <div class="two-column">
-      <section class="content-section">
+      <section class="content-section received-section">
         <div class="section-header">
           <h3 class="section-title">받은 요청</h3>
-          <p class="section-description">내 응답이 필요한 회의 요청이에요.</p>
+          <p class="section-description">참석 여부를 응답해야 하는 회의 요청이에요.</p>
         </div>
-        <div class="request-list">
-          <article class="wide-card">
-            <div class="card-main-row">
-              <span class="badge badge-blue">오늘까지 응답</span>
-              <span class="status-text status-green">충돌 없음</span>
+        <div class="meeting-table request-table" role="table" aria-label="받은 회의 요청">
+          <div class="meeting-table-row meeting-table-head" role="row">
+            <div class="meeting-table-cell table-index" role="columnheader"></div>
+            <div class="meeting-table-cell" role="columnheader">상태</div>
+            <div class="meeting-table-cell" role="columnheader">회의 제목</div>
+            <div class="meeting-table-cell" role="columnheader">요청자</div>
+            <div class="meeting-table-cell" role="columnheader">회의 일시</div>
+            <div class="meeting-table-cell" role="columnheader">참석 유형</div>
+            <div class="meeting-table-cell" role="columnheader">일정 상태</div>
+            <div class="meeting-table-cell table-action" role="columnheader"></div>
+          </div>
+          <div class="meeting-table-row" role="row">
+            <div class="meeting-table-cell table-index" role="cell"><span>1</span></div>
+            <div class="meeting-table-cell" role="cell"><span class="badge badge-red">오늘까지 응답</span></div>
+            <div class="meeting-table-cell table-title" role="cell">2분기 캠페인 의사결정 회의</div>
+            <div class="meeting-table-cell" role="cell">마케팅팀 · 김민지</div>
+            <div class="meeting-table-cell" role="cell">07.14 (화) 10:00 - 11:00</div>
+            <div class="meeting-table-cell" role="cell">필수 참석자</div>
+            <div class="meeting-table-cell status-green" role="cell">내 일정과 겹치지 않아요</div>
+            <div class="meeting-table-cell table-action" role="cell">
+              <button class="btn-secondary table-btn" data-toast="참석 여부 응답 화면은 다음 단계에서 연결할 예정이에요.">참석 여부 응답하기</button>
             </div>
-            <h4 class="card-title">2분기 캠페인 의사결정 회의</h4>
-            <div class="detail-grid">
-              <span>요청자</span><strong>김민지님</strong>
-              <span>회의 시간</span><strong>2026.07.14 (화) 10:00 - 11:00</strong>
-              <span>내 역할</span><strong>필수 참석자</strong>
-              <span>내 일정</span><strong>충돌 없음</strong>
+          </div>
+          <div class="meeting-table-row" role="row">
+            <div class="meeting-table-cell table-index" role="cell"><span>2</span></div>
+            <div class="meeting-table-cell" role="cell"><span class="badge badge-blue">4일 이내 응답</span></div>
+            <div class="meeting-table-cell table-title" role="cell">신규 브랜드 영상 킥오프</div>
+            <div class="meeting-table-cell" role="cell">마케팅팀 · 박준호</div>
+            <div class="meeting-table-cell" role="cell">07.16 (목) 13:00 - 14:00</div>
+            <div class="meeting-table-cell" role="cell">선택 참석자</div>
+            <div class="meeting-table-cell status-red" role="cell">캠페인 리뷰와 시간이 겹쳐요</div>
+            <div class="meeting-table-cell table-action" role="cell">
+              <button class="btn-secondary table-btn" data-toast="일정 확인 후 응답 화면은 다음 단계에서 연결할 예정이에요.">참석 여부 응답하기</button>
             </div>
-            <button class="btn-secondary" data-toast="참석 여부 응답 화면은 다음 단계에서 연결할 예정이에요.">참석 여부 응답하기</button>
-          </article>
-          <article class="wide-card">
-            <div class="card-main-row">
-              <span class="badge badge-red">충돌 있음</span>
-              <span class="status-text status-red">캠페인 리뷰와 겹침</span>
-            </div>
-            <h4 class="card-title">신규 브랜드 영상 킥오프</h4>
-            <div class="detail-grid">
-              <span>요청자</span><strong>박준호님</strong>
-              <span>회의 시간</span><strong>2026.07.16 (목) 13:00 - 14:00</strong>
-              <span>내 역할</span><strong>선택 참석자</strong>
-              <span>내 일정</span><strong>캠페인 리뷰와 시간이 겹쳐요</strong>
-            </div>
-            <button class="btn-secondary" data-toast="일정 확인 후 응답 화면은 다음 단계에서 연결할 예정이에요.">일정 확인 후 응답하기</button>
-          </article>
+          </div>
         </div>
       </section>
 
-      <section class="content-section">
+      <section class="content-section pending-section">
         <div class="section-header">
-          <h3 class="section-title">확정 요청 대기</h3>
-          <p class="section-description">내가 보낸 회의 요청의 참석 응답 상태를 확인하세요.</p>
+          <h3 class="section-title">응답 대기 중인 회의</h3>
+          <p class="section-description">내가 보낸 회의 요청의 참석 응답 상태를 확인하세요</p>
         </div>
         <div class="request-list">
           <article class="wide-card">
@@ -304,21 +322,32 @@
     <section class="content-section confirmed-section">
       <div class="section-header">
         <h3 class="section-title">확정된 회의</h3>
-        <p class="section-description">확정되어 내 일정에 추가된 회의예요.</p>
+        <p class="section-description">확정되어 캘린더에 추가된 회의예요.</p>
       </div>
-      <article class="confirmed-card">
-        <div>
-          <span class="badge badge-green">확정 완료</span>
-          <h4 class="card-title">브랜드 캠페인 주간 회의</h4>
-          <div class="confirmed-meta">
-            <span>2026.07.15 (수) 14:00 - 15:00</span>
-            <span>참석자 6명</span>
-            <span>회의실 A</span>
-          </div>
-          <p class="card-support status-green">내 캘린더에 추가됐어요.</p>
+      <div class="meeting-table confirmed-table" role="table" aria-label="확정된 회의">
+        <div class="meeting-table-row meeting-table-head" role="row">
+          <div class="meeting-table-cell table-index" role="columnheader"></div>
+          <div class="meeting-table-cell" role="columnheader">상태</div>
+          <div class="meeting-table-cell" role="columnheader">회의 제목</div>
+          <div class="meeting-table-cell" role="columnheader">일시</div>
+          <div class="meeting-table-cell" role="columnheader">참석자</div>
+          <div class="meeting-table-cell" role="columnheader">장소</div>
+          <div class="meeting-table-cell" role="columnheader">캘린더 상태</div>
+          <div class="meeting-table-cell table-action" role="columnheader"></div>
         </div>
-        <button class="btn-secondary" data-toast="일정 상세 화면은 다음 단계에서 연결할 예정이에요.">일정 상세 보기</button>
-      </article>
+        <div class="meeting-table-row confirmed-static-row" role="row">
+          <div class="meeting-table-cell table-index" role="cell"><span>1</span></div>
+          <div class="meeting-table-cell" role="cell"><span class="badge badge-green">확정 완료</span></div>
+          <div class="meeting-table-cell table-title" role="cell">브랜드 캠페인 주간 회의</div>
+          <div class="meeting-table-cell" role="cell">07.15 (수) 14:00 - 15:00</div>
+          <div class="meeting-table-cell" role="cell">참석자 6명</div>
+          <div class="meeting-table-cell" role="cell">회의실 A</div>
+          <div class="meeting-table-cell status-green" role="cell">내 캘린더에 추가됐어요</div>
+          <div class="meeting-table-cell table-action" role="cell">
+            <button class="btn-secondary table-btn" id="confirmed-static-detail-btn">회의 상세 보기</button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 </div>

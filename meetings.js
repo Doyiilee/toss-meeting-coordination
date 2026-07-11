@@ -372,40 +372,36 @@ function renderCandidates() {
 
 function renderConfirmedMeetings() {
   const section = document.querySelector('.confirmed-section');
+  const table = section.querySelector('.confirmed-table');
   const meetings = JSON.parse(sessionStorage.getItem('confirmedMeetings') || '[]');
 
-  document.querySelectorAll('.confirmed-card--new').forEach(el => el.remove());
+  document.querySelectorAll('.confirmed-row--new').forEach(el => el.remove());
 
   meetings.forEach((meeting, index) => {
     const allParticipants = [...meeting.requiredParticipants, ...meeting.optionalParticipants];
-    let nameText;
-    if (allParticipants.length <= 3) {
-      nameText = allParticipants.join(', ');
-    } else {
-      nameText = `${allParticipants.slice(0, 3).join(', ')} 외 ${allParticipants.length - 3}명`;
-    }
+    const participantText = allParticipants.length > 0 ? `참석자 ${allParticipants.length}명` : '참석자 없음';
 
-    const card = document.createElement('article');
-    card.className = 'confirmed-card confirmed-card--new';
-    card.innerHTML = `
-      <div>
-        <span class="badge badge-green">확정 완료</span>
-        <h4 class="card-title">${meeting.title}</h4>
-        <div class="confirmed-meta">
-          <span>${meeting.date} (${meeting.dayOfWeek}) ${meeting.timeRange}</span>
-          <span>필수 참석자 ${meeting.requiredParticipants.length}명 · 선택 참석자 ${meeting.optionalParticipants.length}명</span>
-        </div>
-        <p class="card-support">${nameText}</p>
+    const row = document.createElement('div');
+    row.className = 'meeting-table-row confirmed-row--new';
+    row.setAttribute('role', 'row');
+    row.innerHTML = `
+      <div class="meeting-table-cell table-index" role="cell"><span>${index + 2}</span></div>
+      <div class="meeting-table-cell" role="cell"><span class="badge badge-green">확정 완료</span></div>
+      <div class="meeting-table-cell table-title" role="cell">${meeting.title}</div>
+      <div class="meeting-table-cell" role="cell">${meeting.date} (${meeting.dayOfWeek}) ${meeting.timeRange}</div>
+      <div class="meeting-table-cell" role="cell">${participantText}</div>
+      <div class="meeting-table-cell" role="cell">회의실 미정</div>
+      <div class="meeting-table-cell status-green" role="cell">내 캘린더에 추가됐어요</div>
+      <div class="meeting-table-cell table-action" role="cell">
+        <button type="button" class="btn-secondary table-btn">회의 상세 보기</button>
       </div>
-      <button type="button" class="btn-secondary">회의 상세 보기</button>
     `;
 
-    card.querySelector('.btn-secondary').addEventListener('click', () => {
+    row.querySelector('.btn-secondary').addEventListener('click', () => {
       openDetailDrawer(index);
     });
 
-    const header = section.querySelector('.section-header');
-    header.after(card);
+    table.appendChild(row);
   });
 }
 
@@ -435,6 +431,30 @@ function closeDetailDrawer() {
   drawer.setAttribute('aria-hidden', 'true');
   backdrop.setAttribute('aria-hidden', 'true');
   document.body.classList.remove('detail-drawer-open');
+}
+
+function openStaticConfirmedDetail() {
+  const meeting = {
+    title: '브랜드 캠페인 주간 회의',
+    date: '2026.07.15',
+    dayOfWeek: '수',
+    timeRange: '14:00 - 15:00',
+    duration: 60,
+    candidateLabel: '확정 완료',
+    requiredParticipants: ['이도이', '김민지', '박준호', '이연수'],
+    optionalParticipants: ['정다은', '한지훈'],
+  };
+
+  renderDetailContent(meeting);
+
+  const drawer = document.getElementById('detail-drawer');
+  const backdrop = document.getElementById('detail-drawer-backdrop');
+
+  drawer.classList.add('visible');
+  backdrop.classList.add('visible');
+  drawer.setAttribute('aria-hidden', 'false');
+  backdrop.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('detail-drawer-open');
 }
 
 function renderDetailContent(meeting) {
@@ -494,32 +514,34 @@ const teamMembers = [
 
 const timelineSlots = [
   {
-    dayIndex: 3,
-    hour: 11,
+    dayIndex: 1,
+    hour: 13,
     type: 'best',
-    status: '가장 추천',
-    dayName: '목',
-    dayNum: 16,
-    timeLabel: '11:00 - 12:00',
-    available: ['이도이', '김현우', '박서연', '정민재', '최유진'],
-    checkNeeded: [{ name: '강태오', reason: '외근 전후 일정 있음' }],
+    status: '전원 가능',
+    dayName: '화',
+    dayNum: 14,
+    timeLabel: '13:00 - 15:00',
+    candidateCount: 2,
+    available: ['이도이', '김현우', '박서연', '정민재', '최유진', '강태오'],
+    checkNeeded: [],
     unavailable: [],
-    tooltipTitle: '목 11:00 - 12:00',
+    tooltipTitle: '화 13:00 - 15:00',
     tooltipNote: '클릭해서 회의 만들기',
   },
   {
-    dayIndex: 2,
-    hour: 11,
-    type: 'check',
-    status: '확인 필요',
-    dayName: '수',
-    dayNum: 15,
-    timeLabel: '11:00 - 12:00',
-    available: ['이도이', '박서연', '정민재', '최유진'],
-    checkNeeded: [{ name: '김현우', reason: '본부장 보고 준비 일정 확인 필요' }],
-    unavailable: [{ name: '강태오', reason: '파트너 미팅' }],
-    tooltipTitle: '수 11:00 - 12:00',
-    tooltipNote: '확인 요청이 필요한 시간이에요',
+    dayIndex: 3,
+    hour: 10,
+    type: 'best',
+    status: '전원 가능',
+    dayName: '목',
+    dayNum: 16,
+    timeLabel: '10:00 - 11:00',
+    candidateCount: 1,
+    available: ['이도이', '김현우', '박서연', '정민재', '최유진', '강태오'],
+    checkNeeded: [],
+    unavailable: [],
+    tooltipTitle: '목 10:00 - 11:00',
+    tooltipNote: '클릭해서 회의 만들기',
   },
   {
     dayIndex: 1,
@@ -589,11 +611,13 @@ function renderTimeline() {
         cell.classList.add(`timeline-cell-${slot.type}`);
 
         if (slot.type !== 'unavailable') {
-          const timeStr = `${String(currentHour).padStart(2, '0')}:00-${String(currentHour + 1).padStart(2, '0')}:00`;
+          const timeStr = slot.timeLabel.replace(' - ', '-');
           cell.innerHTML = `
             <span class="timeline-cell-time">${timeStr}</span>
             <span class="timeline-cell-badge">${slot.status}</span>
           `;
+        } else if (dayIndex === 3 && currentHour === 13) {
+          cell.classList.add('timeline-cell-conflict-high');
         }
 
         cell.addEventListener('mouseenter', (e) => showTimelineTooltip(e, slot));
@@ -601,6 +625,19 @@ function renderTimeline() {
 
         if (slot.type !== 'unavailable') {
           cell.addEventListener('click', () => openTimelineModal(slot));
+        }
+      } else {
+        const highConflict = (currentHour === 13 && (dayIndex === 3 || dayIndex === 4))
+          || (currentHour === 14 && dayIndex === 0)
+          || (currentHour === 15 && dayIndex === 2);
+        const lowConflict = (currentHour === 9 && dayIndex < 3)
+          || (currentHour === 10 && dayIndex === 0)
+          || (currentHour === 14 && (dayIndex === 2 || dayIndex === 3));
+
+        if (highConflict) {
+          cell.classList.add('timeline-cell-conflict-high');
+        } else if (lowConflict) {
+          cell.classList.add('timeline-cell-conflict-low');
         }
       }
 
@@ -733,20 +770,7 @@ function updateTimelineModalStatus(slot) {
 }
 
 function buildQuickSlotDesc(slot) {
-  if (slot.type === 'best') {
-    const requiredAvailable = teamMembers.filter(m => m.required && slot.available.includes(m.name)).length;
-    const optionalAvailable = teamMembers.filter(m => !m.required && slot.available.includes(m.name)).length;
-    const checkCount = slot.checkNeeded.length;
-    return `필수 참석자 ${requiredAvailable}명 가능 · 선택 ${optionalAvailable}명 가능 · ${checkCount}명 확인 필요`;
-  }
-  const parts = [];
-  if (slot.checkNeeded.length > 0) {
-    parts.push(slot.checkNeeded.map(c => `${c.name} 확인 필요`).join(' · '));
-  }
-  if (slot.unavailable.length > 0) {
-    parts.push(slot.unavailable.map(u => `${u.name} 참석 불가`).join(' · '));
-  }
-  return parts.join(' · ');
+  return '선택한 참석자 모두 참석 가능한 시간이에요.';
 }
 
 function renderQuickSlots() {
@@ -760,6 +784,8 @@ function renderQuickSlots() {
       <span class="quick-slot-badge quick-slot-badge-${slot.type}">${slot.status}</span>
       <strong class="quick-slot-time">${slot.dayNum}(${slot.dayName}) ${slot.timeLabel}</strong>
       <span class="quick-slot-desc">${buildQuickSlotDesc(slot)}</span>
+      <span class="quick-slot-count">1시간 회의 후보 ${slot.candidateCount || 1}개가 있어요.</span>
+      <span class="quick-slot-cta">이 구간에서 회의 만들기</span>
     </button>
   `).join('');
 
@@ -852,6 +878,7 @@ function openTimelineModal(slot) {
   requestAnimationFrame(() => {
     backdrop.classList.add('visible');
     modal.classList.add('visible');
+    document.body.classList.add('timeline-modal-open');
   });
 
   setTimeout(() => document.getElementById('timeline-modal-title-input')?.focus(), 120);
@@ -863,6 +890,7 @@ function closeTimelineModal() {
 
   backdrop.classList.remove('visible');
   modal.classList.remove('visible');
+  document.body.classList.remove('timeline-modal-open');
 
   setTimeout(() => {
     backdrop.hidden = true;
@@ -1261,6 +1289,8 @@ function init() {
   document.getElementById('detail-drawer-calendar-btn').addEventListener('click', () => {
     showToast('캘린더에서 보기 기능은 다음 단계에서 연결할 예정이에요.');
   });
+
+  document.getElementById('confirmed-static-detail-btn')?.addEventListener('click', openStaticConfirmedDetail);
 
   renderCalendar();
   document.getElementById('drawer-calendar-grid').addEventListener('click', event => {
