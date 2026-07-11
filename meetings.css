@@ -1690,14 +1690,18 @@ button {
 
 .timeline-controls {
   display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1000px) minmax(280px, 460px);
+  grid-template-rows: auto auto;
   align-items: center;
-  gap: 24px;
+  column-gap: 24px;
+  row-gap: 16px;
 }
 
 .timeline-buttons {
   display: flex;
   gap: 6px;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .timeline-btn {
@@ -1728,14 +1732,21 @@ button {
   display: flex;
   align-items: center;
   gap: 12px;
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
   font-size: 24px;
   font-weight: 800;
   color: var(--color-text-primary);
 }
 
+.timeline-period-label {
+  margin-right: 12px;
+}
+
 .timeline-nav-btn {
-  width: 28px;
-  height: 28px;
+  width: 16px;
+  height: 16px;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -1745,40 +1756,57 @@ button {
   cursor: pointer;
 }
 
+.timeline-nav-btn[aria-label="이전"] {
+  color: #A8ADB5;
+}
+
+.timeline-nav-btn[aria-label="다음"] {
+  color: #171A1F;
+}
+
 .timeline-nav-btn:hover {
   background: var(--color-bg);
 }
 
 .timeline-nav-btn .icon-mask {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 
 .timeline-select {
   height: 40px;
   min-width: 128px;
-  padding: 0 12px;
+  padding: 0 36px 0 12px;
   border: 1px solid var(--color-search-border);
   border-radius: 8px;
   background: var(--color-white);
+  background-image: url("assets/icons/chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
   font-size: 14px;
   font-weight: 600;
   color: var(--color-text-primary);
   font-family: inherit;
   cursor: pointer;
+  appearance: none;
 }
 
 .timeline-filter {
+  grid-column: 1;
+  grid-row: 2;
   justify-self: end;
 }
 
 .timeline-duration-filter {
-  grid-column: 4;
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
 }
 
 .timeline-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
+  grid-template-columns: minmax(0, 1000px) minmax(280px, 460px);
   gap: 24px;
   align-items: stretch;
 }
@@ -1904,16 +1932,24 @@ button {
 
 .timeline-grid-wrapper {
   position: relative;
-  overflow: hidden;
-  border: 1px solid var(--color-border);
+  overflow: visible;
+  width: min(1000px, 100%);
+  border: 0;
   border-radius: 12px;
   background: var(--color-white);
 }
 
 .timeline-grid {
-  display: flex;
-  flex-direction: column;
-  min-width: 560px;
+  display: grid;
+  grid-template-columns: 10% repeat(5, 18%);
+  grid-template-rows: 60px repeat(10, 48px);
+  width: 100%;
+  max-width: 1000px;
+  height: 540px;
+  border-top: 1px solid #EEF0F3;
+  border-left: 1px solid #EEF0F3;
+  overflow: hidden;
+  border-radius: 12px;
 }
 
 .timeline-header-row {
@@ -1926,13 +1962,16 @@ button {
 }
 
 .timeline-day-header {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--color-text-secondary);
-  line-height: 20px;
-  padding: 2px 0;
+  line-height: 24px;
+  border-right: 1px solid #EEF0F3;
+  border-bottom: 1px solid #EEF0F3;
 }
 
 .timeline-hour-row {
@@ -1946,71 +1985,110 @@ button {
 }
 
 .timeline-hour-label {
-  width: 78px;
-  flex-shrink: 0;
-  font-size: 10px;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: 100%;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--color-text-tertiary);
-  text-align: right;
-  padding-right: 8px;
-  line-height: 38px;
+  text-align: center;
+  padding-right: 0;
+  line-height: 24px;
+  border-right: 1px solid #EEF0F3;
+  border-bottom: 1px solid #EEF0F3;
 }
 
 .timeline-cell {
-  flex: 1;
   height: 100%;
+  min-width: 0;
   border-radius: 0;
   margin: 0;
-  border-left: 1px solid #F0F1F3;
+  border-right: 1px solid #EEF0F3;
+  border-bottom: 1px solid #EEF0F3;
+  background: #F9FAFC;
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  gap: 1px;
+  gap: 2px;
   overflow: hidden;
   transition: box-shadow 150ms ease, border-color 150ms ease, background 150ms ease;
 }
 
+.timeline-availability-block {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid #BFE8CC;
+  border-radius: 8px;
+  background: #F0FBF5;
+  color: #15803D;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  overflow: hidden;
+}
+
+.timeline-availability-block-duration-1 {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  gap: 0;
+}
+
 .timeline-cell-time {
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  letter-spacing: -0.4px;
   white-space: nowrap;
-  text-align: center;
+  text-align: left;
 }
 
 .timeline-cell-badge {
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 10px;
-  padding: 1px 4px;
-  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  letter-spacing: 0;
+  padding: 0;
+  border-radius: 0;
   white-space: nowrap;
-  text-align: center;
+  text-align: left;
 }
 
 .timeline-cell-best {
-  background: var(--color-green-bg);
-  border: 1px solid #BFEBD0;
-  border-radius: 8px;
-  margin: 1px;
+  background: #F9FAFC;
+}
+
+.timeline-availability-block.timeline-cell-best {
+  background: #F0FBF5;
+  border-color: #BFE8CC;
   cursor: pointer;
 }
 
-.timeline-cell-best:hover {
+.timeline-availability-block.timeline-cell-best:hover {
   background: #DCECFF;
   border-color: #8CB4FF;
   box-shadow: 0 1px 6px rgba(53, 100, 255, 0.12);
 }
 
-.timeline-cell-best .timeline-cell-time {
-  color: var(--color-green-text);
+.timeline-availability-block.timeline-cell-best .timeline-cell-time {
+  color: #15803D;
 }
 
-.timeline-cell-best .timeline-cell-badge {
+.timeline-availability-block.timeline-cell-best .timeline-cell-badge {
   background: transparent;
-  color: var(--color-green-text);
+  color: #15803D;
 }
 
 .timeline-cell-check {
@@ -2035,18 +2113,17 @@ button {
 }
 
 .timeline-cell-unavailable {
-  background: #EEF0F3;
-  border: 0;
+  background: #ECEFF3;
   cursor: not-allowed;
   opacity: 1;
 }
 
 .timeline-cell-conflict-low {
-  background: #F1F3F5;
+  background: #F5F6F8;
 }
 
 .timeline-cell-conflict-high {
-  background: #E5E8EC;
+  background: #ECEFF3;
 }
 
 .timeline-legend {

@@ -573,59 +573,58 @@ function renderTimeline() {
   const days = ['13(월)', '14(화)', '15(수)', '16(목)', '17(금)'];
   const hours = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
-  const headerRow = document.createElement('div');
-  headerRow.className = 'timeline-header-row';
-
   const emptyLabel = document.createElement('div');
   emptyLabel.className = 'timeline-hour-label';
-  headerRow.appendChild(emptyLabel);
+  emptyLabel.style.gridColumn = '1';
+  emptyLabel.style.gridRow = '1';
+  grid.appendChild(emptyLabel);
 
-  days.forEach(day => {
+  days.forEach((day, dayIndex) => {
     const header = document.createElement('div');
     header.className = 'timeline-day-header';
     header.textContent = day;
-    headerRow.appendChild(header);
+    header.style.gridColumn = String(dayIndex + 2);
+    header.style.gridRow = '1';
+    grid.appendChild(header);
   });
 
-  grid.appendChild(headerRow);
+  const getSlotDuration = (slot) => {
+    const [start, end] = slot.timeLabel.split(' - ');
+    const startHour = Number(start.split(':')[0]);
+    const endHour = Number(end.split(':')[0]);
+    return Math.max(1, endHour - startHour);
+  };
 
   hours.forEach((hour, hourIndex) => {
     const currentHour = hourIndex + 9;
-    const row = document.createElement('div');
-    row.className = 'timeline-hour-row';
+    const gridRow = hourIndex + 2;
 
     const label = document.createElement('div');
     label.className = 'timeline-hour-label';
     label.textContent = hour;
-    row.appendChild(label);
+    label.style.gridColumn = '1';
+    label.style.gridRow = String(gridRow);
+    grid.appendChild(label);
 
     for (let dayIndex = 0; dayIndex < 5; dayIndex++) {
       const cell = document.createElement('div');
       cell.className = 'timeline-cell';
       cell.dataset.day = dayIndex;
       cell.dataset.hour = currentHour;
+      cell.style.gridColumn = String(dayIndex + 2);
+      cell.style.gridRow = String(gridRow);
 
       const slot = getTimelineSlot(dayIndex, currentHour);
 
       if (slot) {
         cell.classList.add(`timeline-cell-${slot.type}`);
 
-        if (slot.type !== 'unavailable') {
-          const timeStr = slot.timeLabel.replace(' - ', '-');
-          cell.innerHTML = `
-            <span class="timeline-cell-time">${timeStr}</span>
-            <span class="timeline-cell-badge">${slot.status}</span>
-          `;
-        } else if (dayIndex === 3 && currentHour === 13) {
+        if (slot.type === 'unavailable' || (dayIndex === 3 && currentHour === 13)) {
           cell.classList.add('timeline-cell-conflict-high');
         }
 
         cell.addEventListener('mouseenter', (e) => showTimelineTooltip(e, slot));
         cell.addEventListener('mouseleave', hideTimelineTooltip);
-
-        if (slot.type !== 'unavailable') {
-          cell.addEventListener('click', () => openTimelineModal(slot));
-        }
       } else {
         const highConflict = (currentHour === 13 && (dayIndex === 3 || dayIndex === 4))
           || (currentHour === 14 && dayIndex === 0)
@@ -641,11 +640,33 @@ function renderTimeline() {
         }
       }
 
-      row.appendChild(cell);
+      grid.appendChild(cell);
     }
-
-    grid.appendChild(row);
   });
+
+  timelineSlots
+    .filter(slot => slot.type !== 'unavailable')
+    .forEach(slot => {
+      const block = document.createElement('button');
+      const duration = getSlotDuration(slot);
+      block.type = 'button';
+      block.className = `timeline-availability-block timeline-availability-block-duration-${duration} timeline-cell-${slot.type}`;
+      block.dataset.day = slot.dayIndex;
+      block.dataset.hour = slot.hour;
+      block.style.gridColumn = String(slot.dayIndex + 2);
+      block.style.gridRow = `${slot.hour - 9 + 2} / span ${duration}`;
+
+      block.innerHTML = `
+        <span class="timeline-cell-time">${slot.timeLabel}</span>
+        <span class="timeline-cell-badge">${slot.status}</span>
+      `;
+
+      block.addEventListener('mouseenter', (e) => showTimelineTooltip(e, slot));
+      block.addEventListener('mouseleave', hideTimelineTooltip);
+      block.addEventListener('click', () => openTimelineModal(slot));
+
+      grid.appendChild(block);
+    });
 }
 
 function showTimelineTooltip(event, slot) {
