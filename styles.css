@@ -116,6 +116,36 @@ ul {
   flex-shrink: 0;
 }
 
+.icon-mask {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  background-color: currentColor;
+  -webkit-mask: var(--icon-url) center / contain no-repeat;
+  mask: var(--icon-url) center / contain no-repeat;
+}
+
+.icon-home { --icon-url: url("assets/icons/home.svg"); }
+.icon-calendar { --icon-url: url("assets/icons/calendar.svg"); }
+.icon-meetings { --icon-url: url("assets/icons/meetings.svg"); }
+.icon-message { --icon-url: url("assets/icons/message.svg"); }
+.icon-contacts { --icon-url: url("assets/icons/contacts.svg"); }
+.icon-mail { --icon-url: url("assets/icons/mail.svg"); }
+.icon-search { --icon-url: url("assets/icons/search.svg"); }
+.icon-plus { --icon-url: url("assets/icons/plus.svg"); }
+.icon-notification { --icon-url: url("assets/icons/notification.svg"); }
+.icon-settings { --icon-url: url("assets/icons/settings.svg"); }
+.icon-schedule { --icon-url: url("assets/icons/schedule.svg"); }
+.icon-more { --icon-url: url("assets/icons/more.svg"); }
+.icon-chevron-left { --icon-url: url("assets/icons/chevron-left.svg"); }
+.icon-chevron-right { --icon-url: url("assets/icons/chevron-right.svg"); }
+.icon-chevron-down { --icon-url: url("assets/icons/chevron-down.svg"); }
+
+.search-box {
+  color: var(--color-text-tertiary);
+}
+
 .search-placeholder {
   font-size: 16px;
   font-weight: 500;
@@ -129,6 +159,7 @@ ul {
   justify-content: center;
   width: 24px;
   height: 24px;
+  color: var(--color-text-primary);
 }
 
 .profile-avatar {
@@ -193,6 +224,7 @@ ul {
   height: 44px;
   border-radius: 8px;
   background: var(--color-bg);
+  color: var(--color-text-tertiary);
   transition: background 0.15s;
 }
 
@@ -202,6 +234,7 @@ ul {
 
 .sidebar-icon-active {
   background: var(--color-blue);
+  color: var(--color-white);
 }
 
 .sidebar-icon-active:hover {
@@ -214,6 +247,7 @@ ul {
   justify-content: center;
   width: 44px;
   height: 44px;
+  color: var(--color-text-primary);
 }
 
 /* ─── Main Content ─── */
@@ -259,6 +293,11 @@ ul {
 
 .btn-add-schedule:hover {
   background: var(--color-bg);
+}
+
+.btn-add-schedule .icon-mask {
+  width: 20px;
+  height: 20px;
 }
 
 /* ─── Summary Banner ─── */
@@ -960,6 +999,11 @@ ul {
   text-decoration: underline;
 }
 
+.aside-status-link .icon-mask {
+  width: 20px;
+  height: 20px;
+}
+
 /* Calendar */
 .aside-calendar-header {
   display: flex;
@@ -987,6 +1031,11 @@ ul {
 
 .cal-nav-btn svg {
   display: block;
+}
+
+.cal-nav-btn .icon-mask {
+  width: 20px;
+  height: 20px;
 }
 
 .aside-calendar-weekdays {
