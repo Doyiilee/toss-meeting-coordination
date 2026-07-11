@@ -588,6 +588,14 @@ function renderTimeline() {
       if (slot) {
         cell.classList.add(`timeline-cell-${slot.type}`);
 
+        if (slot.type !== 'unavailable') {
+          const timeStr = `${String(currentHour).padStart(2, '0')}:00-${String(currentHour + 1).padStart(2, '0')}:00`;
+          cell.innerHTML = `
+            <span class="timeline-cell-time">${timeStr}</span>
+            <span class="timeline-cell-badge">${slot.status}</span>
+          `;
+        }
+
         cell.addEventListener('mouseenter', (e) => showTimelineTooltip(e, slot));
         cell.addEventListener('mouseleave', hideTimelineTooltip);
 

@@ -1691,9 +1691,24 @@ button {
   cursor: pointer;
 }
 
+.timeline-summary {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #EEF3FF;
+  color: #2B58F0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  align-self: flex-start;
+}
+
+.timeline-summary strong {
+  font-weight: 800;
+}
+
 .timeline-grid-wrapper {
   position: relative;
-  overflow-x: auto;
+  overflow: hidden;
 }
 
 .timeline-grid {
@@ -1744,35 +1759,82 @@ button {
   flex: 1;
   height: 100%;
   border-radius: 4px;
-  margin: 2px;
+  margin: 1px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  overflow: hidden;
+  transition: box-shadow 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+
+.timeline-cell-time {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 12px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.timeline-cell-badge {
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 11px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .timeline-cell-best {
-  background: #EAF0FF;
-  border: 1px solid #B3C8FF;
+  background: #DCECFF;
+  border: 1.5px solid #8CB4FF;
   cursor: pointer;
 }
 
 .timeline-cell-best:hover {
-  background: #D8E4FF;
+  background: #C8DEFF;
+  border-color: #447CFF;
+  box-shadow: 0 2px 10px rgba(53, 100, 255, 0.20);
+}
+
+.timeline-cell-best .timeline-cell-time {
+  color: #1A4BCC;
+}
+
+.timeline-cell-best .timeline-cell-badge {
+  background: #1A4BCC;
+  color: #FFFFFF;
 }
 
 .timeline-cell-check {
-  background: #FFF7E6;
-  border: 1px solid #FFD699;
+  background: #FFF2D6;
+  border: 1.5px solid #EABC5A;
   cursor: pointer;
 }
 
 .timeline-cell-check:hover {
-  background: #FFEECC;
+  background: #FFEAB5;
+  border-color: #D19B2E;
+  box-shadow: 0 2px 10px rgba(184, 107, 0, 0.14);
+}
+
+.timeline-cell-check .timeline-cell-time {
+  color: #7D5200;
+}
+
+.timeline-cell-check .timeline-cell-badge {
+  background: #C47A00;
+  color: #FFFFFF;
 }
 
 .timeline-cell-unavailable {
   background: #F5F5F6;
   border: 1px solid #E5E8EB;
   cursor: not-allowed;
-  opacity: 0.45;
+  opacity: 0.4;
 }
 
 /* Timeline tooltip */
