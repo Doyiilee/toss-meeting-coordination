@@ -120,70 +120,84 @@
       </div>
 
       <section class="urgent-section">
-        <div class="section-header-block">
+        <div class="urgent-heading-row">
           <h3 class="section-title-large">오늘 안에 처리해야 해요</h3>
-          <p class="section-desc-large">마감이 가까운 요청과 응답이 필요한 업무를 모았어요.</p>
+          <span class="urgent-total">전체 4건</span>
         </div>
-        <div class="urgent-cards">
-          <div class="urgent-card">
-            <div class="urgent-card-body">
-              <span class="card-badge card-badge-red">긴급</span>
-              <div class="card-text-block">
-                <h4 class="card-title">캠페인 리뷰 회의 참석 여부 선택</h4>
-                <p class="card-highlight card-highlight-red">오늘 13:00 전까지 응답 필요</p>
-              </div>
-              <div class="card-meta-grid">
-                <div class="card-meta-row"><span class="meta-label">요청자</span><span class="meta-value">마케팅팀 · 김민지 Leader</span></div>
-                <div class="card-meta-row"><span class="meta-label">회의 날짜</span><span class="meta-value">07. 14. (화)</span></div>
-                <div class="card-meta-row"><span class="meta-label">권한</span><span class="meta-value">필수 참석자</span></div>
-              </div>
-            </div>
-            <button class="btn-primary-full" id="urgent-btn-1">참석 여부 응답하기</button>
+        <div class="urgent-toolbar">
+          <div class="filter-chips" aria-label="업무 필터">
+            <button class="filter-chip filter-chip-active" type="button">전체</button>
+            <button class="filter-chip" type="button">회의</button>
+            <button class="filter-chip" type="button">메일</button>
+            <button class="filter-chip" type="button">요청</button>
+            <button class="filter-chip" type="button">검토</button>
+            <button class="filter-chip" type="button">메시지</button>
           </div>
-          <div class="urgent-card">
-            <div class="urgent-card-body">
-              <span class="card-badge card-badge-yellow">답장 필요</span>
-              <div class="card-text-block">
-                <h4 class="card-title">주간 리포트 메일 회신</h4>
-                <p class="card-highlight card-highlight-red">오늘 오전 중으로 회신 필요</p>
-              </div>
-              <div class="card-meta-grid">
-                <div class="card-meta-row"><span class="meta-label">요청자</span><span class="meta-value">김민지 Leader</span></div>
-                <div class="card-meta-row"><span class="meta-label">메일 시간</span><span class="meta-value">어제 18:42</span></div>
-              </div>
-            </div>
-            <button class="btn-secondary-full" id="urgent-btn-2">답장하기</button>
+          <div class="search-box urgent-search">
+            <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M15.5 15.5L19 19M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#5F6673" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="search-placeholder">검색하기</span>
           </div>
-          <div class="urgent-card">
-            <div class="urgent-card-body">
-              <span class="card-badge card-badge-yellow">확인 필요</span>
-              <div class="card-text-block">
-                <h4 class="card-title">외부 미팅 시간 변경</h4>
-              </div>
-              <div class="card-meta-grid">
-                <div class="card-meta-row"><span class="meta-label">요청자</span><span class="meta-value">브랜드 제휴팀</span></div>
-                <div class="card-meta-row">
-                  <span class="meta-label">변경 시간</span>
-                  <span class="meta-value">07. 16. (목)<br /><strong>10:00 → 11:00</strong></span>
-                </div>
-              </div>
-              <p class="card-note card-note-blue">변경된 시간이 내 일정과 겹치지 않아요</p>
-            </div>
-            <button class="btn-secondary-full" id="urgent-btn-3">확인하기</button>
+        </div>
+        <div class="task-table" role="table" aria-label="오늘 안에 처리해야 하는 업무">
+          <div class="task-row task-head" role="row">
+            <div class="task-cell task-index" role="columnheader"></div>
+            <div class="task-cell" role="columnheader">유형</div>
+            <div class="task-cell" role="columnheader">상태</div>
+            <div class="task-cell" role="columnheader">요청 내용</div>
+            <div class="task-cell" role="columnheader">보낸 사람</div>
+            <div class="task-cell" role="columnheader">주요 내용</div>
+            <div class="task-cell" role="columnheader">받은 시간</div>
+            <div class="task-cell task-action-head" role="columnheader">처리</div>
           </div>
-          <div class="urgent-card">
-            <div class="urgent-card-body">
-              <span class="card-badge card-badge-yellow">검토 필요</span>
-              <div class="card-text-block">
-                <h4 class="card-title">7월 캠페인 소재 최종안</h4>
-              </div>
-              <div class="card-meta-grid">
-                <div class="card-meta-row"><span class="meta-label">요청자</span><span class="meta-value">마케팅 Team</span></div>
-                <div class="card-meta-row"><span class="meta-label">첨부 파일</span><span class="meta-value">3개</span></div>
-              </div>
-              <p class="card-note card-note-yellow">최종 전달 전 디자인 확인이 필요해요</p>
+          <div class="task-row" role="row">
+            <div class="task-cell task-index" role="cell"><span>1</span></div>
+            <div class="task-cell task-type" role="cell">회의</div>
+            <div class="task-cell" role="cell"><span class="task-status status-urgent">긴급</span></div>
+            <div class="task-cell task-title" role="cell">캠페인 리뷰 회의 참석 여부 선택</div>
+            <div class="task-cell" role="cell">김민지 Leader</div>
+            <div class="task-cell" role="cell">이도이를 필수 참석자로 지정</div>
+            <div class="task-cell" role="cell">07.02 (목) 14:21</div>
+            <div class="task-cell task-action" role="cell">
+              <button class="task-action-btn task-action-primary" id="urgent-btn-1">참석 여부 응답하기</button>
             </div>
-            <button class="btn-secondary-full" id="urgent-btn-4">검토하기</button>
+          </div>
+          <div class="task-row" role="row">
+            <div class="task-cell task-index" role="cell"><span>2</span></div>
+            <div class="task-cell task-type" role="cell">메일</div>
+            <div class="task-cell" role="cell"><span class="task-status status-waiting">답장 필요</span></div>
+            <div class="task-cell task-title" role="cell">주간 리포트 메일 회신</div>
+            <div class="task-cell" role="cell">김민지 Leader</div>
+            <div class="task-cell" role="cell">오늘 오전 중으로 회신 필요</div>
+            <div class="task-cell" role="cell">07.06 (월) 09:16</div>
+            <div class="task-cell task-action" role="cell">
+              <button class="task-action-btn" id="urgent-btn-2">답장하기</button>
+            </div>
+          </div>
+          <div class="task-row" role="row">
+            <div class="task-cell task-index" role="cell"><span>3</span></div>
+            <div class="task-cell task-type" role="cell">검토</div>
+            <div class="task-cell" role="cell"><span class="task-status status-waiting">확인 필요</span></div>
+            <div class="task-cell task-title" role="cell">외부 미팅 시간 변경</div>
+            <div class="task-cell" role="cell">브랜드 제휴팀</div>
+            <div class="task-cell" role="cell">10:00 → 11:00 변경</div>
+            <div class="task-cell" role="cell">07.06 (월) 10:02</div>
+            <div class="task-cell task-action" role="cell">
+              <button class="task-action-btn" id="urgent-btn-3">확인하기</button>
+            </div>
+          </div>
+          <div class="task-row" role="row">
+            <div class="task-cell task-index" role="cell"><span>4</span></div>
+            <div class="task-cell task-type" role="cell">검토</div>
+            <div class="task-cell" role="cell"><span class="task-status status-waiting">검토 필요</span></div>
+            <div class="task-cell task-title" role="cell">7월 캠페인 소재 최종안</div>
+            <div class="task-cell" role="cell">마케팅 Team</div>
+            <div class="task-cell" role="cell">첨부 파일 3개</div>
+            <div class="task-cell" role="cell">07.07 (화) 04:57</div>
+            <div class="task-cell task-action" role="cell">
+              <button class="task-action-btn" id="urgent-btn-4">검토하기</button>
+            </div>
           </div>
         </div>
       </section>
