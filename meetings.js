@@ -481,6 +481,301 @@ function renderDetailContent(meeting) {
   `;
 }
 
+/* ---- Timeline ---- */
+
+const teamMembers = [
+  { name: '이도이', role: '주니어 브랜드 마케터', required: true },
+  { name: '김현우', role: '마케팅팀 팀장', required: true },
+  { name: '박서연', role: '캠페인 PM', required: true },
+  { name: '정민재', role: '퍼포먼스 마케터', required: true },
+  { name: '최유진', role: '콘텐츠 마케터', required: false },
+  { name: '강태오', role: '제휴/영업 마케터', required: false },
+];
+
+const timelineSlots = [
+  {
+    dayIndex: 3,
+    hour: 11,
+    type: 'best',
+    status: '가장 추천',
+    dayName: '목',
+    dayNum: 16,
+    timeLabel: '11:00 - 12:00',
+    available: ['이도이', '김현우', '박서연', '정민재', '최유진'],
+    checkNeeded: [{ name: '강태오', reason: '외근 전후 일정 있음' }],
+    unavailable: [],
+    tooltipTitle: '목 11:00 - 12:00',
+    tooltipNote: '클릭해서 회의 만들기',
+  },
+  {
+    dayIndex: 2,
+    hour: 11,
+    type: 'check',
+    status: '확인 필요',
+    dayName: '수',
+    dayNum: 15,
+    timeLabel: '11:00 - 12:00',
+    available: ['이도이', '박서연', '정민재', '최유진'],
+    checkNeeded: [{ name: '김현우', reason: '본부장 보고 준비 일정 확인 필요' }],
+    unavailable: [{ name: '강태오', reason: '파트너 미팅' }],
+    tooltipTitle: '수 11:00 - 12:00',
+    tooltipNote: '확인 요청이 필요한 시간이에요',
+  },
+  {
+    dayIndex: 1,
+    hour: 14,
+    type: 'unavailable',
+    status: '비추천',
+    dayName: '화',
+    dayNum: 14,
+    timeLabel: '14:00 - 15:00',
+    available: [],
+    checkNeeded: [],
+    unavailable: [
+      { name: '정민재', reason: '매체사 미팅' },
+      { name: '강태오', reason: '외근' },
+    ],
+    tooltipTitle: '화 14:00 - 15:00',
+    tooltipNote: '필수 참석자 일부가 불가능한 시간이에요',
+  },
+];
+
+function getTimelineSlot(dayIndex, hour) {
+  return timelineSlots.find(s => s.dayIndex === dayIndex && s.hour === hour) || null;
+}
+
+function renderTimeline() {
+  const grid = document.getElementById('timeline-grid');
+  grid.innerHTML = '';
+
+  const days = ['13(월)', '14(화)', '15(수)', '16(목)', '17(금)'];
+  const hours = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+
+  const headerRow = document.createElement('div');
+  headerRow.className = 'timeline-header-row';
+
+  const emptyLabel = document.createElement('div');
+  emptyLabel.className = 'timeline-hour-label';
+  headerRow.appendChild(emptyLabel);
+
+  days.forEach(day => {
+    const header = document.createElement('div');
+    header.className = 'timeline-day-header';
+    header.textContent = day;
+    headerRow.appendChild(header);
+  });
+
+  grid.appendChild(headerRow);
+
+  hours.forEach((hour, hourIndex) => {
+    const currentHour = hourIndex + 9;
+    const row = document.createElement('div');
+    row.className = 'timeline-hour-row';
+
+    const label = document.createElement('div');
+    label.className = 'timeline-hour-label';
+    label.textContent = hour;
+    row.appendChild(label);
+
+    for (let dayIndex = 0; dayIndex < 5; dayIndex++) {
+      const cell = document.createElement('div');
+      cell.className = 'timeline-cell';
+      cell.dataset.day = dayIndex;
+      cell.dataset.hour = currentHour;
+
+      const slot = getTimelineSlot(dayIndex, currentHour);
+
+      if (slot) {
+        cell.classList.add(`timeline-cell-${slot.type}`);
+
+        cell.addEventListener('mouseenter', (e) => showTimelineTooltip(e, slot));
+        cell.addEventListener('mouseleave', hideTimelineTooltip);
+
+        if (slot.type !== 'unavailable') {
+          cell.addEventListener('click', () => openTimelineModal(slot));
+        }
+      }
+
+      row.appendChild(cell);
+    }
+
+    grid.appendChild(row);
+  });
+}
+
+function showTimelineTooltip(event, slot) {
+  const tooltip = document.getElementById('timeline-tooltip');
+
+  let html = `<div class="timeline-tooltip-title">${slot.tooltipTitle}</div>`;
+
+  if (slot.type === 'unavailable') {
+    html += '<div class="timeline-tooltip-row"><span class="tt-label">상태</span><span>회의를 잡기 어려워요</span></div>';
+  }
+
+  if (slot.available.length > 0) {
+    html += `<div class="timeline-tooltip-row"><span class="tt-label">가능</span><span>${slot.available.join(' · ')}</span></div>`;
+  }
+
+  if (slot.checkNeeded.length > 0) {
+    const checkHtml = slot.checkNeeded.map(p => `${p.name} - ${p.reason}`).join('<br>');
+    html += `<div class="timeline-tooltip-row"><span class="tt-label tt-label-check">확인 필요</span><span>${checkHtml}</span></div>`;
+  }
+
+  if (slot.unavailable.length > 0) {
+    const unavailableHtml = slot.unavailable.map(p => `${p.name} - ${p.reason}`).join('<br>');
+    html += `<div class="timeline-tooltip-row"><span class="tt-label tt-label-unavailable">불가</span><span>${unavailableHtml}</span></div>`;
+  }
+
+  const noteClass = slot.type === 'unavailable' ? 'timeline-tooltip-note timeline-tooltip-note-muted' : 'timeline-tooltip-note';
+  html += `<div class="${noteClass}">${slot.tooltipNote}</div>`;
+
+  tooltip.innerHTML = html;
+  tooltip.classList.add('visible');
+  tooltip.style.left = '0';
+  tooltip.style.top = '0';
+
+  const tooltipH = tooltip.offsetHeight;
+  const tooltipW = 250;
+
+  const rect = event.target.getBoundingClientRect();
+
+  let left = rect.left + rect.width / 2 - tooltipW / 2;
+  let top = rect.top - tooltipH - 8;
+
+  if (top < 8) {
+    top = rect.bottom + 8;
+    if (top + tooltipH > window.innerHeight - 8) {
+      top = Math.max(8, window.innerHeight - tooltipH - 8);
+    }
+  }
+
+  if (left < 8) left = 8;
+  if (left + tooltipW > window.innerWidth - 8) left = window.innerWidth - tooltipW - 8;
+
+  tooltip.style.left = `${left}px`;
+  tooltip.style.top = `${top}px`;
+}
+
+function hideTimelineTooltip() {
+  document.getElementById('timeline-tooltip').classList.remove('visible');
+}
+
+function openTimelineModal(slot) {
+  const backdrop = document.getElementById('timeline-modal-backdrop');
+  const modal = document.getElementById('timeline-modal');
+  const body = document.getElementById('timeline-modal-body');
+
+  body.innerHTML = `
+    <div class="timeline-modal-info">
+      <div class="timeline-modal-info-row">
+        <span>시간</span>
+        <strong>${slot.dayName} ${slot.timeLabel}</strong>
+      </div>
+      <div class="timeline-modal-info-row">
+        <span>상태</span>
+        <strong class="${slot.type === 'best' ? 'status-green' : 'status-yellow'}">${slot.status}</strong>
+      </div>
+    </div>
+    <div class="timeline-modal-members">
+      <div class="timeline-modal-members-title">참석자</div>
+      ${teamMembers.map(m => {
+        const isAvailable = slot.available.includes(m.name);
+        const isCheck = slot.checkNeeded.some(p => p.name === m.name);
+        const isUnavailable = slot.unavailable.some(p => p.name === m.name);
+        let statusText = '';
+        let statusClass = '';
+        if (isAvailable) { statusText = '가능'; statusClass = 'member-available'; }
+        else if (isCheck) { statusText = '확인 필요'; statusClass = 'member-check'; }
+        else if (isUnavailable) { statusText = '불가'; statusClass = 'member-unavailable'; }
+        return `<div class="timeline-modal-member ${statusClass}">
+          <span class="member-name">${m.name}</span>
+          <span class="member-role">${m.role}</span>
+          <span class="member-status">${statusText}</span>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+
+  modal.dataset.slotDayIndex = slot.dayIndex;
+  modal.dataset.slotHour = slot.hour;
+
+  backdrop.hidden = false;
+  modal.hidden = false;
+  requestAnimationFrame(() => {
+    backdrop.classList.add('visible');
+    modal.classList.add('visible');
+  });
+}
+
+function closeTimelineModal() {
+  const backdrop = document.getElementById('timeline-modal-backdrop');
+  const modal = document.getElementById('timeline-modal');
+
+  backdrop.classList.remove('visible');
+  modal.classList.remove('visible');
+
+  setTimeout(() => {
+    backdrop.hidden = true;
+    modal.hidden = true;
+  }, 200);
+}
+
+function saveQuickMeetingDraft(slot) {
+  const participants = teamMembers.map(m => ({
+    name: m.name,
+    role: m.role,
+    required: m.required,
+  }));
+
+  const [startTime, endTime] = slot.timeLabel.split(' - ');
+  const draft = {
+    title: '8월 캠페인 타깃·메시지 리서치 공유 및 방향 결정 회의',
+    date: `2026.07.${String(slot.dayNum).padStart(2, '0')}`,
+    day: slot.dayName,
+    startTime,
+    endTime,
+    source: 'timeline',
+    participants,
+  };
+
+  sessionStorage.setItem('quickMeetingDraft', JSON.stringify(draft));
+}
+
+function initTimeline() {
+  renderTimeline();
+
+  document.getElementById('timeline-modal-close').addEventListener('click', closeTimelineModal);
+  document.getElementById('timeline-modal-cancel').addEventListener('click', closeTimelineModal);
+  document.getElementById('timeline-modal-backdrop').addEventListener('click', closeTimelineModal);
+  document.getElementById('timeline-modal-confirm').addEventListener('click', () => {
+    const modal = document.getElementById('timeline-modal');
+    const dayIndex = Number(modal.dataset.slotDayIndex);
+    const hour = Number(modal.dataset.slotHour);
+    const slot = getTimelineSlot(dayIndex, hour);
+    if (!slot) return;
+
+    saveQuickMeetingDraft(slot);
+    closeTimelineModal();
+    showToast('회의가 준비됐어요. 자세한 내용은 다음 단계에서 설정할 수 있어요.');
+  });
+
+  document.querySelectorAll('.timeline-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showToast('주간 이동 기능은 다음 단계에서 연결할 예정이에요.');
+    });
+  });
+
+  document.querySelectorAll('.timeline-nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showToast('주간 이동 기능은 다음 단계에서 연결할 예정이에요.');
+    });
+  });
+
+  document.querySelector('.timeline-select')?.addEventListener('change', () => {
+    showToast('팀원 필터 기능은 다음 단계에서 연결할 예정이에요.');
+  });
+}
+
 function parseDate(dateString) {
   const [year, month, day] = dateString.split('.').map(Number);
   return new Date(year, month - 1, day);
@@ -663,6 +958,10 @@ function init() {
   document.getElementById('meeting-drawer-backdrop').addEventListener('click', closeMeetingDrawer);
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') {
+      if (document.getElementById('timeline-modal').classList.contains('visible')) {
+        closeTimelineModal();
+        return;
+      }
       if (document.body.classList.contains('detail-drawer-open')) {
         closeDetailDrawer();
         return;
@@ -872,6 +1171,7 @@ function init() {
   renderCalendarRange();
   setDurationOption('60');
   renderConfirmedMeetings();
+  initTimeline();
 }
 
 document.addEventListener('DOMContentLoaded', init);

@@ -101,19 +101,31 @@
       </button>
     </div>
 
-    <section class="start-card">
-      <div class="start-copy">
-        <span class="section-kicker">새 회의 잡기</span>
-        <h3 class="section-title">참석자와 조건을 설정하고 가능한 회의 시간을 찾아보세요.</h3>
-        <p class="section-description">필수 참석자 가능 여부를 먼저 확인하고, 선택 참석자 일정은 참고 정보로 함께 비교할 수 있어요.</p>
-        <button class="btn-primary btn-new-meeting">새 회의 시작하기</button>
+    <section class="team-timeline">
+      <div class="timeline-header">
+        <h3 class="section-title">팀 일정 한눈에 보기</h3>
+        <p class="section-description">팀원들의 일정을 비교하고, 비어 있는 시간을 선택해 바로 회의를 만들 수 있어요.</p>
       </div>
-      <ol class="step-list">
-        <li><span>1</span><strong>회의명 입력</strong></li>
-        <li><span>2</span><strong>참석자 추가</strong></li>
-        <li><span>3</span><strong>필수/선택 참석자 설정</strong></li>
-        <li><span>4</span><strong>후보 시간 추천</strong></li>
-      </ol>
+      <div class="timeline-controls">
+        <div class="timeline-buttons">
+          <button type="button" class="timeline-btn timeline-btn-active">이번 주</button>
+          <button type="button" class="timeline-btn">다음 주</button>
+          <button type="button" class="timeline-btn">기간 직접 설정</button>
+        </div>
+        <div class="timeline-period">
+          <button type="button" class="timeline-nav-btn" aria-label="이전">‹</button>
+          <span class="timeline-period-label">07.13 - 07.17</span>
+          <button type="button" class="timeline-nav-btn" aria-label="다음">›</button>
+        </div>
+        <div class="timeline-filter">
+          <select class="timeline-select">
+            <option>팀원 전체 빈 시간</option>
+          </select>
+        </div>
+      </div>
+      <div class="timeline-grid-wrapper">
+        <div class="timeline-grid" id="timeline-grid"></div>
+      </div>
     </section>
 
     <div class="two-column">
@@ -497,6 +509,26 @@
     <button type="button" class="drawer-btn drawer-btn-primary" id="detail-drawer-calendar-btn">캘린더에서 보기</button>
   </div>
 </aside>
+
+<div class="timeline-tooltip" id="timeline-tooltip"></div>
+
+<div class="timeline-modal-backdrop" id="timeline-modal-backdrop" hidden></div>
+<div class="timeline-modal" id="timeline-modal" role="dialog" aria-modal="true" hidden>
+  <div class="timeline-modal-header">
+    <h3 id="timeline-modal-title">이 시간으로 회의 만들기</h3>
+    <button type="button" class="timeline-modal-close" id="timeline-modal-close" aria-label="닫기">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M18 6L6 18" stroke="#171A1F" stroke-width="2" stroke-linecap="round"/>
+        <path d="M6 6L18 18" stroke="#171A1F" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <div class="timeline-modal-body" id="timeline-modal-body"></div>
+  <div class="timeline-modal-footer">
+    <button type="button" class="drawer-btn drawer-btn-secondary" id="timeline-modal-cancel">취소</button>
+    <button type="button" class="drawer-btn drawer-btn-primary" id="timeline-modal-confirm">회의 만들기</button>
+  </div>
+</div>
 
 <div id="toast" class="toast"></div>
 
