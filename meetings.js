@@ -668,41 +668,142 @@ function hideTimelineTooltip() {
   document.getElementById('timeline-tooltip').classList.remove('visible');
 }
 
+const TIMELINE_DEFAULT_TITLE = '8월 캠페인 타깃·메시지 리서치 공유 및 방향 결정 회의';
+
+function getMemberStatus(slot, name) {
+  if (slot.available.includes(name)) return { className: 'slot-available', text: '가능' };
+  if (slot.checkNeeded.some(p => p.name === name)) return { className: 'slot-check', text: '확인 필요' };
+  if (slot.unavailable.some(p => p.name === name)) return { className: 'slot-unavailable', text: '불가' };
+  return null;
+}
+
+function buildStatusHtml(slot, requiredMembers, optionalMembers) {
+  const reqAvailable = requiredMembers.filter(n => slot.available.includes(n));
+  const reqCheck = requiredMembers.filter(n => slot.checkNeeded.some(c => c.name === n));
+  const reqUnavailable = requiredMembers.filter(n => slot.unavailable.some(u => u.name === n));
+  const optAvailable = optionalMembers.filter(n => slot.available.includes(n));
+
+  let lines = '';
+
+  if (requiredMembers.length > 0) {
+    if (reqCheck.length === 0 && reqUnavailable.length === 0) {
+      lines += `<span>필수 참석자 <strong class="highlight">${requiredMembers.length}명 모두 가능</strong></span>`;
+    } else {
+      lines += `<span>필수 참석자 <strong class="highlight">${reqAvailable.length}/${requiredMembers.length}명 가능</strong></span>`;
+    }
+  }
+
+  if (optionalMembers.length > 0) {
+    lines += `<span>선택 참석자 <strong class="highlight">${optAvailable.length}/${optionalMembers.length}명 가능</strong></span>`;
+  }
+
+  slot.checkNeeded.forEach(c => {
+    lines += `<span class="text-warning">${c.name}님은 확인이 필요해요</span>`;
+  });
+
+  slot.unavailable.forEach(u => {
+    lines += `<span class="text-danger">${u.name}님은 ${u.reason}으로 참석이 어려워요</span>`;
+  });
+
+  return lines;
+}
+
+function updateTimelineModalStatus(slot) {
+  const container = document.getElementById('timeline-modal-status');
+  if (!container) return;
+
+  const requiredMembers = [];
+  const optionalMembers = [];
+  document.querySelectorAll('.timeline-modal-member').forEach(el => {
+    const name = el.dataset.member;
+    const group = el.querySelector('.role-toggle-group');
+    const isRequired = group.dataset.required === 'true';
+    if (isRequired) requiredMembers.push(name);
+    else optionalMembers.push(name);
+  });
+
+  container.innerHTML = `
+    <div class="timeline-modal-status-header">
+      <span class="timeline-modal-status-badge ${slot.type}">${slot.status}</span>
+    </div>
+    <div class="timeline-modal-status-details">
+      ${buildStatusHtml(slot, requiredMembers, optionalMembers)}
+    </div>
+  `;
+}
+
 function openTimelineModal(slot) {
   const backdrop = document.getElementById('timeline-modal-backdrop');
   const modal = document.getElementById('timeline-modal');
   const body = document.getElementById('timeline-modal-body');
+  const confirmBtn = document.getElementById('timeline-modal-confirm');
+
+  const dateStr = `2026.07.${String(slot.dayNum).padStart(2, '0')} (${slot.dayName}) ${slot.timeLabel}`;
+
+  const initialRequired = [];
+  const initialOptional = [];
+  teamMembers.forEach(m => {
+    if (m.required) initialRequired.push(m.name);
+    else initialOptional.push(m.name);
+  });
+
+  let membersHtml = teamMembers.map(m => {
+    const isRequired = m.required;
+    const status = getMemberStatus(slot, m.name);
+    const coreMembers = ['이도이', '김현우', '박서연'];
+    return `<div class="timeline-modal-member" data-member="${m.name}">
+      <span class="member-name">${m.name}</span>
+      ${coreMembers.includes(m.name) ? '<span class="member-core-badge">기본 필수</span>' : ''}
+      <span class="member-role">${m.role}</span>
+      <div class="role-toggle-group" data-required="${isRequired}">
+        <button type="button" class="role-toggle-btn${isRequired ? ' role-toggle-active' : ''}" data-role="required">필수</button>
+        <button type="button" class="role-toggle-btn${!isRequired ? ' role-toggle-active' : ''}" data-role="optional">선택</button>
+      </div>
+      ${status ? `<span class="member-slot-status ${status.className}">${status.text}</span>` : ''}
+    </div>`;
+  }).join('');
+
+  const initialStatusHtml = buildStatusHtml(slot, initialRequired, initialOptional);
 
   body.innerHTML = `
     <div class="timeline-modal-info">
       <div class="timeline-modal-info-row">
-        <span>시간</span>
-        <strong>${slot.dayName} ${slot.timeLabel}</strong>
-      </div>
-      <div class="timeline-modal-info-row">
-        <span>상태</span>
-        <strong class="${slot.type === 'best' ? 'status-green' : 'status-yellow'}">${slot.status}</strong>
+        <span>선택 시간</span>
+        <strong>${dateStr}</strong>
       </div>
     </div>
-    <div class="timeline-modal-members">
-      <div class="timeline-modal-members-title">참석자</div>
-      ${teamMembers.map(m => {
-        const isAvailable = slot.available.includes(m.name);
-        const isCheck = slot.checkNeeded.some(p => p.name === m.name);
-        const isUnavailable = slot.unavailable.some(p => p.name === m.name);
-        let statusText = '';
-        let statusClass = '';
-        if (isAvailable) { statusText = '가능'; statusClass = 'member-available'; }
-        else if (isCheck) { statusText = '확인 필요'; statusClass = 'member-check'; }
-        else if (isUnavailable) { statusText = '불가'; statusClass = 'member-unavailable'; }
-        return `<div class="timeline-modal-member ${statusClass}">
-          <span class="member-name">${m.name}</span>
-          <span class="member-role">${m.role}</span>
-          <span class="member-status">${statusText}</span>
-        </div>`;
-      }).join('')}
+    <div class="timeline-modal-input-group">
+      <label class="timeline-modal-label" for="timeline-modal-title-input">회의명</label>
+      <input type="text" class="timeline-modal-input" id="timeline-modal-title-input" value="${TIMELINE_DEFAULT_TITLE}" />
+    </div>
+    <p class="timeline-modal-desc">이도이가 조사한 고객 반응과 경쟁사 캠페인 분석을 바탕으로, 8월 캠페인의 핵심 타깃과 메시지 방향을 결정하는 회의예요.</p>
+    <div class="timeline-modal-status" id="timeline-modal-status">
+      <div class="timeline-modal-status-header">
+        <span class="timeline-modal-status-badge ${slot.type}">${slot.status}</span>
+      </div>
+      <div class="timeline-modal-status-details">
+        ${initialStatusHtml}
+      </div>
+    </div>
+    <div class="timeline-modal-members-section">
+      <div class="timeline-modal-members-title">참석자 조건 설정</div>
+      <div class="timeline-modal-members" id="timeline-modal-members">
+        ${membersHtml}
+      </div>
     </div>
   `;
+
+  confirmBtn.textContent = slot.type === 'best' ? '회의 요청 보내기' : '확인 요청 보내기';
+
+  body.querySelectorAll('.role-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const group = this.closest('.role-toggle-group');
+      group.querySelectorAll('.role-toggle-btn').forEach(b => b.classList.remove('role-toggle-active'));
+      this.classList.add('role-toggle-active');
+      group.dataset.required = this.dataset.role === 'required' ? 'true' : 'false';
+      updateTimelineModalStatus(slot);
+    });
+  });
 
   modal.dataset.slotDayIndex = slot.dayIndex;
   modal.dataset.slotHour = slot.hour;
@@ -713,6 +814,8 @@ function openTimelineModal(slot) {
     backdrop.classList.add('visible');
     modal.classList.add('visible');
   });
+
+  setTimeout(() => document.getElementById('timeline-modal-title-input')?.focus(), 120);
 }
 
 function closeTimelineModal() {
@@ -728,29 +831,116 @@ function closeTimelineModal() {
   }, 200);
 }
 
-function saveQuickMeetingDraft(slot) {
-  const participants = teamMembers.map(m => ({
-    name: m.name,
-    role: m.role,
-    required: m.required,
-  }));
-
+function saveQuickMeetingDraft(slot, title, participants) {
   const [startTime, endTime] = slot.timeLabel.split(' - ');
   const draft = {
-    title: '8월 캠페인 타깃·메시지 리서치 공유 및 방향 결정 회의',
+    title,
     date: `2026.07.${String(slot.dayNum).padStart(2, '0')}`,
     day: slot.dayName,
     startTime,
     endTime,
     source: 'timeline',
-    participants,
+    participants: participants.map(p => ({
+      name: p.name,
+      role: p.role,
+      required: p.required,
+    })),
   };
-
   sessionStorage.setItem('quickMeetingDraft', JSON.stringify(draft));
+}
+
+function saveTimelinePendingMeeting(data) {
+  const existing = JSON.parse(sessionStorage.getItem('timelinePendingMeetings') || '[]');
+  existing.unshift(data);
+  sessionStorage.setItem('timelinePendingMeetings', JSON.stringify(existing));
+}
+
+function createTimelinePendingCard(meeting) {
+  const article = document.createElement('article');
+  article.className = 'wide-card timeline-pending-card';
+
+  const pendingCount = meeting.participants.filter(p => p.response === '미응답').length;
+  const checkCount = meeting.participants.filter(p => p.response === '확인 필요').length;
+  const declinedCount = meeting.participants.filter(p => p.response === '참석 불가').length;
+
+  let primaryBadgeHtml;
+  let secondaryInfo = '';
+
+  if (meeting.meetingStatus === '가장 추천') {
+    primaryBadgeHtml = '<span class="badge badge-blue">가장 추천</span>';
+    secondaryInfo = `<span class="card-response-count">미응답 ${pendingCount}명</span>`;
+  } else if (meeting.meetingStatus === '확인 필요') {
+    primaryBadgeHtml = '<span class="badge badge-yellow">확인 필요</span>';
+    if (declinedCount > 0) {
+      secondaryInfo = `<span class="card-response-count">참석 불가 ${declinedCount}명</span>`;
+    } else {
+      secondaryInfo = `<span class="card-response-count">미응답 ${pendingCount}명</span>`;
+    }
+  } else {
+    if (declinedCount > 0) {
+      primaryBadgeHtml = `<span class="badge badge-red">참석 불가 ${declinedCount}명</span>`;
+    } else {
+      primaryBadgeHtml = `<span class="badge badge-yellow">미응답 ${pendingCount}명</span>`;
+    }
+  }
+
+  article.innerHTML = `
+    <div class="card-main-row">
+      ${primaryBadgeHtml}
+      ${secondaryInfo}
+      <span class="badge badge-gray card-source-badge">빠른 회의</span>
+    </div>
+    <h4 class="card-title">${meeting.title}</h4>
+    <p class="card-support">${meeting.date} (${meeting.day}) ${meeting.startTime} - ${meeting.endTime}</p>
+    <div class="response-status-list" aria-label="참석자 응답 상태">
+      <p class="response-list-title">참석자 응답 상태</p>
+      ${meeting.participants.map(p => {
+        let pillClass = 'response-pending';
+        let pillText = '미응답';
+        if (p.response === '확인 필요') {
+          pillClass = 'response-pending';
+          pillText = '확인 필요';
+        } else if (p.response === '참석 불가') {
+          pillClass = 'response-declined';
+          pillText = '참석 불가';
+        }
+        return `<div class="response-row">
+          <span>${p.name}</span>
+          <strong class="response-pill ${pillClass}">${pillText}</strong>
+        </div>`;
+      }).join('')}
+    </div>
+    <button class="btn-secondary" data-toast="${meeting.meetingStatus === '가장 추천' ? '미응답자에게 알림을 보냈어요.' : '확인 필요한 참석자에게 요청을 보냈어요.'}">
+      ${meeting.meetingStatus === '가장 추천' ? '미응답자에게 알림 보내기' : '확인 필요한 참석자에게 요청 보내기'}
+    </button>
+  `;
+
+  article.querySelector('.btn-secondary').addEventListener('click', function () {
+    showToast(this.dataset.toast);
+  });
+
+  return article;
+}
+
+function renderTimelinePendingMeetings() {
+  const data = sessionStorage.getItem('timelinePendingMeetings');
+  if (!data) return;
+
+  const meetings = JSON.parse(data);
+  const list = document.querySelector('.two-column .content-section:nth-child(2) .request-list');
+  if (!list) return;
+
+  list.querySelectorAll('.timeline-pending-card').forEach(el => el.remove());
+
+  meetings.slice().reverse().forEach(meeting => {
+    const card = createTimelinePendingCard(meeting);
+    list.prepend(card);
+  });
 }
 
 function initTimeline() {
   renderTimeline();
+  renderTimelinePendingMeetings();
 
   document.getElementById('timeline-modal-close').addEventListener('click', closeTimelineModal);
   document.getElementById('timeline-modal-cancel').addEventListener('click', closeTimelineModal);
@@ -762,9 +952,54 @@ function initTimeline() {
     const slot = getTimelineSlot(dayIndex, hour);
     if (!slot) return;
 
-    saveQuickMeetingDraft(slot);
+    const title = document.getElementById('timeline-modal-title-input').value.trim() || TIMELINE_DEFAULT_TITLE;
+
+    const participants = [];
+    document.querySelectorAll('.timeline-modal-member').forEach(el => {
+      const name = el.dataset.member;
+      const group = el.querySelector('.role-toggle-group');
+      const required = group.dataset.required === 'true';
+      const member = teamMembers.find(m => m.name === name);
+      participants.push({
+        name,
+        role: member ? member.role : '',
+        required,
+      });
+    });
+
+    const meetingParticipants = participants.map(p => {
+      const isCheck = slot.checkNeeded.some(c => c.name === p.name);
+      const isUnavailable = slot.unavailable.some(u => u.name === p.name);
+      let response = '미응답';
+      if (isCheck) response = '확인 필요';
+      if (isUnavailable) response = '참석 불가';
+      return { ...p, response };
+    });
+
+    const meetingData = {
+      id: 'timeline-' + Date.now(),
+      title,
+      date: `2026.07.${String(slot.dayNum).padStart(2, '0')}`,
+      day: slot.dayName,
+      startTime: slot.timeLabel.split(' - ')[0],
+      endTime: slot.timeLabel.split(' - ')[1],
+      source: 'timeline',
+      status: 'pending',
+      statusLabel: '미응답 ' + meetingParticipants.filter(p => p.response === '미응답').length + '명',
+      meetingStatus: slot.status,
+      participants: meetingParticipants,
+    };
+
+    saveQuickMeetingDraft(slot, title, participants);
+    saveTimelinePendingMeeting(meetingData);
+
+    const list = document.querySelector('.two-column .content-section:nth-child(2) .request-list');
+    if (list) {
+      list.prepend(createTimelinePendingCard(meetingData));
+    }
+
     closeTimelineModal();
-    showToast('회의가 준비됐어요. 자세한 내용은 다음 단계에서 설정할 수 있어요.');
+    showToast('회의 요청을 보냈어요.');
   });
 
   document.querySelectorAll('.timeline-btn').forEach(btn => {

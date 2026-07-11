@@ -422,6 +422,22 @@ button {
   color: var(--color-green-text);
 }
 
+.badge-gray {
+  background: #F0F1F3;
+  color: #5F6673;
+}
+
+.card-response-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  line-height: 20px;
+}
+
+.card-source-badge {
+  margin-left: auto;
+}
+
 .status-text,
 .candidate-status {
   font-size: 14px;
@@ -1931,7 +1947,8 @@ button {
   z-index: 1152;
   background: var(--color-white);
   border-radius: 16px;
-  width: min(440px, calc(100vw - 40px));
+  width: min(520px, calc(100vw - 40px));
+  max-height: 85vh;
   box-shadow: 0 16px 48px rgba(0,0,0,0.16);
   display: flex;
   flex-direction: column;
@@ -1980,6 +1997,9 @@ button {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .timeline-modal-info {
@@ -2024,6 +2044,112 @@ button {
   line-height: 20px;
 }
 
+.timeline-modal-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.timeline-modal-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 20px;
+}
+
+.timeline-modal-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--color-search-border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  color: var(--color-text-primary);
+  line-height: 20px;
+  box-sizing: border-box;
+  background: var(--color-white);
+}
+
+.timeline-modal-input:focus {
+  outline: none;
+  border-color: var(--color-blue);
+}
+
+.timeline-modal-desc {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  line-height: 20px;
+  word-break: keep-all;
+  margin: 0;
+}
+
+.timeline-modal-status {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.timeline-modal-status-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-modal-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+}
+
+.timeline-modal-status-badge.best {
+  background: var(--color-summary-bg);
+  color: var(--color-blue);
+}
+
+.timeline-modal-status-badge.check {
+  background: var(--color-yellow-bg);
+  color: var(--color-yellow-text);
+}
+
+.timeline-modal-status-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  color: var(--color-text-secondary);
+}
+
+.timeline-modal-status-details .highlight {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.timeline-modal-status-details .text-warning {
+  color: var(--color-yellow-text);
+}
+
+.timeline-modal-status-details .text-danger {
+  color: var(--color-red-text);
+}
+
+.timeline-modal-members-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .timeline-modal-member {
   display: flex;
   align-items: center;
@@ -2041,33 +2167,87 @@ button {
   min-width: 60px;
 }
 
+.timeline-modal-member .member-core-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #DCE8FF;
+  color: #1A4BCC;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 14px;
+}
+
 .timeline-modal-member .member-role {
   flex: 1;
   color: var(--color-text-secondary);
   font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.timeline-modal-member .member-status {
-  font-size: 11px;
+.timeline-modal-member .member-slot-status {
+  font-size: 10px;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 999px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.member-available .member-status {
+.timeline-modal-member .member-slot-status.slot-available {
   background: var(--color-green-bg);
   color: var(--color-green-text);
 }
 
-.member-check .member-status {
+.timeline-modal-member .member-slot-status.slot-check {
   background: var(--color-yellow-bg);
   color: var(--color-yellow-text);
 }
 
-.member-unavailable .member-status {
+.timeline-modal-member .member-slot-status.slot-unavailable {
   background: var(--color-red-bg);
   color: var(--color-red-text);
+}
+
+.role-toggle-group {
+  display: flex;
+  border: 1px solid var(--color-search-border);
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.role-toggle-btn {
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: inherit;
+  background: var(--color-white);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  border: none;
+  line-height: 16px;
+  transition: background 100ms, color 100ms;
+  min-width: 32px;
+  text-align: center;
+}
+
+.role-toggle-btn.role-toggle-active {
+  background: var(--color-blue);
+  color: var(--color-white);
+}
+
+.timeline-modal-body .timeline-modal-info {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .timeline-modal-footer {
