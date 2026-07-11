@@ -9,8 +9,8 @@
   --space-32: 32px;
   --space-36: 36px;
   --space-40: 40px;
-  --header-height: 80px;
-  --sidebar-width: 82px;
+  --header-height: 72px;
+  --sidebar-width: 76px;
   --right-panel-width: clamp(360px, 20.94vw, 402px);
   --content-gutter: clamp(28px, 1.875vw, 36px);
   --task-table-columns: 48px minmax(56px, 0.5fr) minmax(92px, 0.78fr) minmax(220px, 1.8fr) minmax(132px, 1fr) minmax(220px, 1.75fr) minmax(160px, 1.18fr) minmax(170px, 1.32fr);
@@ -77,7 +77,7 @@ ul {
   align-items: center;
   justify-content: space-between;
   padding: 0 28px;
-  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.06);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
 
 .header-left {
@@ -87,11 +87,11 @@ ul {
 
 .header-logo {
   font-family: "Kakao Small Sans", "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--color-text-primary);
-  line-height: 44px;
-  letter-spacing: 0;
+  line-height: 40px;
+  letter-spacing: -1px;
 }
 
 .header-right {
@@ -105,10 +105,10 @@ ul {
   align-items: center;
   gap: 12px;
   width: 260px;
-  height: 44px;
+  height: 48px;
   padding: 6px 24px;
   border: 1px solid var(--color-search-border);
-  border-radius: 9px;
+  border-radius: 10px;
   background: var(--color-white);
 }
 
@@ -173,7 +173,7 @@ ul {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 30px 17px 28px;
+  padding: 24px 16px;
   flex-shrink: 0;
 }
 
@@ -189,8 +189,8 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 8px;
   background: var(--color-bg);
   transition: background 0.15s;
