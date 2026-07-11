@@ -503,6 +503,237 @@ function renderDetailContent(meeting) {
 
 /* ---- Timeline ---- */
 
+/* ---- Schedule Popover Data ---- */
+
+const schedulePopoverData = [
+  {
+    id: 'unavailable-tue-09-12',
+    type: 'unavailable',
+    dateLabel: '14(화)',
+    timeRange: '09:00 - 12:00',
+    statusText: '참석자 일정과 겹치는 시간이에요',
+    blockedLabel: '일정이 있는 참석자',
+    blockedCount: 2,
+    blockedMembers: [
+      { name: '김현우', reason: '리더십 회의', time: '09:00 - 12:00' },
+      { name: '박서연', reason: '프로젝트 회의', time: '09:00 - 12:00' },
+    ],
+    availableLabel: '가능한 참석자',
+    availableCount: 4,
+    availableMembers: ['이도이', '정민재', '최유진', '강태오'],
+  },
+  {
+    id: 'available-thu-10-11',
+    type: 'available',
+    dateLabel: '16(목)',
+    timeRange: '10:00 - 11:00',
+    statusText: '모두가 가능한 시간이에요',
+    availableLabel: '가능한 참석자',
+    availableCount: 6,
+    availableMembers: ['이도이', '김현우', '박서연', '정민재', '최유진', '강태오'],
+    ctaLabel: '이 시간으로 회의 만들기',
+    isRange: false,
+  },
+  {
+    id: 'available-tue-13-15',
+    type: 'available',
+    dateLabel: '14(화)',
+    timeRange: '13:00 - 15:00',
+    statusText: '모두가 가능한 시간이에요',
+    availableLabel: '가능한 참석자',
+    availableCount: 6,
+    availableMembers: ['이도이', '김현우', '박서연', '정민재', '최유진', '강태오'],
+    meetingHint: '1시간 회의 후보 2개가 있어요.',
+    ctaLabel: '이 구간에서 회의 만들기',
+    isRange: true,
+  },
+];
+
+let currentPopoverId = null;
+let currentPopoverAnchor = null;
+let isPopoverHover = false;
+
+function getSchedulePopoverData(id) {
+  const static = schedulePopoverData.find(d => d.id === id);
+  if (static) return static;
+  if (id && id.startsWith('conflict-')) {
+    const parts = id.split('-');
+    const dayIndex = Number(parts[1]);
+    const hour = Number(parts[2]);
+    if (!isNaN(dayIndex) && !isNaN(hour)) {
+      return computeConflictPopoverData(dayIndex, hour);
+    }
+  }
+  return null;
+}
+
+function getPopoverIdForSlot(dayIndex, hour) {
+  if (dayIndex === 1 && hour === 13) return 'available-tue-13-15';
+  if (dayIndex === 3 && hour === 10) return 'available-thu-10-11';
+  return null;
+}
+
+function renderSchedulePopover(data) {
+  const isUnavailable = data.type === 'unavailable';
+
+  let html = '<div class="schedule-popover-header-section">';
+  html += '<div class="schedule-popover-title-row">';
+  html += `<strong class="schedule-popover-title">${data.dateLabel} ${data.timeRange}</strong>`;
+  if (!isUnavailable) {
+    html += '<button type="button" class="schedule-popover-close" aria-label="닫기">' +
+      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none">' +
+      '<path d="M18 6L6 18" stroke="#171A1F" stroke-width="2" stroke-linecap="round"/>' +
+      '<path d="M6 6L18 18" stroke="#171A1F" stroke-width="2" stroke-linecap="round"/>' +
+      '</svg></button>';
+  }
+  html += '</div>';
+  html += `<p class="schedule-popover-status schedule-popover-status--${data.type}">${data.statusText}</p>`;
+  html += '</div>';
+
+  const hasBlocked = data.blockedMembers && data.blockedMembers.length > 0;
+  if (hasBlocked) {
+    const countColor = isUnavailable ? 'red' : 'orange';
+    html += '<div class="schedule-popover-section">';
+    html += '<div class="schedule-popover-section-header">';
+    html += `<span>${data.blockedLabel}</span>`;
+    html += `<span class="schedule-popover-count"><strong class="schedule-popover-count-num schedule-popover-count-num--${countColor}">${data.blockedCount}</strong><span class="schedule-popover-count-label">명</span></span>`;
+    html += '</div>';
+    html += '<div class="schedule-popover-members">';
+    data.blockedMembers.forEach(m => {
+      html += `<div class="schedule-popover-member-row">
+        <span class="schedule-popover-member-name">${m.name}</span>
+        <span class="schedule-popover-member-reason">${m.reason}</span>
+        <span class="schedule-popover-member-time">${m.time}</span>
+      </div>`;
+    });
+    html += '</div></div>';
+  }
+
+  html += '<div class="schedule-popover-section">';
+  html += '<div class="schedule-popover-section-header">';
+  html += `<span>${data.availableLabel}</span>`;
+  html += `<span class="schedule-popover-count"><strong class="schedule-popover-count-num schedule-popover-count-num--blue">${data.availableCount}</strong><span class="schedule-popover-count-label">명</span></span>`;
+  html += '</div>';
+  html += `<p class="schedule-popover-member-list">${data.availableMembers.join(' · ')}</p>`;
+  html += '</div>';
+
+  if (data.meetingHint) {
+    html += `<p class="schedule-popover-hint">${data.meetingHint}</p>`;
+  }
+
+  if (data.ctaLabel) {
+    const ctaClass = data.type === 'check-required' ? 'schedule-popover-cta--secondary' : 'schedule-popover-cta--primary';
+    html += `<button type="button" class="schedule-popover-cta ${ctaClass}">${data.ctaLabel}</button>`;
+  }
+
+  return html;
+}
+
+function positionSchedulePopover(popoverEl, anchorEl) {
+  popoverEl.style.left = '0';
+  popoverEl.style.top = '0';
+
+  const popoverW = popoverEl.offsetWidth || 280;
+  const popoverH = popoverEl.offsetHeight;
+  const rect = anchorEl.getBoundingClientRect();
+  const gap = 10;
+
+  let left = rect.left + rect.width / 2 - popoverW / 2;
+  let top = rect.top - popoverH - gap;
+
+  if (top < 10) {
+    top = rect.bottom + gap;
+  }
+
+  if (left < 10) left = 10;
+  if (left + popoverW > window.innerWidth - 10) left = window.innerWidth - popoverW - 10;
+
+  popoverEl.style.left = `${left}px`;
+  popoverEl.style.top = `${top}px`;
+}
+
+function openSchedulePopover(id, anchorEl, isHover) {
+  closeSchedulePopover();
+  hideTimelineTooltip();
+  const data = getSchedulePopoverData(id);
+  if (!data) return;
+
+  const el = document.getElementById('schedule-popover');
+  el.innerHTML = renderSchedulePopover(data);
+  el.className = `schedule-popover schedule-popover--${data.type}`;
+  el.dataset.currentId = id;
+
+  el.style.visibility = 'hidden';
+  el.classList.add('visible');
+  positionSchedulePopover(el, anchorEl);
+
+  requestAnimationFrame(() => {
+    el.style.visibility = '';
+  });
+
+  currentPopoverId = id;
+  currentPopoverAnchor = anchorEl;
+  isPopoverHover = isHover || false;
+}
+
+function closeSchedulePopover() {
+  const el = document.getElementById('schedule-popover');
+  el.classList.remove('visible');
+  currentPopoverId = null;
+  currentPopoverAnchor = null;
+  isPopoverHover = false;
+}
+
+function handleSchedulePopoverCTA(ctaEl) {
+  if (!currentPopoverId) return;
+  const data = getSchedulePopoverData(currentPopoverId);
+  if (!data) return;
+
+  closeSchedulePopover();
+
+  if (data.type === 'available') {
+    const slotMap = {
+      'available-thu-10-11': { dayIndex: 3, hour: 10 },
+      'available-tue-13-15': { dayIndex: 1, hour: 13 },
+    };
+    const info = slotMap[currentPopoverId];
+    if (info) {
+      const slot = getTimelineSlot(info.dayIndex, info.hour);
+      if (slot) openTimelineModal(slot);
+    }
+  }
+}
+
+function bindSchedulePopoverEvents() {
+  const popover = document.getElementById('schedule-popover');
+
+  popover.addEventListener('click', (e) => {
+    if (e.target.closest('.schedule-popover-close')) {
+      closeSchedulePopover();
+      return;
+    }
+    const cta = e.target.closest('.schedule-popover-cta');
+    if (cta) {
+      e.preventDefault();
+      handleSchedulePopoverCTA(cta);
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const el = document.getElementById('schedule-popover');
+    if (!el.classList.contains('visible') || isPopoverHover) return;
+    if (el.contains(e.target)) return;
+    if (currentPopoverAnchor && currentPopoverAnchor.contains(e.target)) return;
+    closeSchedulePopover();
+  });
+}
+
+const cellPopoverMap = {
+  '1-9': 'unavailable-tue-09-12',
+  '1-10': 'unavailable-tue-09-12',
+  '1-11': 'unavailable-tue-09-12',
+};
+
 const teamMembers = [
   { name: '이도이', role: '주니어 브랜드 마케터', required: true },
   { name: '김현우', role: '마케팅팀 팀장', required: true },
@@ -511,6 +742,104 @@ const teamMembers = [
   { name: '최유진', role: '콘텐츠 마케터', required: false },
   { name: '강태오', role: '제휴/영업 마케터', required: false },
 ];
+
+const memberSchedules = [
+  { name: '이도이', events: [
+    { dayIndex: 0, startHour: 9, endHour: 12, reason: '개인 업무' },
+    { dayIndex: 0, startHour: 13, endHour: 16, reason: '프로젝트 준비' },
+    { dayIndex: 2, startHour: 9, endHour: 11, reason: '데일리 스크럼' },
+    { dayIndex: 3, startHour: 13, endHour: 16, reason: '프로젝트 회의' },
+    { dayIndex: 4, startHour: 9, endHour: 10, reason: '주간 정리' },
+    { dayIndex: 4, startHour: 10, endHour: 11, reason: '프로젝트 정리' },
+    { dayIndex: 4, startHour: 13, endHour: 14, reason: '프로젝트 리뷰' },
+    { dayIndex: 4, startHour: 14, endHour: 15, reason: '프로젝트 마무리' },
+  ]},
+  { name: '김현우', events: [
+    { dayIndex: 0, startHour: 9, endHour: 12, reason: '리더십 회의' },
+    { dayIndex: 0, startHour: 13, endHour: 14, reason: '점심 미팅' },
+    { dayIndex: 0, startHour: 15, endHour: 16, reason: '팀장 미팅' },
+    { dayIndex: 1, startHour: 9, endHour: 10, reason: '주간 팀 리뷰' },
+    { dayIndex: 2, startHour: 9, endHour: 12, reason: '마케팅 전략 회의' },
+    { dayIndex: 2, startHour: 14, endHour: 15, reason: '내부 보고' },
+    { dayIndex: 2, startHour: 15, endHour: 16, reason: '전략 회의' },
+    { dayIndex: 3, startHour: 13, endHour: 14, reason: '점심 미팅' },
+    { dayIndex: 3, startHour: 14, endHour: 15, reason: '외부 미팅' },
+    { dayIndex: 4, startHour: 9, endHour: 10, reason: '주간 리더십 회의' },
+  ]},
+  { name: '박서연', events: [
+    { dayIndex: 0, startHour: 13, endHour: 17, reason: '캠페인 기획 회의' },
+    { dayIndex: 1, startHour: 9, endHour: 10, reason: '주간 리뷰' },
+    { dayIndex: 3, startHour: 13, endHour: 14, reason: '디자인 리뷰' },
+    { dayIndex: 4, startHour: 9, endHour: 11, reason: '스프린트 플래닝' },
+    { dayIndex: 4, startHour: 13, endHour: 14, reason: '스프린트 회고' },
+  ]},
+  { name: '정민재', events: [
+    { dayIndex: 0, startHour: 9, endHour: 10, reason: '광고 성과 체크' },
+    { dayIndex: 1, startHour: 9, endHour: 10, reason: '주간 성과 분석' },
+    { dayIndex: 1, startHour: 10, endHour: 11, reason: '캠페인 분석' },
+    { dayIndex: 1, startHour: 16, endHour: 17, reason: '매체사 미팅' },
+    { dayIndex: 2, startHour: 14, endHour: 16, reason: '퍼포먼스 리뷰' },
+    { dayIndex: 3, startHour: 15, endHour: 16, reason: '데이터 분석' },
+    { dayIndex: 4, startHour: 11, endHour: 12, reason: '보고서 작성' },
+  ]},
+  { name: '최유진', events: [
+    { dayIndex: 0, startHour: 10, endHour: 12, reason: '콘텐츠 기획' },
+    { dayIndex: 2, startHour: 9, endHour: 10, reason: '콘텐츠 기획' },
+    { dayIndex: 2, startHour: 10, endHour: 12, reason: '콘텐츠 제작 회의' },
+    { dayIndex: 2, startHour: 16, endHour: 17, reason: '콘텐츠 마감' },
+    { dayIndex: 3, startHour: 9, endHour: 10, reason: '브랜드 회의' },
+    { dayIndex: 4, startHour: 10, endHour: 11, reason: '소셜 미디어 점검' },
+    { dayIndex: 4, startHour: 11, endHour: 12, reason: '주간 보고' },
+  ]},
+  { name: '강태오', events: [
+    { dayIndex: 0, startHour: 14, endHour: 15, reason: '제휴사 미팅' },
+    { dayIndex: 1, startHour: 10, endHour: 11, reason: '파트너 협의' },
+    { dayIndex: 1, startHour: 16, endHour: 17, reason: '파트너사 보고' },
+    { dayIndex: 2, startHour: 15, endHour: 17, reason: '외부 미팅' },
+    { dayIndex: 3, startHour: 9, endHour: 10, reason: '제휴 검토' },
+    { dayIndex: 3, startHour: 14, endHour: 15, reason: '파트너사 방문' },
+    { dayIndex: 4, startHour: 13, endHour: 14, reason: '영업 보고' },
+    { dayIndex: 4, startHour: 14, endHour: 15, reason: '클라이언트 미팅' },
+  ]},
+];
+
+const days = ['13(월)', '14(화)', '15(수)', '16(목)', '17(금)'];
+
+function computeConflictPopoverData(dayIndex, hour) {
+  const dayLabel = days[dayIndex] || '';
+  const timeRange = `${String(hour).padStart(2, '0')}:00 - ${String(hour + 1).padStart(2, '0')}:00`;
+
+  const blockedMembers = [];
+  const availableMembers = [];
+
+  memberSchedules.forEach(member => {
+    const event = member.events.find(e =>
+      e.dayIndex === dayIndex &&
+      e.startHour < hour + 1 &&
+      e.endHour > hour
+    );
+    if (event) {
+      const eventStart = `${String(event.startHour).padStart(2, '0')}:00`;
+      const eventEnd = `${String(event.endHour).padStart(2, '0')}:00`;
+      blockedMembers.push({ name: member.name, reason: event.reason, time: `${eventStart} - ${eventEnd}` });
+    } else {
+      availableMembers.push(member.name);
+    }
+  });
+
+  return {
+    type: 'unavailable',
+    dateLabel: dayLabel,
+    timeRange: timeRange,
+    statusText: '참석자 일정과 겹치는 시간이에요',
+    blockedLabel: '일정이 있는 참석자',
+    blockedCount: blockedMembers.length,
+    blockedMembers: blockedMembers,
+    availableLabel: '가능한 참석자',
+    availableCount: availableMembers.length,
+    availableMembers: availableMembers,
+  };
+}
 
 const timelineSlots = [
   {
@@ -615,8 +944,17 @@ function renderTimeline() {
       cell.style.gridRow = String(gridRow);
 
       const slot = getTimelineSlot(dayIndex, currentHour);
+      const cellKey = `${dayIndex}-${currentHour}`;
+      const cellPopoverId = cellPopoverMap[cellKey];
 
-      if (slot) {
+      if (cellPopoverId) {
+        cell.dataset.popoverId = cellPopoverId;
+        cell.classList.add('timeline-cell-unavailable');
+        cell.addEventListener('mouseenter', (e) => openSchedulePopover(cellPopoverId, e.currentTarget, true));
+        cell.addEventListener('mouseleave', () => {
+          if (isPopoverHover) closeSchedulePopover();
+        });
+      } else if (slot) {
         cell.classList.add(`timeline-cell-${slot.type}`);
 
         if (slot.type === 'unavailable' || (dayIndex === 3 && currentHour === 13)) {
@@ -635,8 +973,20 @@ function renderTimeline() {
 
         if (highConflict) {
           cell.classList.add('timeline-cell-conflict-high');
+          const conflictId = `conflict-${dayIndex}-${currentHour}`;
+          cell.dataset.popoverId = conflictId;
+          cell.addEventListener('mouseenter', (e) => openSchedulePopover(conflictId, e.currentTarget, true));
+          cell.addEventListener('mouseleave', () => {
+            if (isPopoverHover) closeSchedulePopover();
+          });
         } else if (lowConflict) {
           cell.classList.add('timeline-cell-conflict-low');
+          const conflictId = `conflict-${dayIndex}-${currentHour}`;
+          cell.dataset.popoverId = conflictId;
+          cell.addEventListener('mouseenter', (e) => openSchedulePopover(conflictId, e.currentTarget, true));
+          cell.addEventListener('mouseleave', () => {
+            if (isPopoverHover) closeSchedulePopover();
+          });
         }
       }
 
@@ -661,9 +1011,28 @@ function renderTimeline() {
         <span class="timeline-cell-badge">${slot.status}</span>
       `;
 
-      block.addEventListener('mouseenter', (e) => showTimelineTooltip(e, slot));
-      block.addEventListener('mouseleave', hideTimelineTooltip);
-      block.addEventListener('click', () => openTimelineModal(slot));
+      const popoverId = getPopoverIdForSlot(slot.dayIndex, slot.hour);
+      if (popoverId) {
+        block.dataset.popoverId = popoverId;
+        block.addEventListener('mouseenter', (e) => {
+          if (!document.getElementById('schedule-popover').classList.contains('visible')) {
+            showTimelineTooltip(e, slot);
+          }
+        });
+        block.addEventListener('mouseleave', () => {
+          if (!document.getElementById('schedule-popover').classList.contains('visible')) {
+            hideTimelineTooltip();
+          }
+        });
+        block.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openSchedulePopover(popoverId, block);
+        });
+      } else {
+        block.addEventListener('mouseenter', (e) => showTimelineTooltip(e, slot));
+        block.addEventListener('mouseleave', hideTimelineTooltip);
+        block.addEventListener('click', () => openTimelineModal(slot));
+      }
 
       grid.appendChild(block);
     });
@@ -1030,6 +1399,7 @@ function initTimeline() {
   renderTimeline();
   renderQuickSlots();
   renderTimelinePendingMeetings();
+  bindSchedulePopoverEvents();
 
   document.getElementById('timeline-modal-close').addEventListener('click', closeTimelineModal);
   document.getElementById('timeline-modal-cancel').addEventListener('click', closeTimelineModal);
@@ -1290,6 +1660,10 @@ function init() {
   document.getElementById('meeting-drawer-backdrop').addEventListener('click', closeMeetingDrawer);
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') {
+      if (document.getElementById('schedule-popover').classList.contains('visible')) {
+        closeSchedulePopover();
+        return;
+      }
       if (document.getElementById('timeline-modal').classList.contains('visible')) {
         closeTimelineModal();
         return;
