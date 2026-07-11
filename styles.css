@@ -13,6 +13,11 @@
   --sidebar-width: 82px;
   --right-panel-width: clamp(360px, 20.94vw, 402px);
   --content-gutter: clamp(28px, 1.875vw, 36px);
+  --task-table-columns: 48px minmax(56px, 0.5fr) minmax(92px, 0.78fr) minmax(220px, 1.8fr) minmax(132px, 1fr) minmax(220px, 1.75fr) minmax(160px, 1.18fr) minmax(170px, 1.32fr);
+  --task-cell-x-padding: 12px;
+  --task-index-x-padding: 10px;
+  --task-action-button-width: 158px;
+  --task-cell-font-size: 16px;
   --color-bg: #F8F9FB;
   --color-white: #FFFFFF;
   --color-blue: #3564FF;
@@ -425,7 +430,7 @@ ul {
 
 .task-row {
   display: grid;
-  grid-template-columns: 48px minmax(56px, 0.5fr) minmax(92px, 0.78fr) minmax(220px, 1.8fr) minmax(132px, 1fr) minmax(220px, 1.75fr) minmax(160px, 1.18fr) minmax(170px, 1.32fr);
+  grid-template-columns: var(--task-table-columns);
   align-items: center;
   min-height: 62px;
   border-bottom: 1px solid var(--color-border);
@@ -440,8 +445,8 @@ ul {
 
 .task-cell {
   min-width: 0;
-  padding: 0 12px;
-  font-size: 16px;
+  padding: 0 var(--task-cell-x-padding);
+  font-size: var(--task-cell-font-size);
   font-weight: 500;
   line-height: 24px;
   color: var(--color-text-secondary);
@@ -459,7 +464,7 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px;
+  padding: 0 var(--task-index-x-padding);
 }
 
 .task-index span {
@@ -508,12 +513,20 @@ ul {
 .task-action,
 .task-action-head {
   display: flex;
+  padding-right: var(--task-cell-x-padding);
+  padding-left: var(--task-cell-x-padding);
+}
+
+.task-action {
   justify-content: flex-end;
-  padding-right: 12px;
+}
+
+.task-action-head {
+  justify-content: flex-start;
 }
 
 .task-action-btn {
-  width: min(158px, 100%);
+  width: min(var(--task-action-button-width), 100%);
   height: 38px;
   border: 1px solid var(--color-search-border);
   border-radius: 8px;
@@ -1132,6 +1145,11 @@ ul {
   :root {
     --right-panel-width: 360px;
     --content-gutter: 28px;
+    --task-table-columns: 36px minmax(44px, 0.42fr) minmax(78px, 0.72fr) minmax(170px, 1.5fr) minmax(106px, 0.9fr) minmax(160px, 1.42fr) minmax(132px, 1.08fr) minmax(152px, 1.28fr);
+    --task-cell-x-padding: 8px;
+    --task-index-x-padding: 6px;
+    --task-action-button-width: 148px;
+    --task-cell-font-size: 14px;
   }
 
   .urgent-section {
@@ -1145,31 +1163,12 @@ ul {
     padding-right: 40px;
   }
 
-  .task-row {
-    grid-template-columns: 36px minmax(44px, 0.42fr) minmax(78px, 0.72fr) minmax(170px, 1.5fr) minmax(106px, 0.9fr) minmax(160px, 1.42fr) minmax(132px, 1.08fr) minmax(152px, 1.28fr);
-  }
-
-  .task-cell {
-    padding: 0 8px;
-    font-size: 14px;
-  }
-
-  .task-index {
-    padding: 0 6px;
-  }
-
   .task-status {
     padding: 0 10px;
     font-size: 12px;
   }
 
-  .task-action,
-  .task-action-head {
-    padding-right: 8px;
-  }
-
   .task-action-btn {
-    width: min(148px, 100%);
     font-size: 14px;
   }
 
