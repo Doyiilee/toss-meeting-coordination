@@ -732,6 +732,45 @@ function updateTimelineModalStatus(slot) {
   `;
 }
 
+function buildQuickSlotDesc(slot) {
+  if (slot.type === 'best') {
+    const requiredAvailable = teamMembers.filter(m => m.required && slot.available.includes(m.name)).length;
+    const optionalAvailable = teamMembers.filter(m => !m.required && slot.available.includes(m.name)).length;
+    const checkCount = slot.checkNeeded.length;
+    return `필수 참석자 ${requiredAvailable}명 가능 · 선택 ${optionalAvailable}명 가능 · ${checkCount}명 확인 필요`;
+  }
+  const parts = [];
+  if (slot.checkNeeded.length > 0) {
+    parts.push(slot.checkNeeded.map(c => `${c.name} 확인 필요`).join(' · '));
+  }
+  if (slot.unavailable.length > 0) {
+    parts.push(slot.unavailable.map(u => `${u.name} 참석 불가`).join(' · '));
+  }
+  return parts.join(' · ');
+}
+
+function renderQuickSlots() {
+  const container = document.getElementById('quick-slot-cards');
+  if (!container) return;
+
+  const quickSlots = timelineSlots.filter(s => s.type !== 'unavailable');
+
+  container.innerHTML = quickSlots.map(slot => `
+    <button type="button" class="quick-slot-card quick-slot-${slot.type}" data-day-index="${slot.dayIndex}" data-hour="${slot.hour}">
+      <span class="quick-slot-badge quick-slot-badge-${slot.type}">${slot.status}</span>
+      <strong class="quick-slot-time">${slot.dayNum}(${slot.dayName}) ${slot.timeLabel}</strong>
+      <span class="quick-slot-desc">${buildQuickSlotDesc(slot)}</span>
+    </button>
+  `).join('');
+
+  container.addEventListener('click', (e) => {
+    const card = e.target.closest('.quick-slot-card');
+    if (!card) return;
+    const slot = getTimelineSlot(Number(card.dataset.dayIndex), Number(card.dataset.hour));
+    if (slot) openTimelineModal(slot);
+  });
+}
+
 function openTimelineModal(slot) {
   const backdrop = document.getElementById('timeline-modal-backdrop');
   const modal = document.getElementById('timeline-modal');
@@ -940,6 +979,7 @@ function renderTimelinePendingMeetings() {
 
 function initTimeline() {
   renderTimeline();
+  renderQuickSlots();
   renderTimelinePendingMeetings();
 
   document.getElementById('timeline-modal-close').addEventListener('click', closeTimelineModal);
