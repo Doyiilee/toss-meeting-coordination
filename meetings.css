@@ -1834,7 +1834,7 @@ button {
   font-family: inherit;
   transition: box-shadow 200ms ease, border-color 200ms ease, background 200ms ease;
   min-height: 188px;
-  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.08);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
 .quick-slot-card:hover {
