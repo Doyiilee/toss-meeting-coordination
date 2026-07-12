@@ -257,6 +257,11 @@ function getDayOfWeek(dateStr) {
   return days[parseDate(dateStr).getDay()];
 }
 
+function getDateStrFromDayIndex(baseDate, dayIndex) {
+  const baseDay = parseDate(baseDate).getDate();
+  return addDays(baseDate, dayIndex - (baseDay - 13));
+}
+
 function formatTimeRange(startHour, startMin, duration) {
   const startStr = `${String(startHour).padStart(2, '0')}:${String(startMin).padStart(2, '0')}`;
   const totalMin = startHour * 60 + startMin + duration;
@@ -290,68 +295,58 @@ function renderCandidates() {
   });
 
   const baseDate = startDate || defaultStartDate;
-  const duration = selectedDuration;
 
-  const candidates = [
-    {
-      id: 'candidate-1',
-      badge: '가장 추천',
-      badgeClass: 'badge-blue',
-      dayOffset: 0,
-      startHour: 10,
-      startMin: 0,
-      statusText: '확정 가능',
-      statusClass: 'green',
-      requiredNum: requiredTotal,
-      requiredDen: requiredTotal,
-      optionalNum: Math.max(optionalTotal - 1, 0),
-      optionalDen: optionalTotal,
-      needCheck: optionalTotal > 0 ? '선택 참석자 1명' : '없음',
-      desc: '필수 참석자가 모두 가능해 바로 확정할 수 있어요.',
-    },
-    {
-      id: 'candidate-2',
-      badge: '대안',
-      badgeClass: 'badge-green',
-      dayOffset: 1,
-      startHour: 14,
-      startMin: 0,
-      statusText: '확정 가능',
-      statusClass: 'green',
-      requiredNum: requiredTotal,
-      requiredDen: requiredTotal,
-      optionalNum: optionalTotal,
-      optionalDen: optionalTotal,
-      needCheck: '없음',
-      desc: '모든 참석자가 가능한 안정적인 후보예요.',
-    },
-    {
-      id: 'candidate-3',
-      badge: '확인 필요',
-      badgeClass: 'badge-yellow',
-      dayOffset: 2,
-      startHour: 13,
-      startMin: 0,
-      statusText: '확인 후 확정',
-      statusClass: 'yellow',
-      requiredNum: Math.max(requiredTotal - 1, 0),
-      requiredDen: requiredTotal,
-      optionalNum: optionalTotal,
-      optionalDen: optionalTotal,
-      needCheck: requiredTotal > 0 ? '필수 참석자 1명' : '없음',
-      desc: requiredTotal > 0 ? '필수 참석자 1명의 확인이 필요해 바로 확정할 수 없어요.' : '',
-    },
-  ];
+  const availableCandidates = meetingCandidates.filter(c => c.type === 'available');
 
-  candidates.forEach(candidate => {
-    const dateStr = addDays(baseDate, candidate.dayOffset);
+  meetingCandidates.forEach((candidate, index) => {
+    const dateStr = getDateStrFromDayIndex(baseDate, candidate.dayIndex);
     const dayOfWeek = getDayOfWeek(dateStr);
-    const timeStr = formatTimeRange(candidate.startHour, candidate.startMin, duration);
+    const timeStr = `${formatHour(candidate.startTime)} - ${formatHour(candidate.endTime)}`;
     const selected = selectedCandidateId === candidate.id;
+
+    const isAvailable = candidate.type === 'available';
+    const isFirstAvailable = isAvailable && availableCandidates[0] === candidate;
+
+    let badge, badgeClass, statusText, statusClass, requiredNum, requiredDen, optionalNum, optionalDen, needCheck, desc;
+
+    if (candidate.type === 'check-required') {
+      badge = '확인 필요';
+      badgeClass = 'badge-yellow';
+      statusText = '확인 후 확정';
+      statusClass = 'yellow';
+      requiredNum = Math.max(requiredTotal - 1, 0);
+      requiredDen = requiredTotal;
+      optionalNum = optionalTotal;
+      optionalDen = optionalTotal;
+      needCheck = requiredTotal > 0 ? '필수 참석자 1명' : '없음';
+      desc = requiredTotal > 0 ? '필수 참석자 1명의 확인이 필요해 바로 확정할 수 없어요.' : '';
+    } else if (isFirstAvailable) {
+      badge = '가장 추천';
+      badgeClass = 'badge-blue';
+      statusText = '확정 가능';
+      statusClass = 'green';
+      requiredNum = requiredTotal;
+      requiredDen = requiredTotal;
+      optionalNum = Math.max(optionalTotal - 1, 0);
+      optionalDen = optionalTotal;
+      needCheck = optionalTotal > 0 ? '선택 참석자 1명' : '없음';
+      desc = '필수 참석자가 모두 가능해 바로 확정할 수 있어요.';
+    } else {
+      badge = '대안';
+      badgeClass = 'badge-green';
+      statusText = '확정 가능';
+      statusClass = 'green';
+      requiredNum = requiredTotal;
+      requiredDen = requiredTotal;
+      optionalNum = optionalTotal;
+      optionalDen = optionalTotal;
+      needCheck = '없음';
+      desc = '모든 참석자가 가능한 안정적인 후보예요.';
+    }
 
     let optionalText;
     if (optionalTotal > 0) {
-      optionalText = `${candidate.optionalNum}/${candidate.optionalDen} 가능`;
+      optionalText = `${optionalNum}/${optionalDen} 가능`;
     } else {
       optionalText = '선택 참석자 없음';
     }
@@ -365,14 +360,14 @@ function renderCandidates() {
 
     card.innerHTML = `
       <div class="drawer-candidate-head">
-        <span class="badge ${candidate.badgeClass}">${candidate.badge}</span>
+        <span class="badge ${badgeClass}">${badge}</span>
         ${selected ? '<span class="drawer-candidate-selected-mark">선택됨</span>' : ''}
       </div>
       <h4 class="drawer-candidate-time">${dateStr} (${dayOfWeek})<br />${timeStr}</h4>
       <div class="drawer-candidate-metrics">
         <div class="drawer-candidate-metric drawer-candidate-metric-required">
           <span>필수 참석자</span>
-          <strong>${candidate.requiredNum}/${candidate.requiredDen} 가능</strong>
+          <strong>${requiredNum}/${requiredDen} 가능</strong>
         </div>
         <div class="drawer-candidate-metric drawer-candidate-metric-optional">
           <span>선택 참석자</span>
@@ -380,11 +375,11 @@ function renderCandidates() {
         </div>
         <div class="drawer-candidate-metric">
           <span>확인 필요</span>
-          <strong>${candidate.needCheck}</strong>
+          <strong>${needCheck}</strong>
         </div>
       </div>
-      <span class="candidate-status-pill ${candidate.statusClass}">${candidate.statusText}</span>
-      <p class="candidate-status-desc">${candidate.desc}</p>
+      <span class="candidate-status-pill ${statusClass}">${statusText}</span>
+      <p class="candidate-status-desc">${desc}</p>
     `;
 
     container.appendChild(card);
@@ -917,6 +912,7 @@ const memberSchedules = [
 
 const meetingCandidates = [
   {
+    id: 'candidate-1',
     type: 'available',
     dateLabel: '14(화)',
     dayIndex: 1,
@@ -928,6 +924,7 @@ const meetingCandidates = [
     availableMemberIds: ['ddoyi', 'hyunwoo', 'seoyeon', 'minjae', 'yujin', 'taeoh'],
   },
   {
+    id: 'candidate-2',
     type: 'available',
     dateLabel: '16(목)',
     dayIndex: 3,
@@ -939,6 +936,7 @@ const meetingCandidates = [
     availableMemberIds: ['ddoyi', 'hyunwoo', 'seoyeon', 'minjae', 'yujin', 'taeoh'],
   },
   {
+    id: 'candidate-3',
     type: 'check-required',
     dateLabel: '15(수)',
     dayIndex: 2,
