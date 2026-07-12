@@ -1573,76 +1573,157 @@ function openTimelineModal(slot) {
   const modal = document.getElementById('timeline-modal');
   const body = document.getElementById('timeline-modal-body');
   const confirmBtn = document.getElementById('timeline-modal-confirm');
+  const titleEl = document.getElementById('timeline-modal-title');
 
-  const dateStr = `2026.07.${String(slot.dayNum).padStart(2, '0')} (${slot.dayName}) ${slot.timeLabel}`;
+  titleEl.textContent = '빠른 회의 만들기';
 
-  const initialRequired = [];
-  const initialOptional = [];
-  teamMembers.forEach(m => {
-    if (m.required) initialRequired.push(m.name);
-    else initialOptional.push(m.name);
-  });
+  const candidate = slot.candidateId ? getCandidateById(slot.candidateId) : null;
 
-  let membersHtml = teamMembers.map(m => {
-    const isRequired = m.required;
-    const status = getMemberStatus(slot, m.name);
-    const coreMembers = ['이도이', '김현우', '박서연'];
-    return `<div class="timeline-modal-member" data-member="${m.name}">
-      <span class="member-name">${m.name}</span>
-      ${coreMembers.includes(m.name) ? '<span class="member-core-badge">기본 필수</span>' : ''}
-      <span class="member-role">${m.role}</span>
-      <div class="role-toggle-group" data-required="${isRequired}">
-        <button type="button" class="role-toggle-btn${isRequired ? ' role-toggle-active' : ''}" data-role="required">필수</button>
-        <button type="button" class="role-toggle-btn${!isRequired ? ' role-toggle-active' : ''}" data-role="optional">선택</button>
+  let timeLabel, dayName, dayNum;
+  let selectedStartTime, selectedEndTime;
+  let isRange = false;
+  let badgeText, badgeClass;
+
+  if (candidate && candidate.type === 'check-required') {
+    dayNum = 13 + candidate.dayIndex;
+    const days = ['월', '화', '수', '목', '금'];
+    dayName = days[candidate.dayIndex] || '';
+    selectedStartTime = candidate.startTime;
+    selectedEndTime = candidate.endTime;
+    timeLabel = `${String(dayNum).padStart(2, '0')}(${dayName}) ${formatHour(candidate.startTime)} - ${formatHour(candidate.endTime)}`;
+    badgeText = '일정 확인 필요';
+    badgeClass = 'check';
+  } else if (candidate && candidate.isRange) {
+    isRange = true;
+    dayNum = 13 + candidate.dayIndex;
+    const days = ['월', '화', '수', '목', '금'];
+    dayName = days[candidate.dayIndex] || '';
+    timeLabel = `${String(dayNum).padStart(2, '0')}(${dayName}) ${formatHour(candidate.startTime)} - ${formatHour(candidate.endTime)}`;
+    selectedStartTime = candidate.startTime;
+    selectedEndTime = candidate.startTime + 1;
+    badgeText = '전원 가능';
+    badgeClass = 'best';
+  } else {
+    dayNum = slot.dayNum;
+    dayName = slot.dayName;
+    selectedStartTime = slot.timeLabel.split(' - ')[0];
+    selectedEndTime = slot.timeLabel.split(' - ')[1];
+    timeLabel = `${String(dayNum).padStart(2, '0')}(${dayName}) ${slot.timeLabel}`;
+    badgeText = '전원 가능';
+    badgeClass = 'best';
+  }
+
+  const dateStrFull = `2026.07.${String(dayNum).padStart(2, '0')} (${dayName}) ${formatHour(Number(String(selectedStartTime).split(':')[0] || selectedStartTime))} - ${formatHour(Number(String(selectedEndTime).split(':')[0] || selectedEndTime))}`;
+
+  let rangeSlotsHtml = '';
+  if (isRange && candidate) {
+    const slot1Start = candidate.startTime;
+    const slot1End = candidate.startTime + 1;
+    const slot2Start = candidate.startTime + 1;
+    const slot2End = candidate.startTime + 2;
+    const datePrefix = `2026.07.${String(dayNum).padStart(2, '0')} (${dayName})`;
+    rangeSlotsHtml = `
+      <div class="tm-range-section">
+        <div class="tm-range-label">원하는 시간 선택</div>
+        <div class="tm-range-slot tm-range-slot-selected" data-start="${formatHour(slot1Start)}" data-end="${formatHour(slot1End)}">
+          <span class="tm-range-num">1</span>
+          <span class="tm-range-time-label">시간 후보</span>
+          <span class="tm-range-badge tm-range-badge-best">전원 가능</span>
+          <span class="tm-range-time">${datePrefix} ${formatHour(slot1Start)} - ${formatHour(slot1End)}</span>
+        </div>
+        <div class="tm-range-slot" data-start="${formatHour(slot2Start)}" data-end="${formatHour(slot2End)}">
+          <span class="tm-range-num">2</span>
+          <span class="tm-range-time-label">시간 후보</span>
+          <span class="tm-range-badge tm-range-badge-best">전원 가능</span>
+          <span class="tm-range-time">${datePrefix} ${formatHour(slot2Start)} - ${formatHour(slot2End)}</span>
+        </div>
+      </div>`;
+    modal.dataset.selectedStartTime = formatHour(slot1Start);
+    modal.dataset.selectedEndTime = formatHour(slot1End);
+  }
+
+  let checkRequiredHtml = '';
+  if (candidate && candidate.type === 'check-required') {
+    const checkMembers = (candidate.checkRequiredMemberIds || []).map(id => {
+      const m = teamMembers.find(tm => tm.id === id);
+      return m ? { name: m.name, role: m.role } : null;
+    }).filter(Boolean);
+    checkRequiredHtml = checkMembers.map(m => `
+      <div class="tm-check-required-section">
+        <div class="tm-check-required-label">일정 확인 필요한 참석자</div>
+        <div class="tm-check-required-row">
+          <span class="tm-check-required-name">${m.name}</span>
+          <span class="tm-check-required-role">${m.role}</span>
+          <button type="button" class="tm-check-required-btn">회의 요청 보내기</button>
+        </div>
       </div>
-      ${status ? `<span class="member-slot-status ${status.className}">${status.text}</span>` : ''}
-    </div>`;
+    `).join('');
+  }
+
+  const participantChipsHtml = teamMembers.map(m => {
+    return `<button type="button" class="tm-chip" data-member="${m.name}" data-role="optional">${m.name}</button>`;
   }).join('');
 
-  const initialStatusHtml = buildStatusHtml(slot, initialRequired, initialOptional);
-
   body.innerHTML = `
-    <div class="timeline-modal-info">
-      <div class="timeline-modal-info-row">
-        <span>선택 시간</span>
-        <strong>${dateStr}</strong>
-      </div>
+    <div class="tm-selected-time">
+      <span class="tm-selected-time-label">선택 시간</span>
+      <span class="tm-selected-time-badge ${badgeClass}">${badgeText}</span>
+      <strong class="tm-selected-time-text">${dateStrFull}</strong>
     </div>
-    <div class="timeline-modal-input-group">
-      <label class="timeline-modal-label" for="timeline-modal-title-input">회의명</label>
-      <input type="text" class="timeline-modal-input" id="timeline-modal-title-input" value="${TIMELINE_DEFAULT_TITLE}" />
+    ${isRange ? rangeSlotsHtml : ''}
+    <div class="tm-input-group">
+      <label class="tm-input-label" for="quick-modal-title-input">회의명</label>
+      <input type="text" class="tm-input" id="quick-modal-title-input" placeholder="회의명을 입력하세요." value="" />
     </div>
-    <p class="timeline-modal-desc">이도이가 조사한 고객 반응과 경쟁사 캠페인 분석을 바탕으로, 8월 캠페인의 핵심 타깃과 메시지 방향을 결정하는 회의예요.</p>
-    <div class="timeline-modal-status" id="timeline-modal-status">
-      <div class="timeline-modal-status-header">
-        <span class="timeline-modal-status-badge ${slot.type}">${slot.status}</span>
-      </div>
-      <div class="timeline-modal-status-details">
-        ${initialStatusHtml}
-      </div>
+    <div class="tm-input-group">
+      <label class="tm-input-label" for="quick-modal-desc-input">회의 설명</label>
+      <input type="text" class="tm-input" id="quick-modal-desc-input" placeholder="회의에 관한 간단한 설명을 작성해주세요." value="" />
     </div>
-    <div class="timeline-modal-members-section">
-      <div class="timeline-modal-members-title">참석자 조건 설정</div>
-      <div class="timeline-modal-members" id="timeline-modal-members">
-        ${membersHtml}
+    ${checkRequiredHtml}
+    <div class="tm-participants-section">
+      <div class="tm-participants-title">참석자 조건 설정</div>
+      <div class="tm-participants-group">
+        <div class="tm-participants-group-label">필수 참석자</div>
+        <div class="tm-participants-input-like" id="quick-modal-required-input">필수 참석자로 지정할 사람을 클릭하세요.</div>
+        <div class="tm-chip-list" id="quick-modal-chip-list">${participantChipsHtml}</div>
+      </div>
+      <div class="tm-participants-group">
+        <div class="tm-participants-group-label">선택 참석자</div>
+        <div class="tm-participants-info">선택하지 않은 참석자는 자동으로 선택 참석자로 지정됩니다.</div>
       </div>
     </div>
   `;
 
-  confirmBtn.textContent = slot.type === 'best' ? '회의 요청 보내기' : '확인 요청 보내기';
-
-  body.querySelectorAll('.role-toggle-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-      const group = this.closest('.role-toggle-group');
-      group.querySelectorAll('.role-toggle-btn').forEach(b => b.classList.remove('role-toggle-active'));
-      this.classList.add('role-toggle-active');
-      group.dataset.required = this.dataset.role === 'required' ? 'true' : 'false';
-      updateTimelineModalStatus(slot);
-    });
-  });
+  confirmBtn.textContent = '회의 요청 보내기';
 
   modal.dataset.slotDayIndex = slot.dayIndex;
   modal.dataset.slotHour = slot.hour;
+  if (candidate) modal.dataset.candidateId = candidate.id;
+  modal.dataset.badgeClass = badgeClass;
+
+  body.querySelectorAll('.tm-chip').forEach(chip => {
+    chip.addEventListener('click', function () {
+      const isReq = this.classList.toggle('tm-chip-required');
+      this.dataset.role = isReq ? 'required' : 'optional';
+      updateQuickModalRequiredDisplay();
+    });
+  });
+
+  if (isRange) {
+    body.querySelectorAll('.tm-range-slot').forEach(el => {
+      el.addEventListener('click', function () {
+        body.querySelectorAll('.tm-range-slot').forEach(s => s.classList.remove('tm-range-slot-selected'));
+        this.classList.add('tm-range-slot-selected');
+        modal.dataset.selectedStartTime = this.dataset.start;
+        modal.dataset.selectedEndTime = this.dataset.end;
+
+        const datePrefix = `2026.07.${String(dayNum).padStart(2, '0')} (${dayName})`;
+        const badgeEl = body.querySelector('.tm-selected-time-badge');
+        const timeEl = body.querySelector('.tm-selected-time-text');
+        timeEl.textContent = `${datePrefix} ${this.dataset.start} - ${this.dataset.end}`;
+      });
+    });
+  }
 
   backdrop.hidden = false;
   modal.hidden = false;
@@ -1652,7 +1733,17 @@ function openTimelineModal(slot) {
     document.body.classList.add('timeline-modal-open');
   });
 
-  setTimeout(() => document.getElementById('timeline-modal-title-input')?.focus(), 120);
+  setTimeout(() => document.getElementById('quick-modal-title-input')?.focus(), 120);
+}
+
+function updateQuickModalRequiredDisplay() {
+  const chips = document.querySelectorAll('#quick-modal-chip-list .tm-chip');
+  const requiredNames = [];
+  chips.forEach(c => {
+    if (c.dataset.role === 'required') requiredNames.push(c.textContent);
+  });
+  const display = document.getElementById('quick-modal-required-input');
+  if (display) display.textContent = requiredNames.join(', ') || '필수 참석자로 지정할 사람을 클릭하세요.';
 }
 
 function closeTimelineModal() {
@@ -1669,8 +1760,10 @@ function closeTimelineModal() {
   }, 200);
 }
 
-function saveQuickMeetingDraft(slot, title, participants) {
-  const [startTime, endTime] = slot.timeLabel.split(' - ');
+function saveQuickMeetingDraft(slot, title, participants, startTimeOverride, endTimeOverride) {
+  const [defStart, defEnd] = slot.timeLabel.split(' - ');
+  const startTime = startTimeOverride || defStart;
+  const endTime = endTimeOverride || defEnd;
   const draft = {
     title,
     date: `2026.07.${String(slot.dayNum).padStart(2, '0')}`,
@@ -1792,13 +1885,12 @@ function initTimeline() {
     const slot = getTimelineSlot(dayIndex, hour);
     if (!slot) return;
 
-    const title = document.getElementById('timeline-modal-title-input').value.trim() || TIMELINE_DEFAULT_TITLE;
+    const title = document.getElementById('quick-modal-title-input').value.trim() || TIMELINE_DEFAULT_TITLE;
 
     const participants = [];
-    document.querySelectorAll('.timeline-modal-member').forEach(el => {
-      const name = el.dataset.member;
-      const group = el.querySelector('.role-toggle-group');
-      const required = group.dataset.required === 'true';
+    document.querySelectorAll('#quick-modal-chip-list .tm-chip').forEach(chip => {
+      const name = chip.dataset.member;
+      const required = chip.dataset.role === 'required';
       const member = teamMembers.find(m => m.name === name);
       participants.push({
         name,
@@ -1807,6 +1899,15 @@ function initTimeline() {
       });
     });
 
+    let startTime, endTime;
+    if (modal.dataset.selectedStartTime && modal.dataset.selectedEndTime) {
+      startTime = modal.dataset.selectedStartTime;
+      endTime = modal.dataset.selectedEndTime;
+    } else {
+      [startTime, endTime] = slot.timeLabel.split(' - ');
+    }
+
+    const badgeClass = modal.dataset.badgeClass || slot.status;
     const meetingParticipants = participants.map(p => {
       const isCheck = slot.checkNeeded.some(c => c.name === p.name);
       const isUnavailable = slot.unavailable.some(u => u.name === p.name);
@@ -1821,16 +1922,16 @@ function initTimeline() {
       title,
       date: `2026.07.${String(slot.dayNum).padStart(2, '0')}`,
       day: slot.dayName,
-      startTime: slot.timeLabel.split(' - ')[0],
-      endTime: slot.timeLabel.split(' - ')[1],
+      startTime,
+      endTime,
       source: 'timeline',
       status: 'pending',
       statusLabel: '미응답 ' + meetingParticipants.filter(p => p.response === '미응답').length + '명',
-      meetingStatus: slot.status,
+      meetingStatus: badgeClass === 'best' ? '전원 가능' : badgeClass === 'check' ? '일정 확인 필요' : '전원 가능',
       participants: meetingParticipants,
     };
 
-    saveQuickMeetingDraft(slot, title, participants);
+    saveQuickMeetingDraft(slot, title, participants, startTime, endTime);
     saveTimelinePendingMeeting(meetingData);
 
     const list = document.querySelector('.two-column .content-section:nth-child(2) .request-list');
