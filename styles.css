@@ -18,6 +18,8 @@
   --task-index-x-padding: 10px;
   --task-action-button-width: 158px;
   --task-cell-font-size: 16px;
+  --received-table-columns: minmax(110px, 0.85fr) minmax(200px, 1.35fr) minmax(140px, 0.95fr) minmax(200px, 1.3fr) minmax(100px, 0.75fr) minmax(220px, 1.45fr) minmax(168px, 1fr);
+  --received-action-button-width: 144px;
   --color-bg: #F8F9FB;
   --color-white: #FFFFFF;
   --color-blue: #3564FF;
@@ -580,6 +582,11 @@ ul {
   color: var(--color-yellow-text);
 }
 
+.status-info {
+  background: #EEF3FF;
+  color: var(--color-blue);
+}
+
 .task-action,
 .task-action-head {
   display: flex;
@@ -757,10 +764,10 @@ ul {
 /* ─── Bottom Row ─── */
 
 .bottom-row {
-  display: grid;
-  grid-template-columns: minmax(300px, 350px) minmax(0, 1fr);
-  gap: clamp(24px, 1.67vw, 32px);
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: flex-start;
   width: 100%;
   min-width: 0;
 }
@@ -775,8 +782,8 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  width: 100%;
-  min-height: 540px;
+  width: clamp(360px, 26.67vw, 512px);
+  min-height: 444px;
   min-width: 0;
 }
 
@@ -858,32 +865,76 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 28px;
+  width: 100%;
   min-width: 0;
 }
 
-.received-cards {
+.received-table {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.received-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(24px, 1.46vw, 28px);
+  grid-template-columns: var(--received-table-columns);
+  align-items: center;
+  min-height: 80px;
+  border-bottom: 1px solid var(--color-border);
   min-width: 0;
 }
 
-.received-card {
-  min-width: 0;
-  background: var(--color-white);
-  border: 1px solid var(--color-card-border);
-  border-radius: 12px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 2px 4px 8px 0 rgba(95,95,95,0.06);
+.received-head {
+  min-height: 50px;
+  background: #F6F7F9;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
 }
 
-.received-card-body {
+.received-cell {
+  min-width: 0;
+  padding: 0 12px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.received-head .received-cell {
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.received-title {
+  color: var(--color-text-primary);
+}
+
+.received-status-good {
+  color: var(--color-green-text);
+}
+
+.received-status-bad {
+  color: var(--color-red-text);
+}
+
+.received-action,
+.received-action-head {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+}
+
+.received-action {
+  justify-content: flex-end;
+}
+
+.received-action-head {
+  justify-content: flex-start;
+}
+
+.received-action .task-action-btn {
+  width: min(var(--received-action-button-width), 100%);
 }
 
 /* ─── Right Panel ─── */
@@ -1250,6 +1301,8 @@ ul {
     --task-index-x-padding: 6px;
     --task-action-button-width: 148px;
     --task-cell-font-size: 14px;
+    --received-table-columns: minmax(92px, 0.76fr) minmax(160px, 1.24fr) minmax(122px, 0.86fr) minmax(166px, 1.16fr) minmax(86px, 0.64fr) minmax(162px, 1.12fr) minmax(144px, 0.9fr);
+    --received-action-button-width: 140px;
   }
 
   .urgent-section {
@@ -1269,6 +1322,11 @@ ul {
   }
 
   .task-action-btn {
+    font-size: 14px;
+  }
+
+  .received-cell {
+    padding: 0 8px;
     font-size: 14px;
   }
 

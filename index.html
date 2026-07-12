@@ -165,6 +165,46 @@
       </section>
 
       <div class="bottom-row">
+        <section class="received-section">
+          <div class="section-header-block">
+            <h3 class="section-title-large">받은 요청</h3>
+            <p class="section-desc-large">참석 여부를 응답해야 하는 회의 요청이에요.</p>
+          </div>
+          <div class="received-table" role="table" aria-label="받은 회의 요청">
+            <div class="received-row received-head" role="row">
+              <div class="received-cell" role="columnheader">상태</div>
+              <div class="received-cell" role="columnheader">회의 제목</div>
+              <div class="received-cell" role="columnheader">요청자</div>
+              <div class="received-cell" role="columnheader">회의 일시</div>
+              <div class="received-cell" role="columnheader">참석 유형</div>
+              <div class="received-cell" role="columnheader">일정 상태</div>
+              <div class="received-cell received-action-head" role="columnheader">처리</div>
+            </div>
+            <div class="received-row" role="row">
+              <div class="received-cell" role="cell"><span class="task-status status-urgent">오늘까지 응답</span></div>
+              <div class="received-cell received-title" role="cell">2분기 캠페인 의사결정 회의</div>
+              <div class="received-cell" role="cell">마케팅팀 · 김민지</div>
+              <div class="received-cell" role="cell">07.14 (화) 10:00 - 11:00</div>
+              <div class="received-cell" role="cell">필수 참석자</div>
+              <div class="received-cell received-status-good" role="cell">내 일정과 겹치지 않아요</div>
+              <div class="received-cell received-action" role="cell">
+                <button class="task-action-btn task-action-primary" id="received-btn-1">참석 여부 응답하기</button>
+              </div>
+            </div>
+            <div class="received-row" role="row">
+              <div class="received-cell" role="cell"><span class="task-status status-info">4일 이내 응답</span></div>
+              <div class="received-cell received-title" role="cell">신규 브랜드 영상 킥오프</div>
+              <div class="received-cell" role="cell">마케팅팀 · 박준호</div>
+              <div class="received-cell" role="cell">07.16 (목) 13:00 - 14:00</div>
+              <div class="received-cell" role="cell">선택 참석자</div>
+              <div class="received-cell received-status-bad" role="cell">캠페인 리뷰와 시간이 겹쳐요</div>
+              <div class="received-cell received-action" role="cell">
+                <button class="task-action-btn task-action-primary" id="received-btn-2">참석 여부 응답하기</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="next-schedule-section">
           <div class="next-schedule-header">
             <div class="next-schedule-title-row">
@@ -192,47 +232,6 @@
             </div>
           </div>
           <button class="btn-secondary-full" id="next-schedule-btn">회의 메모 열기</button>
-        </section>
-
-        <section class="received-section">
-          <div class="section-header-block">
-            <h3 class="section-title-large">받은 요청</h3>
-            <p class="section-desc-large">내 응답을 기다리는 요청이에요.</p>
-          </div>
-          <div class="received-cards">
-            <div class="received-card">
-              <div class="received-card-body">
-                <span class="card-badge card-badge-red">1일 이내 응답</span>
-                <div class="card-text-block">
-                  <h4 class="card-title">회의 참석 요청</h4>
-                  <p class="card-subtitle">신규 브랜드 영상 킥오프</p>
-                </div>
-                <div class="card-meta-grid">
-                  <div class="card-meta-row"><span class="meta-label">요청자</span><span class="meta-value">마케팅팀 · 이연수 사원</span></div>
-                  <div class="card-meta-row"><span class="meta-label">회의 날짜</span><span class="meta-value">07. 16. (목)</span></div>
-                  <div class="card-meta-row"><span class="meta-label">권한</span><span class="meta-value">선택 참석자</span></div>
-                </div>
-                <p class="card-note card-note-red">'캠페인 리뷰'와 시간이 겹쳐요</p>
-              </div>
-              <button class="btn-secondary-full" id="received-btn-1">참석 여부 응답하기</button>
-            </div>
-            <div class="received-card">
-              <div class="received-card-body">
-                <span class="card-badge card-badge-yellow">4일 이내 응답</span>
-                <div class="card-text-block">
-                  <h4 class="card-title">회의 참석 요청</h4>
-                  <p class="card-subtitle">2분기 캠페인 의사결정 회의</p>
-                </div>
-                <div class="card-meta-grid">
-                  <div class="card-meta-row"><span class="meta-label">요청자</span><span class="meta-value">마케팅팀 · 박준호 대리</span></div>
-                  <div class="card-meta-row"><span class="meta-label">회의 날짜</span><span class="meta-value">07. 21. (화)</span></div>
-                  <div class="card-meta-row"><span class="meta-label">권한</span><span class="meta-value">필수 참석자</span></div>
-                </div>
-                <p class="card-note card-note-blue">내 일정과 겹치지 않아요</p>
-              </div>
-              <button class="btn-secondary-full" id="received-btn-2">참석 여부 응답하기</button>
-            </div>
-          </div>
         </section>
       </div>
     </main>
