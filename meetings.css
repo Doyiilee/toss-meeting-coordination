@@ -2444,6 +2444,10 @@ button {
   background: #ECEFF3;
 }
 
+.legend-check-needed {
+  background: #FFF7E6;
+}
+
 .legend-available {
   background: var(--color-green-bg);
 }
