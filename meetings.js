@@ -1625,13 +1625,13 @@ function openTimelineModal(slot) {
     rangeSlotsHtml = `
       <div class="tm-range-section">
         <div class="tm-range-label">원하는 시간 선택</div>
-        <div class="tm-range-slot tm-range-slot-selected" data-start="${formatHour(slot1Start)}" data-end="${formatHour(slot1End)}">
+        <div class="tm-range-slot tm-range-slot-selected" data-start="${formatHour(slot1Start)}" data-end="${formatHour(slot1End)}" role="option" aria-selected="true" tabindex="0">
           <span class="tm-range-num">1</span>
           <span class="tm-range-time-label">시간 후보</span>
           <span class="tm-range-badge tm-range-badge-best">전원 가능</span>
           <span class="tm-range-time">${datePrefix} ${formatHour(slot1Start)} - ${formatHour(slot1End)}</span>
         </div>
-        <div class="tm-range-slot" data-start="${formatHour(slot2Start)}" data-end="${formatHour(slot2End)}">
+        <div class="tm-range-slot" data-start="${formatHour(slot2Start)}" data-end="${formatHour(slot2End)}" role="option" aria-selected="false" tabindex="0">
           <span class="tm-range-num">2</span>
           <span class="tm-range-time-label">시간 후보</span>
           <span class="tm-range-badge tm-range-badge-best">전원 가능</span>
@@ -1664,12 +1664,16 @@ function openTimelineModal(slot) {
     return `<button type="button" class="tm-chip" data-member="${m.name}" data-role="optional">${m.name}</button>`;
   }).join('');
 
-  body.innerHTML = `
+  const selectedTimeHtml = isRange ? '' : `
     <div class="tm-selected-time">
       <span class="tm-selected-time-label">선택 시간</span>
       <span class="tm-selected-time-badge ${badgeClass}">${badgeText}</span>
       <strong class="tm-selected-time-text">${dateStrFull}</strong>
     </div>
+  `;
+
+  body.innerHTML = `
+    ${selectedTimeHtml}
     ${isRange ? rangeSlotsHtml : ''}
     <div class="tm-input-group">
       <label class="tm-input-label" for="quick-modal-title-input">회의명</label>
@@ -1679,17 +1683,17 @@ function openTimelineModal(slot) {
       <label class="tm-input-label" for="quick-modal-desc-input">회의 설명</label>
       <input type="text" class="tm-input" id="quick-modal-desc-input" placeholder="회의에 관한 간단한 설명을 작성해주세요." value="" />
     </div>
-    ${checkRequiredHtml}
     <div class="tm-participants-section">
       <div class="tm-participants-title">참석자 조건 설정</div>
-      <div class="tm-participants-group">
+      ${checkRequiredHtml}
+      <div class="tm-participants-group tm-participants-group-required">
         <div class="tm-participants-group-label">필수 참석자</div>
         <div class="tm-participants-input-like" id="quick-modal-required-input">필수 참석자로 지정할 사람을 클릭하세요.</div>
         <div class="tm-chip-list" id="quick-modal-chip-list">${participantChipsHtml}</div>
       </div>
-      <div class="tm-participants-group">
+      <div class="tm-participants-group tm-participants-group-optional">
         <div class="tm-participants-group-label">선택 참석자</div>
-        <div class="tm-participants-info">선택하지 않은 참석자는 자동으로 선택 참석자로 지정됩니다.</div>
+        <div class="tm-participants-input-like" id="quick-modal-optional-input">선택하지 않은 참석자는 자동으로 선택 참석자로 지정됩니다.</div>
       </div>
     </div>
   `;
@@ -1711,16 +1715,26 @@ function openTimelineModal(slot) {
 
   if (isRange) {
     body.querySelectorAll('.tm-range-slot').forEach(el => {
-      el.addEventListener('click', function () {
-        body.querySelectorAll('.tm-range-slot').forEach(s => s.classList.remove('tm-range-slot-selected'));
-        this.classList.add('tm-range-slot-selected');
-        modal.dataset.selectedStartTime = this.dataset.start;
-        modal.dataset.selectedEndTime = this.dataset.end;
+      const selectRangeSlot = () => {
+        body.querySelectorAll('.tm-range-slot').forEach(s => {
+          s.classList.remove('tm-range-slot-selected');
+          s.setAttribute('aria-selected', 'false');
+        });
+        el.classList.add('tm-range-slot-selected');
+        el.setAttribute('aria-selected', 'true');
+        modal.dataset.selectedStartTime = el.dataset.start;
+        modal.dataset.selectedEndTime = el.dataset.end;
 
         const datePrefix = `2026.07.${String(dayNum).padStart(2, '0')} (${dayName})`;
-        const badgeEl = body.querySelector('.tm-selected-time-badge');
         const timeEl = body.querySelector('.tm-selected-time-text');
-        timeEl.textContent = `${datePrefix} ${this.dataset.start} - ${this.dataset.end}`;
+        if (timeEl) timeEl.textContent = `${datePrefix} ${el.dataset.start} - ${el.dataset.end}`;
+      };
+
+      el.addEventListener('click', selectRangeSlot);
+      el.addEventListener('keydown', function (event) {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        selectRangeSlot();
       });
     });
   }
@@ -1742,8 +1756,24 @@ function updateQuickModalRequiredDisplay() {
   chips.forEach(c => {
     if (c.dataset.role === 'required') requiredNames.push(c.textContent);
   });
-  const display = document.getElementById('quick-modal-required-input');
-  if (display) display.textContent = requiredNames.join(', ') || '필수 참석자로 지정할 사람을 클릭하세요.';
+  const optionalNames = teamMembers
+    .map(member => member.name)
+    .filter(name => !requiredNames.includes(name));
+
+  const requiredDisplay = document.getElementById('quick-modal-required-input');
+  if (requiredDisplay) {
+    requiredDisplay.textContent = requiredNames.join(', ') || '필수 참석자로 지정할 사람을 클릭하세요.';
+    requiredDisplay.classList.toggle('tm-input-like-filled', requiredNames.length > 0);
+  }
+
+  const optionalDisplay = document.getElementById('quick-modal-optional-input');
+  if (optionalDisplay) {
+    const optionalText = requiredNames.length === 0
+      ? '선택하지 않은 참석자는 자동으로 선택 참석자로 지정됩니다.'
+      : optionalNames.join(', ') || '선택 참석자가 없어요.';
+    optionalDisplay.textContent = optionalText;
+    optionalDisplay.classList.toggle('tm-input-like-filled', requiredNames.length > 0);
+  }
 }
 
 function closeTimelineModal() {
