@@ -2153,12 +2153,23 @@ button {
   background: #F0FBF5;
   border-color: #BFE8CC;
   cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
 
 .timeline-availability-block.timeline-cell-best:hover {
   background: #DCECFF;
   border-color: #8CB4FF;
   box-shadow: 0 1px 6px rgba(53, 100, 255, 0.12);
+}
+
+.timeline-availability-block.timeline-cell-best:active {
+  transform: translateY(1px);
+}
+
+.timeline-availability-block.timeline-cell-best:focus-visible {
+  outline: none;
+  border-color: #8CB4FF;
+  box-shadow: 0 0 0 3px rgba(53, 100, 255, 0.12);
 }
 
 .timeline-availability-block.timeline-cell-best .timeline-cell-time {
@@ -2585,6 +2596,7 @@ button {
 
 .schedule-popover-actions {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
 }
 
@@ -2629,12 +2641,23 @@ button {
   background: #FFF8E1;
   border: 1px solid #F1D892;
   cursor: pointer;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
 
 .timeline-availability-block.timeline-cell-check:hover {
   background: #FFF6D6;
   border-color: #E8C86E;
   box-shadow: 0 1px 6px rgba(184, 107, 0, 0.08);
+}
+
+.timeline-availability-block.timeline-cell-check:active {
+  transform: translateY(1px);
+}
+
+.timeline-availability-block.timeline-cell-check:focus-visible {
+  outline: none;
+  border-color: #E8C86E;
+  box-shadow: 0 0 0 3px rgba(184, 107, 0, 0.10);
 }
 
 .timeline-availability-block.timeline-cell-check .timeline-cell-time {
