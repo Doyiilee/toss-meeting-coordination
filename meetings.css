@@ -3446,9 +3446,9 @@ button {
   border-color: var(--color-blue);
 }
 .tm-chip.tm-chip-required {
-  background: var(--color-blue);
-  border-color: var(--color-blue);
-  color: var(--color-white);
+  background: #EEF3FF;
+  border-color: #2B58F0;
+  color: #3564FF;
 }
 .tm-participants-info {
   font-size: 13px;
