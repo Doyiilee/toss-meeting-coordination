@@ -791,6 +791,49 @@ function bindSchedulePopoverEvents() {
   });
 }
 
+function closeTeamFreeTimeDropdown() {
+  const trigger = document.getElementById('team-free-time-trigger');
+  const dropdown = document.getElementById('team-free-time-dropdown');
+  if (!trigger || !dropdown) return;
+
+  dropdown.hidden = true;
+  trigger.setAttribute('aria-expanded', 'false');
+}
+
+function toggleTeamFreeTimeDropdown() {
+  const trigger = document.getElementById('team-free-time-trigger');
+  const dropdown = document.getElementById('team-free-time-dropdown');
+  if (!trigger || !dropdown) return;
+
+  const willOpen = dropdown.hidden;
+  dropdown.hidden = !willOpen;
+  trigger.setAttribute('aria-expanded', String(willOpen));
+}
+
+function bindTeamFreeTimeDropdown() {
+  const trigger = document.getElementById('team-free-time-trigger');
+  const dropdown = document.getElementById('team-free-time-dropdown');
+  const applyButton = document.getElementById('team-free-time-apply');
+  if (!trigger || !dropdown) return;
+
+  trigger.addEventListener('click', (event) => {
+    event.stopPropagation();
+    toggleTeamFreeTimeDropdown();
+  });
+
+  dropdown.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+
+  applyButton?.addEventListener('click', () => {
+    closeTeamFreeTimeDropdown();
+  });
+
+  document.addEventListener('click', () => {
+    if (!dropdown.hidden) closeTeamFreeTimeDropdown();
+  });
+}
+
 const cellPopoverMap = {};
 
 const teamMembers = [
@@ -1773,6 +1816,7 @@ function initNav() {
 
 function init() {
   initNav();
+  bindTeamFreeTimeDropdown();
 
   document.querySelectorAll('.btn-new-meeting').forEach(btn => {
     btn.addEventListener('click', openMeetingDrawer);
@@ -1783,6 +1827,11 @@ function init() {
   document.getElementById('meeting-drawer-backdrop').addEventListener('click', closeMeetingDrawer);
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape') {
+      const teamDropdown = document.getElementById('team-free-time-dropdown');
+      if (teamDropdown && !teamDropdown.hidden) {
+        closeTeamFreeTimeDropdown();
+        return;
+      }
       if (document.getElementById('schedule-popover').classList.contains('visible')) {
         closeSchedulePopover();
         return;

@@ -81,10 +81,41 @@
           <button type="button" class="timeline-nav-btn" aria-label="이전"><span class="icon-mask icon-chevron-left" aria-hidden="true"></span></button>
           <button type="button" class="timeline-nav-btn" aria-label="다음"><span class="icon-mask icon-chevron-right" aria-hidden="true"></span></button>
         </div>
-        <div class="timeline-filter">
-          <select class="timeline-select">
-            <option>팀원 전체 빈 시간</option>
-          </select>
+        <div class="timeline-filter timeline-member-filter">
+          <button type="button" class="timeline-select timeline-member-filter-trigger" id="team-free-time-trigger" aria-expanded="false" aria-controls="team-free-time-dropdown">
+            <span>팀원 전체 빈 시간</span>
+            <span class="icon-mask icon-chevron-down" aria-hidden="true"></span>
+          </button>
+          <div class="team-free-time-dropdown" id="team-free-time-dropdown" hidden>
+            <p class="team-free-time-title">빈 시간 기준 팀원 선택하기</p>
+            <div class="team-free-time-options" aria-label="빈 시간 기준 팀원">
+              <label class="team-free-time-option">
+                <input type="checkbox" checked>
+                <span>이도이님의 빈 시간</span>
+              </label>
+              <label class="team-free-time-option">
+                <input type="checkbox" checked>
+                <span>김현우님의 빈 시간</span>
+              </label>
+              <label class="team-free-time-option">
+                <input type="checkbox" checked>
+                <span>박서연님의 빈 시간</span>
+              </label>
+              <label class="team-free-time-option">
+                <input type="checkbox" checked>
+                <span>정민재님의 빈 시간</span>
+              </label>
+              <label class="team-free-time-option">
+                <input type="checkbox" checked>
+                <span>최유진님의 빈 시간</span>
+              </label>
+              <label class="team-free-time-option">
+                <input type="checkbox" checked>
+                <span>강태오님의 빈 시간</span>
+              </label>
+            </div>
+            <button type="button" class="team-free-time-apply" id="team-free-time-apply">선택한 팀원만 보기</button>
+          </div>
         </div>
         <div class="timeline-filter timeline-duration-filter">
           <select class="timeline-select">
