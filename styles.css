@@ -412,7 +412,7 @@ ul {
 
 .urgent-total {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 32px;
   color: var(--color-blue);
   white-space: nowrap;
@@ -424,7 +424,7 @@ ul {
   align-items: center;
   gap: 20px;
   min-width: 0;
-  margin-top: 40px;
+  margin-top: 32px;
 }
 
 .filter-chips {
@@ -441,17 +441,17 @@ ul {
   border: 1px solid var(--color-search-border);
   border-radius: 7px;
   background: var(--color-white);
-  color: var(--color-text-tertiary);
+  color: #9AA3AF;
   font-size: 16px;
   font-weight: 500;
-  line-height: 24px;
+  line-height: 22px;
   white-space: nowrap;
 }
 
 .filter-chip-active {
-  background: var(--color-blue);
-  border-color: var(--color-blue);
-  color: var(--color-white);
+  background: #EEF3FF;
+  border-color: #2B58F0;
+  color: #3564FF;
 }
 
 .urgent-search {
