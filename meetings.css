@@ -424,6 +424,10 @@ button {
   gap: 24px;
 }
 
+.pending-section .wide-card {
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
 .candidate-section {
   display: none;
 }
@@ -609,6 +613,64 @@ button {
 .response-declined {
   background: var(--color-red-bg);
   color: var(--color-red-text);
+}
+
+.pending-section .response-status-list {
+  gap: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.pending-section .response-list-title {
+  margin-bottom: 8px;
+  color: #171A1F;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.pending-section .response-row {
+  min-height: 47px;
+  border-bottom: 1px solid #E5E8EB;
+}
+
+.pending-section .response-row:last-child {
+  border-bottom: 0;
+}
+
+.pending-section .response-row span {
+  color: #343B46;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 23px;
+}
+
+.pending-section .response-pill {
+  display: inline;
+  min-width: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 23px;
+}
+
+.pending-section .response-accepted {
+  background: transparent;
+  color: #0F7A38;
+}
+
+.pending-section .response-pending {
+  background: transparent;
+  color: #B86B00;
+}
+
+.pending-section .response-declined {
+  background: transparent;
+  color: #C92A2A;
 }
 
 .candidate-grid {
