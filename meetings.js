@@ -69,6 +69,27 @@ function renderSelectedParticipants() {
   });
 }
 
+function renderRecommendedParticipants() {
+  const container = document.querySelector('.recommended-chips');
+  if (!container) return;
+  container.innerHTML = '';
+  teamMembers.forEach(member => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'participant-chip';
+    chip.dataset.participant = member.name;
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'participant-name';
+    nameSpan.textContent = member.name;
+    const reasonSpan = document.createElement('span');
+    reasonSpan.className = 'participant-reason';
+    reasonSpan.textContent = member.role;
+    chip.appendChild(nameSpan);
+    chip.appendChild(reasonSpan);
+    container.appendChild(chip);
+  });
+}
+
 function openMeetingDrawer() {
   clearPreviousSession();
   resetSelectedParticipants();
@@ -1941,6 +1962,8 @@ function init() {
   document.getElementById('duration-plus').addEventListener('click', () => {
     setDuration(selectedDuration + 15, true);
   });
+
+  renderRecommendedParticipants();
 
   document.querySelectorAll('.participant-chip').forEach(chip => {
     chip.addEventListener('click', () => {
