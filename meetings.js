@@ -287,66 +287,86 @@ function renderCandidates() {
   const container = document.getElementById('drawer-candidate-list');
   container.innerHTML = '';
 
-  let requiredTotal = 0;
-  let optionalTotal = 0;
-  selectedParticipants.forEach(name => {
-    if ((participantRole.get(name) || 'required') === 'required') requiredTotal++;
-    else optionalTotal++;
-  });
-
   const baseDate = startDate || defaultStartDate;
 
-  const availableCandidates = meetingCandidates.filter(c => c.type === 'available');
+  const candidateStates = meetingCandidates.map(c => ({
+    candidate: c,
+    summary: getCandidateParticipantSummary(c),
+  }));
+  candidateStates.forEach(s => {
+    s.displayState = getCandidateDisplayState(s.candidate, s.summary);
+  });
 
-  meetingCandidates.forEach((candidate, index) => {
+  const displayAvailable = candidateStates.filter(s => s.displayState === 'available');
+
+  candidateStates.forEach(({candidate, summary, displayState}) => {
     const dateStr = getDateStrFromDayIndex(baseDate, candidate.dayIndex);
     const dayOfWeek = getDayOfWeek(dateStr);
     const timeStr = `${formatHour(candidate.startTime)} - ${formatHour(candidate.endTime)}`;
     const selected = selectedCandidateId === candidate.id;
 
-    const isAvailable = candidate.type === 'available';
-    const isFirstAvailable = isAvailable && availableCandidates[0] === candidate;
+    const isAvailable = displayState === 'available';
+    const isFirstAvailable = isAvailable && displayAvailable.length > 0 && displayAvailable[0].candidate === candidate;
 
-    let badge, badgeClass, statusText, statusClass, requiredNum, requiredDen, optionalNum, optionalDen, needCheck, desc;
+    let badge, badgeClass, statusText, statusClass;
+    let requiredNum, requiredDen, optionalNum, optionalDen, needCheck, desc;
 
-    if (candidate.type === 'check-required') {
+    if (displayState === 'check-required') {
       badge = '확인 필요';
       badgeClass = 'badge-yellow';
       statusText = '확인 후 확정';
       statusClass = 'yellow';
-      requiredNum = Math.max(requiredTotal - 1, 0);
-      requiredDen = requiredTotal;
-      optionalNum = optionalTotal;
-      optionalDen = optionalTotal;
-      needCheck = requiredTotal > 0 ? '필수 참석자 1명' : '없음';
-      desc = requiredTotal > 0 ? '필수 참석자 1명의 확인이 필요해 바로 확정할 수 없어요.' : '';
+
+      requiredNum = summary.requiredAvailableCount;
+      requiredDen = summary.requiredTotal;
+      optionalNum = summary.optionalAvailableCount;
+      optionalDen = summary.optionalTotal;
+
+      if (summary.hasRequiredCheck) {
+        const firstId = summary.requiredCheckRequired[0];
+        const firstName = getTeamMemberName(firstId);
+        needCheck = `필수 참석자 ${summary.requiredCheckRequiredCount}명`;
+        desc = `${firstName}님의 확인이 필요해 바로 확정할 수 없어요.`;
+      } else if (summary.hasOptionalCheck) {
+        needCheck = `선택 참석자 ${summary.optionalCheckRequiredCount}명`;
+        desc = '선택 참석자 중 확인이 필요해 바로 확정할 수 없어요.';
+      } else {
+        needCheck = '일정 확인 필요';
+        desc = '일부 참석자의 일정 확인이 필요해요.';
+      }
     } else if (isFirstAvailable) {
       badge = '가장 추천';
       badgeClass = 'badge-blue';
       statusText = '확정 가능';
       statusClass = 'green';
-      requiredNum = requiredTotal;
-      requiredDen = requiredTotal;
-      optionalNum = Math.max(optionalTotal - 1, 0);
-      optionalDen = optionalTotal;
-      needCheck = optionalTotal > 0 ? '선택 참석자 1명' : '없음';
+
+      requiredNum = summary.requiredAvailableCount;
+      requiredDen = summary.requiredTotal;
+      optionalNum = summary.optionalAvailableCount;
+      optionalDen = summary.optionalTotal;
+      needCheck = '없음';
       desc = '필수 참석자가 모두 가능해 바로 확정할 수 있어요.';
     } else {
       badge = '대안';
       badgeClass = 'badge-green';
       statusText = '확정 가능';
       statusClass = 'green';
-      requiredNum = requiredTotal;
-      requiredDen = requiredTotal;
-      optionalNum = optionalTotal;
-      optionalDen = optionalTotal;
+
+      requiredNum = summary.requiredAvailableCount;
+      requiredDen = summary.requiredTotal;
+      optionalNum = summary.optionalAvailableCount;
+      optionalDen = summary.optionalTotal;
       needCheck = '없음';
       desc = '모든 참석자가 가능한 안정적인 후보예요.';
     }
 
     let optionalText;
-    if (optionalTotal > 0) {
-      optionalText = `${optionalNum}/${optionalDen} 가능`;
+    if (summary.optionalTotal > 0) {
+      if (summary.optionalCheckRequiredCount > 0 && summary.optionalAvailableCount === 0) {
+        optionalText = `${summary.optionalCheckRequiredCount}명 확인 필요`;
+      } else {
+        optionalText = `${optionalNum}/${optionalDen} 가능`;
+      }
     } else {
       optionalText = '선택 참석자 없음';
     }
@@ -357,6 +377,7 @@ function renderCandidates() {
     card.dataset.date = dateStr;
     card.dataset.dayOfWeek = dayOfWeek;
     card.dataset.timeRange = timeStr;
+    card.dataset.requiresCheck = displayState === 'check-required' ? 'true' : 'false';
 
     card.innerHTML = `
       <div class="drawer-candidate-head">
@@ -964,6 +985,88 @@ function getTeamMemberName(id) {
 
 function getMembersByIds(ids) {
   return ids.map(id => getTeamMemberById(id)).filter(Boolean);
+}
+
+function getTeamMemberIdByName(name) {
+  const member = teamMembers.find(m => m.name === name);
+  return member ? member.id : null;
+}
+
+function getSelectedParticipantIds() {
+  if (selectedParticipants.size === 0) {
+    return teamMembers.map(m => m.id);
+  }
+  const ids = [];
+  selectedParticipants.forEach(name => {
+    const id = getTeamMemberIdByName(name);
+    if (id) ids.push(id);
+  });
+  return ids;
+}
+
+function getCandidateParticipantSummary(candidate) {
+  const participantIds = getSelectedParticipantIds();
+  const availableIds = candidate.availableMemberIds || [];
+  const checkRequiredIds = candidate.checkRequiredMemberIds || [];
+
+  const requiredAvailable = [];
+  const requiredCheckRequired = [];
+  const requiredUnavailable = [];
+  const optionalAvailable = [];
+  const optionalCheckRequired = [];
+  const optionalUnavailable = [];
+
+  participantIds.forEach(id => {
+    const member = getTeamMemberById(id);
+    const name = member ? member.name : id;
+    const role = participantRole.get(name) || 'required';
+    const isAvailable = availableIds.includes(id);
+    const needsCheck = checkRequiredIds.includes(id);
+
+    if (role === 'required') {
+      if (isAvailable) requiredAvailable.push(id);
+      else if (needsCheck) requiredCheckRequired.push(id);
+      else requiredUnavailable.push(id);
+    } else {
+      if (isAvailable) optionalAvailable.push(id);
+      else if (needsCheck) optionalCheckRequired.push(id);
+      else optionalUnavailable.push(id);
+    }
+  });
+
+  return {
+    requiredAvailable,
+    requiredCheckRequired,
+    requiredUnavailable,
+    optionalAvailable,
+    optionalCheckRequired,
+    optionalUnavailable,
+    requiredAvailableCount: requiredAvailable.length,
+    requiredCheckRequiredCount: requiredCheckRequired.length,
+    requiredUnavailableCount: requiredUnavailable.length,
+    optionalAvailableCount: optionalAvailable.length,
+    optionalCheckRequiredCount: optionalCheckRequired.length,
+    optionalUnavailableCount: optionalUnavailable.length,
+    requiredTotal: requiredAvailable.length + requiredCheckRequired.length + requiredUnavailable.length,
+    optionalTotal: optionalAvailable.length + optionalCheckRequired.length + optionalUnavailable.length,
+    hasRequiredCheck: requiredCheckRequired.length > 0,
+    hasOptionalCheck: optionalCheckRequired.length > 0,
+  };
+}
+
+function hasUnknownParticipant() {
+  let found = false;
+  selectedParticipants.forEach(name => {
+    if (!teamMembers.some(m => m.name === name)) found = true;
+  });
+  return found;
+}
+
+function getCandidateDisplayState(candidate, summary) {
+  if (hasUnknownParticipant()) return 'check-required';
+  if (summary.hasRequiredCheck || summary.hasOptionalCheck) return 'check-required';
+  if (summary.requiredUnavailableCount > 0 || summary.optionalUnavailableCount > 0) return 'check-required';
+  return 'available';
 }
 
 function formatHour(hour) {
@@ -2054,7 +2157,7 @@ function init() {
 
     const card = document.querySelector(`.drawer-candidate-card[data-candidate-id="${selectedCandidateId}"]`);
     const badgeEl = card?.querySelector('.badge');
-    const isCheckRequired = badgeEl && badgeEl.textContent === '확인 필요';
+    const isCheckRequired = card?.dataset.requiresCheck === 'true';
 
     if (isCheckRequired) {
       showToast('필수 참석자에게 확인 요청을 보냈어요.');
@@ -2108,9 +2211,8 @@ function init() {
     card.classList.add('selected');
     selectedCandidateId = id;
 
-    const badge = card.querySelector('.badge');
     const confirmBtn = document.getElementById('drawer-confirm-step');
-    confirmBtn.textContent = badge && badge.textContent === '확인 필요'
+    confirmBtn.textContent = card.dataset.requiresCheck === 'true'
       ? '확인 요청 후 확정하기'
       : '선택한 시간으로 확정하기';
   });
