@@ -837,93 +837,152 @@ function bindTeamFreeTimeDropdown() {
 const cellPopoverMap = {};
 
 const teamMembers = [
-  { name: '이도이', role: '주니어 브랜드 마케터', required: true },
-  { name: '김현우', role: '마케팅팀 팀장', required: true },
-  { name: '박서연', role: '캠페인 PM', required: true },
-  { name: '정민재', role: '퍼포먼스 마케터', required: true },
-  { name: '최유진', role: '콘텐츠 마케터', required: false },
-  { name: '강태오', role: '제휴/영업 마케터', required: false },
+  { id: 'ddoyi', name: '이도이', role: '주니어 브랜드 마케터', department: '마케팅팀', required: true },
+  { id: 'hyunwoo', name: '김현우', role: '마케팅팀 팀장', department: '마케팅팀', required: true },
+  { id: 'seoyeon', name: '박서연', role: '캠페인 PM', department: '캠페인팀', required: true },
+  { id: 'minjae', name: '정민재', role: '퍼포먼스 마케터', department: '퍼포먼스팀', required: true },
+  { id: 'yujin', name: '최유진', role: '콘텐츠 마케터', department: '콘텐츠팀', required: false },
+  { id: 'taeoh', name: '강태오', role: '제휴/영업 마케터', department: '제휴팀', required: false },
 ];
 
 const memberSchedules = [
-  { name: '이도이', events: [
-    { dayIndex: 0, startHour: 9, endHour: 12, reason: '개인 업무' },
-    { dayIndex: 0, startHour: 13, endHour: 16, reason: '프로젝트 준비' },
-    { dayIndex: 2, startHour: 9, endHour: 11, reason: '데일리 스크럼' },
-    { dayIndex: 3, startHour: 13, endHour: 16, reason: '프로젝트 회의' },
-    { dayIndex: 4, startHour: 9, endHour: 10, reason: '주간 정리' },
-    { dayIndex: 4, startHour: 10, endHour: 11, reason: '프로젝트 정리' },
-    { dayIndex: 4, startHour: 13, endHour: 14, reason: '프로젝트 리뷰' },
-    { dayIndex: 4, startHour: 14, endHour: 15, reason: '프로젝트 마무리' },
-  ]},
-  { name: '김현우', events: [
-    { dayIndex: 0, startHour: 9, endHour: 12, reason: '리더십 회의' },
-    { dayIndex: 0, startHour: 13, endHour: 14, reason: '점심 미팅' },
-    { dayIndex: 0, startHour: 15, endHour: 16, reason: '팀장 미팅' },
-    { dayIndex: 1, startHour: 9, endHour: 10, reason: '주간 팀 리뷰' },
-    { dayIndex: 2, startHour: 9, endHour: 12, reason: '마케팅 전략 회의' },
-    { dayIndex: 2, startHour: 14, endHour: 15, reason: '내부 보고' },
-    { dayIndex: 2, startHour: 15, endHour: 16, reason: '전략 회의' },
-    { dayIndex: 3, startHour: 13, endHour: 14, reason: '점심 미팅' },
-    { dayIndex: 3, startHour: 14, endHour: 15, reason: '외부 미팅' },
-    { dayIndex: 4, startHour: 9, endHour: 10, reason: '주간 리더십 회의' },
-  ]},
-  { name: '박서연', events: [
-    { dayIndex: 0, startHour: 13, endHour: 17, reason: '캠페인 기획 회의' },
-    { dayIndex: 1, startHour: 9, endHour: 10, reason: '주간 리뷰' },
-    { dayIndex: 3, startHour: 13, endHour: 14, reason: '디자인 리뷰' },
-    { dayIndex: 4, startHour: 9, endHour: 11, reason: '스프린트 플래닝' },
-    { dayIndex: 4, startHour: 13, endHour: 14, reason: '스프린트 회고' },
-  ]},
-  { name: '정민재', events: [
-    { dayIndex: 0, startHour: 9, endHour: 10, reason: '광고 성과 체크' },
-    { dayIndex: 1, startHour: 9, endHour: 10, reason: '주간 성과 분석' },
-    { dayIndex: 1, startHour: 10, endHour: 11, reason: '캠페인 분석' },
-    { dayIndex: 1, startHour: 16, endHour: 17, reason: '매체사 미팅' },
-    { dayIndex: 2, startHour: 14, endHour: 16, reason: '퍼포먼스 리뷰' },
-    { dayIndex: 3, startHour: 15, endHour: 16, reason: '데이터 분석' },
-    { dayIndex: 4, startHour: 11, endHour: 12, reason: '보고서 작성' },
-  ]},
-  { name: '최유진', events: [
-    { dayIndex: 0, startHour: 10, endHour: 12, reason: '콘텐츠 기획' },
-    { dayIndex: 2, startHour: 9, endHour: 10, reason: '콘텐츠 기획' },
-    { dayIndex: 2, startHour: 10, endHour: 12, reason: '콘텐츠 제작 회의' },
-    { dayIndex: 2, startHour: 16, endHour: 17, reason: '콘텐츠 마감' },
-    { dayIndex: 3, startHour: 9, endHour: 10, reason: '브랜드 회의' },
-    { dayIndex: 4, startHour: 10, endHour: 11, reason: '소셜 미디어 점검' },
-    { dayIndex: 4, startHour: 11, endHour: 12, reason: '주간 보고' },
-  ]},
-  { name: '강태오', events: [
-    { dayIndex: 0, startHour: 14, endHour: 15, reason: '제휴사 미팅' },
-    { dayIndex: 1, startHour: 10, endHour: 11, reason: '파트너 협의' },
-    { dayIndex: 1, startHour: 16, endHour: 17, reason: '파트너사 보고' },
-    { dayIndex: 2, startHour: 15, endHour: 17, reason: '외부 미팅' },
-    { dayIndex: 3, startHour: 9, endHour: 10, reason: '제휴 검토' },
-    { dayIndex: 3, startHour: 14, endHour: 15, reason: '파트너사 방문' },
-    { dayIndex: 4, startHour: 13, endHour: 14, reason: '영업 보고' },
-    { dayIndex: 4, startHour: 14, endHour: 15, reason: '클라이언트 미팅' },
-  ]},
+  { memberId: 'ddoyi', dayIndex: 0, dayLabel: '13(월)', startTime: 9, endTime: 12, title: '개인 업무', visibility: 'public' },
+  { memberId: 'ddoyi', dayIndex: 0, dayLabel: '13(월)', startTime: 13, endTime: 16, title: '프로젝트 준비', visibility: 'public' },
+  { memberId: 'ddoyi', dayIndex: 2, dayLabel: '15(수)', startTime: 9, endTime: 11, title: '데일리 스크럼', visibility: 'public' },
+  { memberId: 'ddoyi', dayIndex: 3, dayLabel: '16(목)', startTime: 13, endTime: 16, title: '프로젝트 회의', visibility: 'public' },
+  { memberId: 'ddoyi', dayIndex: 4, dayLabel: '17(금)', startTime: 9, endTime: 10, title: '주간 정리', visibility: 'public' },
+  { memberId: 'ddoyi', dayIndex: 4, dayLabel: '17(금)', startTime: 10, endTime: 11, title: '프로젝트 정리', visibility: 'public' },
+  { memberId: 'ddoyi', dayIndex: 4, dayLabel: '17(금)', startTime: 13, endTime: 14, title: '프로젝트 리뷰', visibility: 'public' },
+  { memberId: 'ddoyi', dayIndex: 4, dayLabel: '17(금)', startTime: 14, endTime: 15, title: '프로젝트 마무리', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 0, dayLabel: '13(월)', startTime: 9, endTime: 12, title: '리더십 회의', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 0, dayLabel: '13(월)', startTime: 13, endTime: 14, title: '점심 미팅', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 0, dayLabel: '13(월)', startTime: 15, endTime: 16, title: '팀장 미팅', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 1, dayLabel: '14(화)', startTime: 9, endTime: 10, title: '주간 팀 리뷰', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 2, dayLabel: '15(수)', startTime: 9, endTime: 12, title: '마케팅 전략 회의', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 2, dayLabel: '15(수)', startTime: 14, endTime: 15, title: '내부 보고', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 2, dayLabel: '15(수)', startTime: 15, endTime: 16, title: '전략 회의', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 3, dayLabel: '16(목)', startTime: 13, endTime: 14, title: '점심 미팅', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 3, dayLabel: '16(목)', startTime: 14, endTime: 15, title: '외부 미팅', visibility: 'public' },
+  { memberId: 'hyunwoo', dayIndex: 4, dayLabel: '17(금)', startTime: 9, endTime: 10, title: '주간 리더십 회의', visibility: 'public' },
+  { memberId: 'seoyeon', dayIndex: 0, dayLabel: '13(월)', startTime: 13, endTime: 17, title: '캠페인 기획 회의', visibility: 'public' },
+  { memberId: 'seoyeon', dayIndex: 1, dayLabel: '14(화)', startTime: 9, endTime: 10, title: '주간 리뷰', visibility: 'public' },
+  { memberId: 'seoyeon', dayIndex: 3, dayLabel: '16(목)', startTime: 13, endTime: 14, title: '디자인 리뷰', visibility: 'public' },
+  { memberId: 'seoyeon', dayIndex: 4, dayLabel: '17(금)', startTime: 9, endTime: 11, title: '스프린트 플래닝', visibility: 'public' },
+  { memberId: 'seoyeon', dayIndex: 4, dayLabel: '17(금)', startTime: 13, endTime: 14, title: '스프린트 회고', visibility: 'public' },
+  { memberId: 'minjae', dayIndex: 0, dayLabel: '13(월)', startTime: 9, endTime: 10, title: '광고 성과 체크', visibility: 'public' },
+  { memberId: 'minjae', dayIndex: 1, dayLabel: '14(화)', startTime: 9, endTime: 10, title: '주간 성과 분석', visibility: 'public' },
+  { memberId: 'minjae', dayIndex: 1, dayLabel: '14(화)', startTime: 10, endTime: 11, title: '캠페인 분석', visibility: 'public' },
+  { memberId: 'minjae', dayIndex: 1, dayLabel: '14(화)', startTime: 16, endTime: 17, title: '매체사 미팅', visibility: 'public' },
+  { memberId: 'minjae', dayIndex: 2, dayLabel: '15(수)', startTime: 14, endTime: 15, title: '퍼포먼스 리뷰', visibility: 'public' },
+  { memberId: 'minjae', dayIndex: 2, dayLabel: '15(수)', startTime: 15, endTime: 16.5, title: '비공개 일정', visibility: 'private' },
+  { memberId: 'minjae', dayIndex: 3, dayLabel: '16(목)', startTime: 15, endTime: 16, title: '데이터 분석', visibility: 'public' },
+  { memberId: 'minjae', dayIndex: 4, dayLabel: '17(금)', startTime: 11, endTime: 12, title: '보고서 작성', visibility: 'public' },
+  { memberId: 'yujin', dayIndex: 0, dayLabel: '13(월)', startTime: 10, endTime: 12, title: '콘텐츠 기획', visibility: 'public' },
+  { memberId: 'yujin', dayIndex: 2, dayLabel: '15(수)', startTime: 9, endTime: 10, title: '콘텐츠 기획', visibility: 'public' },
+  { memberId: 'yujin', dayIndex: 2, dayLabel: '15(수)', startTime: 10, endTime: 12, title: '콘텐츠 제작 회의', visibility: 'public' },
+  { memberId: 'yujin', dayIndex: 2, dayLabel: '15(수)', startTime: 16, endTime: 17, title: '콘텐츠 마감', visibility: 'public' },
+  { memberId: 'yujin', dayIndex: 3, dayLabel: '16(목)', startTime: 9, endTime: 10, title: '브랜드 회의', visibility: 'public' },
+  { memberId: 'yujin', dayIndex: 4, dayLabel: '17(금)', startTime: 10, endTime: 11, title: '소셜 미디어 점검', visibility: 'public' },
+  { memberId: 'yujin', dayIndex: 4, dayLabel: '17(금)', startTime: 11, endTime: 12, title: '주간 보고', visibility: 'public' },
+  { memberId: 'taeoh', dayIndex: 0, dayLabel: '13(월)', startTime: 14, endTime: 15, title: '제휴사 미팅', visibility: 'public' },
+  { memberId: 'taeoh', dayIndex: 1, dayLabel: '14(화)', startTime: 10, endTime: 11, title: '파트너 협의', visibility: 'public' },
+  { memberId: 'taeoh', dayIndex: 1, dayLabel: '14(화)', startTime: 16, endTime: 17, title: '파트너사 보고', visibility: 'public' },
+  { memberId: 'taeoh', dayIndex: 2, dayLabel: '15(수)', startTime: 15, endTime: 17, title: '외부 미팅', visibility: 'public' },
+  { memberId: 'taeoh', dayIndex: 3, dayLabel: '16(목)', startTime: 9, endTime: 10, title: '제휴 검토', visibility: 'public' },
+  { memberId: 'taeoh', dayIndex: 3, dayLabel: '16(목)', startTime: 14, endTime: 15, title: '파트너사 방문', visibility: 'public' },
+  { memberId: 'taeoh', dayIndex: 4, dayLabel: '17(금)', startTime: 13, endTime: 14, title: '영업 보고', visibility: 'public' },
+  { memberId: 'taeoh', dayIndex: 4, dayLabel: '17(금)', startTime: 14, endTime: 15, title: '클라이언트 미팅', visibility: 'public' },
+];
+
+const meetingCandidates = [
+  {
+    type: 'available',
+    dateLabel: '14(화)',
+    dayIndex: 1,
+    startTime: 13,
+    endTime: 15,
+    isRange: true,
+    statusLabel: '전원 가능',
+    meetingHint: '1시간 회의 후보 2개가 있어요.',
+    availableMemberIds: ['ddoyi', 'hyunwoo', 'seoyeon', 'minjae', 'yujin', 'taeoh'],
+  },
+  {
+    type: 'available',
+    dateLabel: '16(목)',
+    dayIndex: 3,
+    startTime: 10,
+    endTime: 11,
+    isRange: false,
+    statusLabel: '전원 가능',
+    meetingHint: '1시간 회의 후보 1개가 있어요.',
+    availableMemberIds: ['ddoyi', 'hyunwoo', 'seoyeon', 'minjae', 'yujin', 'taeoh'],
+  },
+  {
+    type: 'check-required',
+    dateLabel: '15(수)',
+    dayIndex: 2,
+    startTime: 15,
+    endTime: 16,
+    isRange: false,
+    statusLabel: '일정 확인 필요',
+    availableMemberIds: ['ddoyi', 'hyunwoo', 'seoyeon', 'yujin', 'taeoh'],
+    checkRequiredMemberIds: ['minjae'],
+    checkReason: '비공개 일정',
+    checkTimeRange: '15:00 - 16:30',
+  },
 ];
 
 const days = ['13(월)', '14(화)', '15(수)', '16(목)', '17(금)'];
 
+function getTeamMemberById(id) {
+  return teamMembers.find(m => m.id === id) || null;
+}
+
+function getTeamMemberName(id) {
+  const member = getTeamMemberById(id);
+  return member ? member.name : id;
+}
+
+function getMembersByIds(ids) {
+  return ids.map(id => getTeamMemberById(id)).filter(Boolean);
+}
+
+function formatHour(hour) {
+  const h = Math.floor(hour);
+  const m = Math.round((hour - h) * 60);
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+function getSchedulesByTime(dayIndex, startTime, endTime) {
+  return memberSchedules.filter(s =>
+    s.dayIndex === dayIndex &&
+    s.startTime < endTime &&
+    s.endTime > startTime
+  );
+}
+
+function getAvailableMembers(dayIndex, startTime, endTime) {
+  const busyIds = new Set(getSchedulesByTime(dayIndex, startTime, endTime).map(s => s.memberId));
+  return teamMembers.filter(m => !busyIds.has(m.id)).map(m => m.id);
+}
+
 function computeConflictPopoverData(dayIndex, hour) {
   const dayLabel = days[dayIndex] || '';
-  const timeRange = `${String(hour).padStart(2, '0')}:00 - ${String(hour + 1).padStart(2, '0')}:00`;
+  const timeRange = `${formatHour(hour)} - ${formatHour(hour + 1)}`;
 
   const blockedMembers = [];
   const availableMembers = [];
 
-  memberSchedules.forEach(member => {
-    const event = member.events.find(e =>
-      e.dayIndex === dayIndex &&
-      e.startHour < hour + 1 &&
-      e.endHour > hour
+  teamMembers.forEach(member => {
+    const schedule = memberSchedules.find(s =>
+      s.memberId === member.id &&
+      s.dayIndex === dayIndex &&
+      s.startTime < hour + 1 &&
+      s.endTime > hour
     );
-    if (event) {
-      const eventStart = `${String(event.startHour).padStart(2, '0')}:00`;
-      const eventEnd = `${String(event.endHour).padStart(2, '0')}:00`;
-      blockedMembers.push({ name: member.name, reason: event.reason, time: `${eventStart} - ${eventEnd}` });
+    if (schedule) {
+      const reason = schedule.visibility === 'private' ? '비공개 일정' : schedule.title;
+      blockedMembers.push({ name: member.name, reason, time: `${formatHour(schedule.startTime)} - ${formatHour(schedule.endTime)}` });
     } else {
       availableMembers.push(member.name);
     }
