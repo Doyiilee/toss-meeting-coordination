@@ -669,8 +669,8 @@ function renderCheckRequiredSchedulePopover(data) {
   html += '</div></div>';
   html += renderScheduleAvailableSection(data);
   html += '<div class="schedule-popover-actions">';
-  html += '<button type="button" class="schedule-popover-cta schedule-popover-cta--secondary" data-popover-action="request-check">정민재님에게 확인 요청 보내기</button>';
-  html += `<button type="button" class="schedule-popover-cta schedule-popover-cta--primary" data-popover-action="create-meeting">${data.ctaLabel}</button>`;
+  html += '<button type="button" class="schedule-popover-cta schedule-popover-cta--secondary" data-popover-action="request-check">확인 요청 보내기</button>';
+  html += '<button type="button" class="schedule-popover-cta schedule-popover-cta--primary" data-popover-action="create-meeting">회의 만들기</button>';
   html += '</div>';
   return html;
 }
