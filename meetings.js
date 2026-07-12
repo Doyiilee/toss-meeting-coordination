@@ -547,6 +547,22 @@ const schedulePopoverData = [
     ctaLabel: '이 구간에서 회의 만들기',
     isRange: true,
   },
+  {
+    id: 'check-required-wed-15-16',
+    type: 'check-required',
+    dateLabel: '15(수)',
+    timeRange: '15:00 - 16:00',
+    statusText: '일부 참석자의 일정 확인이 필요한 시간이에요.',
+    blockedLabel: '확인이 필요한 참석자',
+    blockedCount: 1,
+    blockedMembers: [
+      { name: '정민재', reason: '비공개 일정', time: '15:00 - 16:30' },
+    ],
+    availableLabel: '가능한 참석자',
+    availableCount: 5,
+    availableMembers: ['이도이', '김현우', '박서연', '최유진', '강태오'],
+    ctaLabel: '이 시간으로 회의 만들기',
+  },
 ];
 
 let currentPopoverId = null;
@@ -570,16 +586,15 @@ function getSchedulePopoverData(id) {
 function getPopoverIdForSlot(dayIndex, hour) {
   if (dayIndex === 1 && hour === 13) return 'available-tue-13-15';
   if (dayIndex === 3 && hour === 10) return 'available-thu-10-11';
+  if (dayIndex === 2 && hour === 15) return 'check-required-wed-15-16';
   return null;
 }
 
-function renderSchedulePopover(data) {
-  const isUnavailable = data.type === 'unavailable';
-
+function renderSchedulePopoverTitle(data, showClose) {
   let html = '<div class="schedule-popover-header-section">';
   html += '<div class="schedule-popover-title-row">';
   html += `<strong class="schedule-popover-title">${data.dateLabel} ${data.timeRange}</strong>`;
-  if (!isUnavailable) {
+  if (showClose) {
     html += '<button type="button" class="schedule-popover-close" aria-label="닫기">' +
       '<svg width="24" height="24" viewBox="0 0 24 24" fill="none">' +
       '<path d="M18 6L6 18" stroke="#171A1F" stroke-width="2" stroke-linecap="round"/>' +
@@ -589,44 +604,82 @@ function renderSchedulePopover(data) {
   html += '</div>';
   html += `<p class="schedule-popover-status schedule-popover-status--${data.type}">${data.statusText}</p>`;
   html += '</div>';
+  return html;
+}
 
-  const hasBlocked = data.blockedMembers && data.blockedMembers.length > 0;
-  if (hasBlocked) {
-    const countColor = isUnavailable ? 'red' : 'orange';
-    html += '<div class="schedule-popover-section">';
-    html += '<div class="schedule-popover-section-header">';
-    html += `<span>${data.blockedLabel}</span>`;
-    html += `<span class="schedule-popover-count"><strong class="schedule-popover-count-num schedule-popover-count-num--${countColor}">${data.blockedCount}</strong><span class="schedule-popover-count-label">명</span></span>`;
-    html += '</div>';
-    html += '<div class="schedule-popover-members">';
-    data.blockedMembers.forEach(m => {
-      html += `<div class="schedule-popover-member-row">
-        <span class="schedule-popover-member-name">${m.name}</span>
-        <span class="schedule-popover-member-reason">${m.reason}</span>
-        <span class="schedule-popover-member-time">${m.time}</span>
-      </div>`;
-    });
-    html += '</div></div>';
-  }
-
-  html += '<div class="schedule-popover-section">';
+function renderScheduleAvailableSection(data) {
+  let html = '<div class="schedule-popover-section">';
   html += '<div class="schedule-popover-section-header">';
   html += `<span>${data.availableLabel}</span>`;
   html += `<span class="schedule-popover-count"><strong class="schedule-popover-count-num schedule-popover-count-num--blue">${data.availableCount}</strong><span class="schedule-popover-count-label">명</span></span>`;
   html += '</div>';
   html += `<p class="schedule-popover-member-list">${data.availableMembers.join(' · ')}</p>`;
   html += '</div>';
+  return html;
+}
+
+function renderUnavailableSchedulePopover(data) {
+  let html = renderSchedulePopoverTitle(data, false);
+  html += '<div class="schedule-popover-section">';
+  html += '<div class="schedule-popover-section-header">';
+  html += `<span>${data.blockedLabel}</span>`;
+  html += `<span class="schedule-popover-count"><strong class="schedule-popover-count-num schedule-popover-count-num--red">${data.blockedCount}</strong><span class="schedule-popover-count-label">명</span></span>`;
+  html += '</div>';
+  html += '<div class="schedule-popover-members">';
+  data.blockedMembers.forEach(m => {
+    html += `<div class="schedule-popover-member-row">
+      <span class="schedule-popover-member-name">${m.name}</span>
+      <span class="schedule-popover-member-reason">${m.reason}</span>
+      <span class="schedule-popover-member-time">${m.time}</span>
+    </div>`;
+  });
+  html += '</div></div>';
+  html += renderScheduleAvailableSection(data);
+  return html;
+}
+
+function renderAvailableSchedulePopover(data) {
+  let html = renderSchedulePopoverTitle(data, true);
+  html += renderScheduleAvailableSection(data);
 
   if (data.meetingHint) {
     html += `<p class="schedule-popover-hint">${data.meetingHint}</p>`;
   }
 
-  if (data.ctaLabel) {
-    const ctaClass = data.type === 'check-required' ? 'schedule-popover-cta--secondary' : 'schedule-popover-cta--primary';
-    html += `<button type="button" class="schedule-popover-cta ${ctaClass}">${data.ctaLabel}</button>`;
-  }
+  html += `<button type="button" class="schedule-popover-cta schedule-popover-cta--primary">${data.ctaLabel}</button>`;
 
   return html;
+}
+
+function renderCheckRequiredSchedulePopover(data) {
+  let html = renderSchedulePopoverTitle(data, true);
+  html += '<div class="schedule-popover-section">';
+  html += '<div class="schedule-popover-section-header">';
+  html += `<span>${data.blockedLabel}</span>`;
+  html += `<span class="schedule-popover-count"><strong class="schedule-popover-count-num schedule-popover-count-num--orange">${data.blockedCount}</strong><span class="schedule-popover-count-label">명</span></span>`;
+  html += '</div>';
+  html += '<div class="schedule-popover-members">';
+  data.blockedMembers.forEach(m => {
+    html += `<div class="schedule-popover-member-row">
+      <span class="schedule-popover-member-name">${m.name}</span>
+      <span class="schedule-popover-member-reason">${m.reason}</span>
+      <span class="schedule-popover-member-time">${m.time}</span>
+    </div>`;
+  });
+  html += '</div></div>';
+  html += renderScheduleAvailableSection(data);
+  html += '<div class="schedule-popover-actions">';
+  html += '<button type="button" class="schedule-popover-cta schedule-popover-cta--secondary" data-popover-action="request-check">정민재님에게 확인 요청 보내기</button>';
+  html += `<button type="button" class="schedule-popover-cta schedule-popover-cta--primary" data-popover-action="create-meeting">${data.ctaLabel}</button>`;
+  html += '</div>';
+  return html;
+}
+
+function renderSchedulePopover(data) {
+  if (data.type === 'unavailable') return renderUnavailableSchedulePopover(data);
+  if (data.type === 'available') return renderAvailableSchedulePopover(data);
+  if (data.type === 'check-required') return renderCheckRequiredSchedulePopover(data);
+  return '';
 }
 
 function positionSchedulePopover(popoverEl, anchorEl) {
@@ -660,7 +713,10 @@ function openSchedulePopover(id, anchorEl, isHover) {
 
   const el = document.getElementById('schedule-popover');
   el.innerHTML = renderSchedulePopover(data);
-  el.className = `schedule-popover schedule-popover--${data.type}`;
+  const typeClass = data.type === 'available'
+    ? `schedule-popover--available-${data.isRange ? 'range' : 'one-hour'}`
+    : `schedule-popover--${data.type}`;
+  el.className = `schedule-popover schedule-popover--${data.type} ${typeClass}`;
   el.dataset.currentId = id;
 
   el.style.visibility = 'hidden';
@@ -688,13 +744,20 @@ function handleSchedulePopoverCTA(ctaEl) {
   if (!currentPopoverId) return;
   const data = getSchedulePopoverData(currentPopoverId);
   if (!data) return;
+  const action = ctaEl.dataset.popoverAction || 'create-meeting';
 
   closeSchedulePopover();
 
-  if (data.type === 'available') {
+  if (action === 'request-check') {
+    showToast('확인 요청을 보냈어요.');
+    return;
+  }
+
+  if (data.type === 'available' || data.type === 'check-required') {
     const slotMap = {
       'available-thu-10-11': { dayIndex: 3, hour: 10 },
       'available-tue-13-15': { dayIndex: 1, hour: 13 },
+      'check-required-wed-15-16': { dayIndex: 2, hour: 15 },
     };
     const info = slotMap[currentPopoverId];
     if (info) {
@@ -728,11 +791,7 @@ function bindSchedulePopoverEvents() {
   });
 }
 
-const cellPopoverMap = {
-  '1-9': 'unavailable-tue-09-12',
-  '1-10': 'unavailable-tue-09-12',
-  '1-11': 'unavailable-tue-09-12',
-};
+const cellPopoverMap = {};
 
 const teamMembers = [
   { name: '이도이', role: '주니어 브랜드 마케터', required: true },
@@ -873,21 +932,22 @@ const timelineSlots = [
     tooltipNote: '클릭해서 회의 만들기',
   },
   {
-    dayIndex: 1,
-    hour: 14,
-    type: 'unavailable',
-    status: '비추천',
-    dayName: '화',
-    dayNum: 14,
-    timeLabel: '14:00 - 15:00',
-    available: [],
-    checkNeeded: [],
-    unavailable: [
-      { name: '정민재', reason: '매체사 미팅' },
-      { name: '강태오', reason: '외근' },
+    dayIndex: 2,
+    hour: 15,
+    type: 'check',
+    status: '일정 확인 필요',
+    dayName: '수',
+    dayNum: 15,
+    timeLabel: '15:00 - 16:00',
+    candidateCount: 1,
+    blockLabel: '확인 필요',
+    available: ['이도이', '김현우', '박서연', '최유진', '강태오'],
+    checkNeeded: [
+      { name: '정민재', reason: '비공개 일정', time: '15:00 - 16:30' },
     ],
-    tooltipTitle: '화 14:00 - 15:00',
-    tooltipNote: '필수 참석자 일부가 불가능한 시간이에요',
+    unavailable: [],
+    tooltipTitle: '수 15:00 - 16:00',
+    tooltipNote: '클릭해서 일정 확인하기',
   },
 ];
 
@@ -1026,7 +1086,7 @@ function renderTimeline() {
 
       block.innerHTML = `
         <span class="timeline-cell-time">${slot.timeLabel}</span>
-        <span class="timeline-cell-badge">${slot.status}</span>
+        <span class="timeline-cell-badge">${slot.blockLabel || slot.status}</span>
       `;
 
       const popoverId = getPopoverIdForSlot(slot.dayIndex, slot.hour);
@@ -1178,7 +1238,46 @@ function updateTimelineModalStatus(slot) {
 }
 
 function buildQuickSlotDesc(slot) {
+  if (slot.type === 'check') return '일부 참석자의 일정 확인이 필요한 시간이에요.';
   return '선택한 참석자 모두 참석 가능한 시간이에요.';
+}
+
+function renderQuickSlotDetail(slot) {
+  if (slot.type !== 'check') {
+    return `<span class="quick-slot-count">1시간 회의 후보 ${slot.candidateCount || 1}개가 있어요.</span>`;
+  }
+
+  return `
+    <div class="quick-slot-detail">
+      <div class="quick-slot-detail-group">
+        <span class="quick-slot-detail-title">확인 대상</span>
+        ${slot.checkNeeded.map(member => `
+          <span class="quick-slot-member-row">
+            <span>${member.name}</span>
+            <span>${member.reason}</span>
+            <span>${member.time}</span>
+          </span>
+        `).join('')}
+      </div>
+      <div class="quick-slot-detail-group">
+        <span class="quick-slot-detail-title">가능한 참석자</span>
+        <span class="quick-slot-member-list">${slot.available.join(' · ')}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderQuickSlotActions(slot) {
+  if (slot.type !== 'check') {
+    return '<span class="quick-slot-cta">이 구간에서 회의 만들기</span>';
+  }
+
+  return `
+    <span class="quick-slot-actions">
+      <span class="quick-slot-cta quick-slot-cta-secondary" data-card-action="request-check">정민재님에게 확인 요청 보내기</span>
+      <span class="quick-slot-cta" data-card-action="create-meeting">이 시간으로 회의 만들기</span>
+    </span>
+  `;
 }
 
 function renderQuickSlots() {
@@ -1192,14 +1291,20 @@ function renderQuickSlots() {
       <span class="quick-slot-badge quick-slot-badge-${slot.type}">${slot.status}</span>
       <strong class="quick-slot-time">${slot.dayNum}(${slot.dayName}) ${slot.timeLabel}</strong>
       <span class="quick-slot-desc">${buildQuickSlotDesc(slot)}</span>
-      <span class="quick-slot-count">1시간 회의 후보 ${slot.candidateCount || 1}개가 있어요.</span>
-      <span class="quick-slot-cta">이 구간에서 회의 만들기</span>
+      ${renderQuickSlotDetail(slot)}
+      ${renderQuickSlotActions(slot)}
     </button>
   `).join('');
 
   container.addEventListener('click', (e) => {
     const card = e.target.closest('.quick-slot-card');
     if (!card) return;
+    const action = e.target.closest('[data-card-action]')?.dataset.cardAction || 'create-meeting';
+    if (action === 'request-check') {
+      e.stopPropagation();
+      showToast('확인 요청을 보냈어요.');
+      return;
+    }
     const slot = getTimelineSlot(Number(card.dataset.dayIndex), Number(card.dataset.hour));
     if (slot) openTimelineModal(slot);
   });
