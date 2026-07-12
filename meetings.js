@@ -2132,26 +2132,21 @@ function setDurationOption(option) {
 
 function initNav() {
   document.querySelectorAll('.sidebar-icon-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (event) => {
+      event.preventDefault();
       const action = btn.dataset.action;
+
+      if (btn.dataset.disabledNav === 'true') {
+        showToast(`${btn.getAttribute('aria-label') || '해당'} 화면은 다음 단계에서 연결할 예정이에요.`);
+        return;
+      }
+
       switch (action) {
         case 'dashboard':
           window.location.href = 'index.html';
           break;
-        case 'calendar':
-          showToast('캘린더 화면은 다음 단계에서 연결할 예정이에요.');
-          break;
         case 'meeting':
           window.location.href = 'meetings.html';
-          break;
-        case 'message':
-          showToast('메시지 화면은 다음 단계에서 연결할 예정이에요.');
-          break;
-        case 'mail':
-          showToast('메일 화면은 다음 단계에서 연결할 예정이에요.');
-          break;
-        case 'address':
-          showToast('주소록 화면은 다음 단계에서 연결할 예정이에요.');
           break;
         default:
           showToast('해당 기능은 준비 중이에요.');

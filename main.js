@@ -18,36 +18,46 @@ function setActiveNav(action) {
   });
 }
 
+function getPendingNavMessage(action) {
+  const messages = {
+    calendar: '캘린더 화면은 다음 단계에서 연결할 예정이에요.',
+    message: '메시지 화면은 다음 단계에서 연결할 예정이에요.',
+    mail: '메일 화면은 다음 단계에서 연결할 예정이에요.',
+    address: '주소록 화면은 다음 단계에서 연결할 예정이에요.'
+  };
+
+  return messages[action] || '해당 기능은 준비 중이에요.';
+}
+
 function init() {
   document.getElementById('btn-add-schedule').addEventListener('click', () => {
     showToast('일정 추가 화면은 다음 단계에서 연결할 예정이에요.');
   });
 
   document.querySelectorAll('.sidebar-icon-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (event) => {
+      event.preventDefault();
       const action = btn.dataset.action;
+
+      if (btn.dataset.disabledNav === 'true') {
+        const currentScrollY = window.scrollY;
+        showToast(getPendingNavMessage(action));
+        requestAnimationFrame(() => {
+          window.scrollTo({ top: currentScrollY, left: window.scrollX, behavior: 'auto' });
+        });
+        return;
+      }
+
       switch (action) {
         case 'dashboard':
           setActiveNav('dashboard');
           window.scrollTo({ top: 0, behavior: 'smooth' });
           break;
-        case 'calendar':
-          document.querySelector('.urgent-section').scrollIntoView({ behavior: 'smooth' });
-          break;
         case 'meeting':
           window.location.href = 'meetings.html';
           break;
-        case 'message':
-          showToast('메시지 화면은 다음 단계에서 연결할 예정이에요.');
-          break;
-        case 'mail':
-          showToast('메일 화면은 다음 단계에서 연결할 예정이에요.');
-          break;
-        case 'address':
-          showToast('주소록 화면은 다음 단계에서 연결할 예정이에요.');
-          break;
         default:
-          showToast('해당 기능은 준비 중이에요.');
+          showToast(getPendingNavMessage(action));
       }
     });
   });

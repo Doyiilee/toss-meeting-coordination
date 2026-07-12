@@ -31,22 +31,22 @@
   <div class="body-layout">
     <aside class="sidebar">
       <nav class="sidebar-nav">
-        <button class="sidebar-icon-btn sidebar-icon-active" data-action="dashboard" aria-label="대시보드" data-tooltip="대시보드">
+        <button class="sidebar-icon-btn sidebar-icon-active" type="button" data-action="dashboard" aria-label="대시보드" data-tooltip="대시보드">
           <span class="icon-mask icon-home" aria-hidden="true"></span>
         </button>
-        <button class="sidebar-icon-btn" data-action="calendar" aria-label="캘린더" data-tooltip="캘린더">
+        <button class="sidebar-icon-btn" type="button" data-action="calendar" data-disabled-nav="true" aria-label="캘린더" data-tooltip="캘린더">
           <span class="icon-mask icon-calendar" aria-hidden="true"></span>
         </button>
-        <button class="sidebar-icon-btn" data-action="meeting" aria-label="회의" data-tooltip="회의">
+        <button class="sidebar-icon-btn" type="button" data-action="meeting" aria-label="회의" data-tooltip="회의">
           <span class="icon-mask icon-meetings" aria-hidden="true"></span>
         </button>
-        <button class="sidebar-icon-btn" data-action="message" aria-label="메시지" data-tooltip="메시지">
+        <button class="sidebar-icon-btn" type="button" data-action="message" data-disabled-nav="true" aria-label="메시지" data-tooltip="메시지">
           <span class="icon-mask icon-message" aria-hidden="true"></span>
         </button>
-        <button class="sidebar-icon-btn" data-action="mail" aria-label="메일" data-tooltip="메일">
+        <button class="sidebar-icon-btn" type="button" data-action="mail" data-disabled-nav="true" aria-label="메일" data-tooltip="메일">
           <span class="icon-mask icon-mail" aria-hidden="true"></span>
         </button>
-        <button class="sidebar-icon-btn" data-action="address" aria-label="주소록" data-tooltip="주소록">
+        <button class="sidebar-icon-btn" type="button" data-action="address" data-disabled-nav="true" aria-label="주소록" data-tooltip="주소록">
           <span class="icon-mask icon-contacts" aria-hidden="true"></span>
         </button>
       </nav>
@@ -337,6 +337,6 @@
 
 <div id="toast" class="toast"></div>
 
-<script src="main.js"></script>
+<script src="main.js?v=nav-disabled"></script>
 </body>
 </html>
