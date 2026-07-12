@@ -777,34 +777,40 @@ ul {
 .next-schedule-section {
   background: var(--color-white);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 40px;
+  border-radius: 14px;
+  padding: 28px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  width: clamp(360px, 26.67vw, 512px);
-  min-height: 444px;
+  gap: 22px;
+  width: clamp(420px, 26.666vw, 512px);
+  max-width: 100%;
+  min-height: 0;
   min-width: 0;
 }
 
 .next-schedule-header {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
 }
 
 .next-schedule-title-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: nowrap;
   white-space: nowrap;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .next-schedule-title {
-  font-size: 24px;
+  font-size: 19px;
   font-weight: 700;
-  line-height: 32px;
+  line-height: 28px;
   color: var(--color-text-primary);
 }
 
@@ -813,46 +819,64 @@ ul {
 }
 
 .next-schedule-urgent {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--color-yellow-text);
-  line-height: 24px;
+  line-height: 20px;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .next-schedule-body {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 0;
+  width: 100%;
 }
 
 .next-schedule-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: minmax(112px, 0.48fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px 0;
+  border-bottom: 1px solid #E1E3E6;
+}
+
+.next-schedule-info:first-child {
+  padding-top: 0;
+}
+
+.next-schedule-info:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .next-schedule-time {
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--color-text-primary);
-  line-height: 28px;
+  line-height: 24px;
+  white-space: nowrap;
 }
 
 .next-schedule-location {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   color: var(--color-text-secondary);
   line-height: 24px;
+  min-width: 0;
 }
 
 .next-schedule-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   color: var(--color-text-secondary);
   line-height: 24px;
+  min-width: 0;
 }
 
 /* ─── Received Section ─── */
