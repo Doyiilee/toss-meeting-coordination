@@ -542,7 +542,7 @@ function renderDetailContent(meeting) {
 
 /* ---- Schedule Popover Data ---- */
 
-const schedulePopoverData = [
+let schedulePopoverData = [
   {
     id: 'unavailable-tue-09-12',
     type: 'unavailable',
@@ -558,47 +558,6 @@ const schedulePopoverData = [
     availableLabel: '가능한 참석자',
     availableCount: 4,
     availableMembers: ['이도이', '정민재', '최유진', '강태오'],
-  },
-  {
-    id: 'available-thu-10-11',
-    type: 'available',
-    dateLabel: '16(목)',
-    timeRange: '10:00 - 11:00',
-    statusText: '모두가 가능한 시간이에요',
-    availableLabel: '가능한 참석자',
-    availableCount: 6,
-    availableMembers: ['이도이', '김현우', '박서연', '정민재', '최유진', '강태오'],
-    ctaLabel: '이 시간으로 회의 만들기',
-    isRange: false,
-  },
-  {
-    id: 'available-tue-13-15',
-    type: 'available',
-    dateLabel: '14(화)',
-    timeRange: '13:00 - 15:00',
-    statusText: '모두가 가능한 시간이에요',
-    availableLabel: '가능한 참석자',
-    availableCount: 6,
-    availableMembers: ['이도이', '김현우', '박서연', '정민재', '최유진', '강태오'],
-    meetingHint: '1시간 회의 후보 2개가 있어요.',
-    ctaLabel: '이 구간에서 회의 만들기',
-    isRange: true,
-  },
-  {
-    id: 'check-required-wed-15-16',
-    type: 'check-required',
-    dateLabel: '15(수)',
-    timeRange: '15:00 - 16:00',
-    statusText: '일부 참석자의 일정 확인이 필요한 시간이에요.',
-    blockedLabel: '확인이 필요한 참석자',
-    blockedCount: 1,
-    blockedMembers: [
-      { name: '정민재', reason: '비공개 일정', time: '15:00 - 16:30' },
-    ],
-    availableLabel: '가능한 참석자',
-    availableCount: 5,
-    availableMembers: ['이도이', '김현우', '박서연', '최유진', '강태오'],
-    ctaLabel: '이 시간으로 회의 만들기',
   },
 ];
 
@@ -621,10 +580,11 @@ function getSchedulePopoverData(id) {
 }
 
 function getPopoverIdForSlot(dayIndex, hour) {
-  if (dayIndex === 1 && hour === 13) return 'available-tue-13-15';
-  if (dayIndex === 3 && hour === 10) return 'available-thu-10-11';
-  if (dayIndex === 2 && hour === 15) return 'check-required-wed-15-16';
-  return null;
+  const track = timelineSlots.find(s => s.dayIndex === dayIndex && s.hour === hour);
+  if (!track || !track.candidateId) return null;
+  const candidate = getCandidateById(track.candidateId);
+  if (!candidate) return null;
+  return getCandidatePopoverId(candidate);
 }
 
 function renderSchedulePopoverTitle(data, showClose) {
@@ -743,6 +703,7 @@ function positionSchedulePopover(popoverEl, anchorEl) {
 }
 
 function openSchedulePopover(id, anchorEl, isHover) {
+  if (isHover && currentPopoverId && !isPopoverHover) return;
   closeSchedulePopover();
   hideTimelineTooltip();
   const data = getSchedulePopoverData(id);
@@ -791,15 +752,13 @@ function handleSchedulePopoverCTA(ctaEl) {
   }
 
   if (data.type === 'available' || data.type === 'check-required') {
-    const slotMap = {
-      'available-thu-10-11': { dayIndex: 3, hour: 10 },
-      'available-tue-13-15': { dayIndex: 1, hour: 13 },
-      'check-required-wed-15-16': { dayIndex: 2, hour: 15 },
-    };
-    const info = slotMap[currentPopoverId];
-    if (info) {
-      const slot = getTimelineSlot(info.dayIndex, info.hour);
-      if (slot) openTimelineModal(slot);
+    const candidateId = data.candidateId;
+    if (candidateId) {
+      const candidate = getCandidateById(candidateId);
+      if (candidate) {
+        const slot = getTimelineSlot(candidate.dayIndex, candidate.startTime);
+        if (slot) openTimelineModal(slot);
+      }
     }
   }
 }
@@ -1069,6 +1028,73 @@ function getCandidateDisplayState(candidate, summary) {
   return 'available';
 }
 
+function getCandidateById(id) {
+  return meetingCandidates.find(c => c.id === id) || null;
+}
+
+const SHORT_DAY_NAMES = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+function getCandidatePopoverId(candidate) {
+  const dateObj = parseDate(`2026.07.${String(13 + candidate.dayIndex).padStart(2, '0')}`);
+  const dayName = SHORT_DAY_NAMES[dateObj.getDay()];
+  const prefix = candidate.type === 'available' ? 'available' : 'check-required';
+  return `${prefix}-${dayName}-${candidate.startTime}-${candidate.endTime}`;
+}
+
+function buildSchedulePopoverData() {
+  const unavailableEntry = schedulePopoverData[0];
+
+  const candidateEntries = meetingCandidates.map(candidate => {
+    const timeRange = `${formatHour(candidate.startTime)} - ${formatHour(candidate.endTime)}`;
+    const availableNames = candidate.availableMemberIds.map(id => getTeamMemberName(id));
+
+    const base = {
+      dateLabel: candidate.dateLabel,
+      timeRange,
+      candidateId: candidate.id,
+    };
+
+    if (candidate.type === 'available') {
+      return {
+        ...base,
+        id: getCandidatePopoverId(candidate),
+        type: 'available',
+        statusText: '모두가 가능한 시간이에요',
+        availableLabel: '가능한 참석자',
+        availableCount: availableNames.length,
+        availableMembers: availableNames,
+        ctaLabel: candidate.isRange ? '이 구간에서 회의 만들기' : '이 시간으로 회의 만들기',
+        isRange: candidate.isRange,
+        ...(candidate.isRange ? { meetingHint: candidate.meetingHint } : {}),
+      };
+    }
+
+    const blockedMembers = (candidate.checkRequiredMemberIds || []).map(id => ({
+      name: getTeamMemberName(id),
+      reason: candidate.checkReason || '',
+      time: candidate.checkTimeRange || '',
+    }));
+
+    return {
+      ...base,
+      id: getCandidatePopoverId(candidate),
+      type: 'check-required',
+      statusText: '일부 참석자의 일정 확인이 필요한 시간이에요.',
+      blockedLabel: '확인이 필요한 참석자',
+      blockedCount: blockedMembers.length,
+      blockedMembers,
+      availableLabel: '가능한 참석자',
+      availableCount: availableNames.length,
+      availableMembers: availableNames,
+      ctaLabel: '이 시간으로 회의 만들기',
+    };
+  });
+
+  return [unavailableEntry, ...candidateEntries];
+}
+
+schedulePopoverData = buildSchedulePopoverData();
+
 function formatHour(hour) {
   const h = Math.floor(hour);
   const m = Math.round((hour - h) * 60);
@@ -1139,6 +1165,7 @@ const timelineSlots = [
     unavailable: [],
     tooltipTitle: '화 13:00 - 15:00',
     tooltipNote: '클릭해서 회의 만들기',
+    candidateId: 'candidate-1',
   },
   {
     dayIndex: 3,
@@ -1154,6 +1181,7 @@ const timelineSlots = [
     unavailable: [],
     tooltipTitle: '목 10:00 - 11:00',
     tooltipNote: '클릭해서 회의 만들기',
+    candidateId: 'candidate-2',
   },
   {
     dayIndex: 2,
@@ -1172,6 +1200,7 @@ const timelineSlots = [
     unavailable: [],
     tooltipTitle: '수 15:00 - 16:00',
     tooltipNote: '클릭해서 일정 확인하기',
+    candidateId: 'candidate-3',
   },
 ];
 
@@ -1508,7 +1537,12 @@ function renderQuickSlots() {
   const container = document.getElementById('quick-slot-cards');
   if (!container) return;
 
-  const quickSlots = timelineSlots.filter(s => s.type !== 'unavailable');
+  const quickSlots = timelineSlots.filter(s => {
+    if (s.type === 'unavailable') return false;
+    if (!s.candidateId) return true;
+    const candidate = getCandidateById(s.candidateId);
+    return candidate && candidate.type === 'available';
+  });
 
   container.innerHTML = quickSlots.map(slot => `
     <button type="button" class="quick-slot-card quick-slot-${slot.type}" data-day-index="${slot.dayIndex}" data-hour="${slot.hour}">
