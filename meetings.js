@@ -895,6 +895,40 @@ function getTimelineSlot(dayIndex, hour) {
   return timelineSlots.find(s => s.dayIndex === dayIndex && s.hour === hour) || null;
 }
 
+const timelineConflictHighCells = new Set([
+  '0-9',
+  '0-10',
+  '0-13',
+  '0-14',
+  '0-15',
+  '1-9',
+  '2-9',
+  '2-10',
+  '2-15',
+  '3-13',
+  '3-14',
+  '4-9',
+  '4-10',
+  '4-13',
+]);
+
+const timelineConflictLowCells = new Set([
+  '1-10',
+  '1-16',
+  '2-14',
+  '2-16',
+  '3-9',
+  '3-15',
+  '4-11',
+  '4-14',
+]);
+
+function getTimelineConflictClass(cellKey) {
+  if (timelineConflictHighCells.has(cellKey)) return 'timeline-cell-conflict-high';
+  if (timelineConflictLowCells.has(cellKey)) return 'timeline-cell-conflict-low';
+  return '';
+}
+
 function renderTimeline() {
   const grid = document.getElementById('timeline-grid');
   grid.innerHTML = '';
@@ -946,10 +980,11 @@ function renderTimeline() {
       const slot = getTimelineSlot(dayIndex, currentHour);
       const cellKey = `${dayIndex}-${currentHour}`;
       const cellPopoverId = cellPopoverMap[cellKey];
+      const conflictClass = getTimelineConflictClass(cellKey);
 
       if (cellPopoverId) {
         cell.dataset.popoverId = cellPopoverId;
-        cell.classList.add('timeline-cell-unavailable');
+        if (conflictClass) cell.classList.add(conflictClass);
         cell.addEventListener('mouseenter', (e) => openSchedulePopover(cellPopoverId, e.currentTarget, true));
         cell.addEventListener('mouseleave', () => {
           if (isPopoverHover) closeSchedulePopover();
@@ -957,30 +992,13 @@ function renderTimeline() {
       } else if (slot) {
         cell.classList.add(`timeline-cell-${slot.type}`);
 
-        if (slot.type === 'unavailable' || (dayIndex === 3 && currentHour === 13)) {
-          cell.classList.add('timeline-cell-conflict-high');
-        }
+        if (conflictClass) cell.classList.add(conflictClass);
 
         cell.addEventListener('mouseenter', (e) => showTimelineTooltip(e, slot));
         cell.addEventListener('mouseleave', hideTimelineTooltip);
       } else {
-        const highConflict = (currentHour === 13 && (dayIndex === 3 || dayIndex === 4))
-          || (currentHour === 14 && dayIndex === 0)
-          || (currentHour === 15 && dayIndex === 2);
-        const lowConflict = (currentHour === 9 && dayIndex < 3)
-          || (currentHour === 10 && dayIndex === 0)
-          || (currentHour === 14 && (dayIndex === 2 || dayIndex === 3));
-
-        if (highConflict) {
-          cell.classList.add('timeline-cell-conflict-high');
-          const conflictId = `conflict-${dayIndex}-${currentHour}`;
-          cell.dataset.popoverId = conflictId;
-          cell.addEventListener('mouseenter', (e) => openSchedulePopover(conflictId, e.currentTarget, true));
-          cell.addEventListener('mouseleave', () => {
-            if (isPopoverHover) closeSchedulePopover();
-          });
-        } else if (lowConflict) {
-          cell.classList.add('timeline-cell-conflict-low');
+        if (conflictClass) {
+          cell.classList.add(conflictClass);
           const conflictId = `conflict-${dayIndex}-${currentHour}`;
           cell.dataset.popoverId = conflictId;
           cell.addEventListener('mouseenter', (e) => openSchedulePopover(conflictId, e.currentTarget, true));

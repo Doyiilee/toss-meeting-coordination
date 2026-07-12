@@ -2164,11 +2164,11 @@ button {
 }
 
 .legend-unavailable-low {
-  background: #F1F3F5;
+  background: #F5F6F8;
 }
 
 .legend-unavailable-high {
-  background: #E5E8EC;
+  background: #ECEFF3;
 }
 
 .legend-available {
