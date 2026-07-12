@@ -1860,6 +1860,108 @@ button {
   justify-self: end;
 }
 
+.timeline-member-filter {
+  position: relative;
+}
+
+.timeline-member-filter-trigger {
+  width: 193px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background-image: none;
+  white-space: nowrap;
+}
+
+.timeline-member-filter-trigger span:first-child {
+  white-space: nowrap;
+}
+
+.timeline-member-filter-trigger .icon-mask {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.team-free-time-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 1100;
+  width: 260px;
+  padding: 20px;
+  border: 1px solid #D6DADE;
+  border-radius: 12px;
+  background: var(--color-white);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.team-free-time-title {
+  margin: 0 0 28px;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.team-free-time-options {
+  display: grid;
+  gap: 16px;
+}
+
+.team-free-time-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 24px;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 23px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.team-free-time-option input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  appearance: none;
+  background-color: #343B46;
+  mask: url("assets/icons/checkbox-unchecked.svg") center / 24px 24px no-repeat;
+  -webkit-mask: url("assets/icons/checkbox-unchecked.svg") center / 24px 24px no-repeat;
+  border: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.team-free-time-option input:checked {
+  mask-image: url("assets/icons/checkbox-checked.svg");
+  -webkit-mask-image: url("assets/icons/checkbox-checked.svg");
+}
+
+.team-free-time-apply {
+  width: 100%;
+  height: 44px;
+  margin-top: 24px;
+  border: 1px solid var(--color-search-border);
+  border-radius: 10px;
+  background: var(--color-white);
+  color: var(--color-blue);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.team-free-time-apply:hover {
+  background: var(--color-bg);
+}
+
 .timeline-duration-filter {
   grid-column: 2;
   grid-row: 2;
